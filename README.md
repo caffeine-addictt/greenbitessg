@@ -58,7 +58,8 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-* 
+* Node v21.6.1
+* NPM v10.4.0
 
 ### Installation
 
