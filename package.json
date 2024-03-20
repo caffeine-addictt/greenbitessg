@@ -6,7 +6,9 @@
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
     "lint:client": "cd client && npm run lint",
-    "lint:server": "cd server && npm run lint"
+    "lint:server": "cd server && npm run lint",
+    "lint:client:fix": "cd client && npm run lint:fix",
+    "lint:server:fix": "cd server && npm run lint:fix",
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
