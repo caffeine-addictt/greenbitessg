@@ -1,18 +1,14 @@
-<!--
-You can use this template to create your own README.md file by running the following command in your terminal:
+<!-- Allow inline html -->
+<!-- markdownlint-disable MD033 -->
 
-```sh
-chmod +x setup.sh
-./setup.sh
-```
+<!-- Allow consecutive blank lines -->
+<!-- markdownlint-disable MD012 -->
 
-Follow the prompts and the files will be automatically updated.
+<!-- Ignore line length -->
+<!-- markdownlint-disable MD013 -->
 
-
-Create a folder called images and add your images to have them show up.
-images/logo.png # logo
-images/socialcard.png # social card
--->
+<!-- Disable top-level heading -->
+<!-- markdownlint-disable MD041 -->
 
 <a name="readme-top"></a>
 
@@ -112,6 +108,8 @@ Don't forget to give the project a star! Thanks again!
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
