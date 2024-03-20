@@ -104,6 +104,7 @@ npm run i:server # Install dependencies on server
 ```
 
 ### Running locally
+
 ```sh
 npm run dev        # Run development server on all packages
 npm run dev:client # Run development server on client
