@@ -30,8 +30,6 @@ images/socialcard.png # social card
   <p align="center">
     Nanyang Poly y2 DIT Fullstack
     <br />
-    <a href="later"><strong>Explore the docs »</strong></a>
-    <br />
     <br />
     <a href="https://github.com/caffeine-addictt/nyp_y2_fullstack/issues">Report Bug</a>
     ·
