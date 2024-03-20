@@ -3,12 +3,16 @@
   "scripts": {
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
+    "dev": "concurrently -n client,server -c green,blue \"npm:dev:*\"",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
+    "build": "concurrently -n client,server -c green,blue \"npm:build:*\"",
     "lint:client": "cd client && npm run lint",
     "lint:server": "cd server && npm run lint",
+    "lint": "concurrently -n client,server -c green,blue \"npm:lint:*(!fix)\"",
     "lint:client:fix": "cd client && npm run lint:fix",
     "lint:server:fix": "cd server && npm run lint:fix",
+    "lint:fix": "concurrently -n client,server -c green,blue \"npm:lint:*:fix\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
