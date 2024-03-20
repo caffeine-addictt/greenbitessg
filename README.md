@@ -1,31 +1,18 @@
-<!--
-You can use this template to create your own README.md file by running the following command in your terminal:
+<!-- Allow inline html -->
+<!-- markdownlint-disable MD033 -->
 
-```sh
-chmod +x setup.sh
-./setup.sh
-```
+<!-- Allow consecutive blank lines -->
+<!-- markdownlint-disable MD012 -->
 
-Follow the prompts and the files will be automatically updated.
+<!-- Ignore line length -->
+<!-- markdownlint-disable MD013 -->
 
-
-Create a folder called images and add your images to have them show up.
-images/logo.png # logo
-images/socialcard.png # social card
--->
+<!-- Disable top-level heading -->
+<!-- markdownlint-disable MD041 -->
 
 <a name="readme-top"></a>
 
 
-
-<!-- PROJECT SHIELDS -->
-<div align="center">
-
-  <a href="[forks-url]">[![Forks][forks-shield]][forks-url]</a>
-  <a href="[stars-url]">[![Stargazers][stars-shield]][stars-url]</a>
-  <a href="[license-url]">[![MIT License][license-shield]][license-url]</a>
-
-</div>
 
 <!-- PROJECT LOGO -->
 <br />
@@ -38,8 +25,6 @@ images/socialcard.png # social card
 
   <p align="center">
     Nanyang Poly y2 DIT Fullstack
-    <br />
-    <a href="later"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/caffeine-addictt/nyp_y2_fullstack/issues">Report Bug</a>
@@ -69,14 +54,31 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-* 
+* Node v21.6.1
+* NPM v10.4.0
 
 ### Installation
 
-_Below is an example of how you can install and use Fullstack._
+_Below is an example of how you can install the project locally._
 
-1. 
-2. 
+#### 1. Clone the Repository
+
+```sh
+git clone https://github.com/caffeine-addictt/nyp_y2_fullstack
+cd nyp_y2_fullstack
+  ```
+
+#### 2. Install Dependencies
+
+```sh
+npm i && npm run i
+```
+
+#### 3. Run Development Server
+
+```sh
+npm run dev
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -85,9 +87,59 @@ _Below is an example of how you can install and use Fullstack._
 <!-- DOCS -->
 ## Documentation
 
-Our docs are [here]({{PROJECT_DOCUMENTATION_URL}})!
+This project hosts 2 web apps hosted with Vercel, a front-end and a back-end API.
+You can find the front-end app in the `client/` directory and the back-end API in the `server/` directory.
 
-See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
+### Technology used
+
+The client app is built with `Vite`, `React`, `Typescript` and `Tailwindcss`.
+The server API is built with `Express` and `Typescript`.
+
+### Installing dependencies
+
+```sh
+npm run i        # Install dependencies on all packages
+npm run i:client # Install dependencies on client
+npm run i:server # Install dependencies on server
+```
+
+### Running locally
+
+```sh
+npm run dev        # Run development server on all packages
+npm run dev:client # Run development server on client
+npm run dev:server # Run development server on server
+```
+
+### Linting
+
+```sh
+npm run lint        # Run linting on all packages
+npm run lint:client # Run linting on client
+npm run lint:server # Run linting on server
+```
+
+```sh
+npm run lint:fix        # Run linting on all packages and fix any linting errors
+npm run lint:client:fix # Run linting on client and fix any linting errors
+npm run lint:server:fix # Run linting on server and fix any linting errors
+```
+
+### Testing
+
+```sh
+npm run test        # Run tests on all packages
+npm run test:client # Run tests on client
+npm run test:server # Run tests on server
+```
+
+### Building
+
+```sh
+npm run build        # Build all packages
+npm run build:client # Build the client
+npm run build:server # Build the server
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -106,6 +158,59 @@ Don't forget to give the project a star! Thanks again!
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- COMMIT GUIDELINES -->
+### Commit Message Guidelines
+
+When committing, commit messages are prefixed with one of the following depending on the type of change made.
+
+* `feat:` when a new feature is introduced with the changes.
+* `fix:` when a bug fix has occurred.
+* `chore:` for changes that do not relate to a fix or feature and do not modify _source_ or _tests_. (like updating dependencies)
+* `refactor:` for refactoring code that neither fixes a bug nor adds a feature.
+* `docs:` when changes are made to documentation.
+* `style:` when changes that do not affect the code, but modify formatting.
+* `test:` when changes to tests are made.
+* `perf:` for changes that improve performance.
+* `ci:` for changes that affect CI.
+* `build:` for changes that affect the build system or external dependencies.
+* `revert:` when reverting changes.
+
+A parenthesis can be placed after the type of change to indicate the scope of the change. Below list some example commit messages.
+
+```sh
+git commit -m "docs(client): Updated README.md in client/"
+git commit -m "revert(server): Fall back to old typing"
+git commit -m "docs: Moved README.md"
+```
+
+See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- PR GUIDELINES -->
+### Pull Request Guidelines
+
+When creating a pull request, please use our PR template and follow the checklist provided.
+
+We require the following CI to pass before the PR can be merged:
+
+* Linting
+* Tests
+
+#### Linting locally
+
+You can lint locally by running `npm run lint` in the root of the project, then run `npm run lint:fix` to automatically fix any linting errors.
+
+#### Testing locally
+
+You can test locally by running `npm run test` in the root of the project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -140,14 +245,3 @@ Jun Xiang - [contact@ngjx.org](mailto:contact@ngjx.org)
 * [Img Shields](https://shields.io)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[forks-shield]: https://img.shields.io/github/forks/caffeine-addictt/nyp_y2_fullstack.svg?style=for-the-badge
-[forks-url]: https://github.com/caffeine-addictt/nyp_y2_fullstack/network/members
-[stars-shield]: https://img.shields.io/github/stars/caffeine-addictt/nyp_y2_fullstack.svg?style=for-the-badge&color=yellow
-[stars-url]: https://github.com/caffeine-addictt/nyp_y2_fullstack/stargazers
-[license-shield]: https://img.shields.io/github/license/caffeine-addictt/nyp_y2_fullstack.svg?style=for-the-badge
-[license-url]: https://github.com/caffeine-addictt/nyp_y2_fullstack/blob/master/LICENSE.txt
