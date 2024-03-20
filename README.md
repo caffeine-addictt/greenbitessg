@@ -87,6 +87,59 @@ npm run dev
 <!-- DOCS -->
 ## Documentation
 
+This project hosts 2 web apps hosted with Vercel, a front-end and a back-end API.
+You can find the front-end app in the `client/` directory and the back-end API in the `server/` directory.
+
+### Technology used
+
+The client app is built with `Vite`, `React`, `Typescript` and `Tailwindcss`.
+The server API is built with `Express` and `Typescript`.
+
+### Installing dependencies
+
+```sh
+npm run i        # Install dependencies on all packages
+npm run i:client # Install dependencies on client
+npm run i:server # Install dependencies on server
+```
+
+### Running locally
+```sh
+npm run dev        # Run development server on all packages
+npm run dev:client # Run development server on client
+npm run dev:server # Run development server on server
+```
+
+### Linting
+
+```sh
+npm run lint        # Run linting on all packages
+npm run lint:client # Run linting on client
+npm run lint:server # Run linting on server
+```
+
+```sh
+npm run lint:fix        # Run linting on all packages and fix any linting errors
+npm run lint:client:fix # Run linting on client and fix any linting errors
+npm run lint:server:fix # Run linting on server and fix any linting errors
+```
+
+### Testing
+
+```sh
+npm run test        # Run tests on all packages
+npm run test:client # Run tests on client
+npm run test:server # Run tests on server
+```
+
+### Building
+
+```sh
+npm run build        # Build all packages
+npm run build:client # Build the client
+npm run build:server # Build the server
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
