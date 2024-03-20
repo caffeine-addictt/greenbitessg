@@ -113,6 +113,7 @@ Don't forget to give the project a star! Thanks again!
 
 
 
+<!-- COMMIT GUIDELINES -->
 ## Commit Message Guidelines
 
 When committing, commit messages are prefixed with one of the following depending on the type of change made.
