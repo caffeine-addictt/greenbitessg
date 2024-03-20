@@ -146,14 +146,3 @@ Jun Xiang - [contact@ngjx.org](mailto:contact@ngjx.org)
 * [Img Shields](https://shields.io)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[forks-shield]: https://img.shields.io/github/forks/caffeine-addictt/nyp_y2_fullstack.svg?style=for-the-badge
-[forks-url]: https://github.com/caffeine-addictt/nyp_y2_fullstack/network/members
-[stars-shield]: https://img.shields.io/github/stars/caffeine-addictt/nyp_y2_fullstack.svg?style=for-the-badge&color=yellow
-[stars-url]: https://github.com/caffeine-addictt/nyp_y2_fullstack/stargazers
-[license-shield]: https://img.shields.io/github/license/caffeine-addictt/nyp_y2_fullstack.svg?style=for-the-badge
-[license-url]: https://github.com/caffeine-addictt/nyp_y2_fullstack/blob/master/LICENSE.txt
