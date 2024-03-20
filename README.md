@@ -18,15 +18,6 @@ images/socialcard.png # social card
 
 
 
-<!-- PROJECT SHIELDS -->
-<div align="center">
-
-  <a href="[forks-url]">[![Forks][forks-shield]][forks-url]</a>
-  <a href="[stars-url]">[![Stargazers][stars-shield]][stars-url]</a>
-  <a href="[license-url]">[![MIT License][license-shield]][license-url]</a>
-
-</div>
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
