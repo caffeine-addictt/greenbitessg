@@ -12,7 +12,10 @@
     "lint": "concurrently -n client,server -c green,blue \"npm:lint:*(!fix)\"",
     "lint:client:fix": "cd client && npm run lint:fix",
     "lint:server:fix": "cd server && npm run lint:fix",
-    "lint:fix": "concurrently -n client,server -c green,blue \"npm:lint:*:fix\""
+    "lint:fix": "concurrently -n client,server -c green,blue \"npm:lint:*:fix\"",
+    "i:client": "cd client && npm i",
+    "i:server": "cd server && npm i",
+    "i": "concurrently -n client,server -c green,blue \"npm:i:*\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
