@@ -110,7 +110,7 @@ Don't forget to give the project a star! Thanks again!
 
 
 <!-- COMMIT GUIDELINES -->
-## Commit Message Guidelines
+### Commit Message Guidelines
 
 When committing, commit messages are prefixed with one of the following depending on the type of change made.
 
@@ -135,6 +135,28 @@ git commit -m "docs: Moved README.md"
 ```
 
 See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- PR GUIDELINES -->
+### Pull Request Guidelines
+
+When creating a pull request, please use our PR template and follow the checklist provided.
+
+We require the following CI to pass before the PR can be merged:
+
+* Linting
+* Tests
+
+#### Linting locally
+
+You can lint locally by running `npm run lint` in the root of the project, then run `npm run lint:fix` to automatically fix any linting errors.
+
+#### Testing locally
+
+You can test locally by running `npm run test` in the root of the project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
