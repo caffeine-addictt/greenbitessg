@@ -63,10 +63,26 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-_Below is an example of how you can install and use Fullstack._
+_Below is an example of how you can install the project locally._
 
-1. 
-2. 
+#### 1. Clone the Repository
+
+```sh
+git clone https://github.com/caffeine-addictt/nyp_y2_fullstack
+cd nyp_y2_fullstack
+  ```
+
+#### 2. Install Dependencies
+
+```sh
+npm i && npm run i
+```
+
+#### 3. Run Development Server
+
+```sh
+npm run dev
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
