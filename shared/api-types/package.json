@@ -10,7 +10,6 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint --ext .ts,.js src",
-    "test": "exit 0"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
