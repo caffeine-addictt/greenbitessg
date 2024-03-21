@@ -22,5 +22,14 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
-  }
+  },
+  "engines": {
+    "node": "21.6.1",
+    "npm": "10.4.0"
+  },
+  "workspaces": [
+    "client",
+    "server",
+    "shared/*"
+  ]
 }
