@@ -35,6 +35,46 @@
 
 
 
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul><li><a href="#built-with">Built with</a></li></ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#documentation">Documentation</a>
+      <ul>
+        <li><a href="#installing-dependencies">Installing Dependencies</a></li>
+        <li><a href="#running-locally">Running locally</a></li>
+        <li><a href="#linting">Linting</a></li>
+        <li><a href="#testing">Testing</a></li>
+        <li><a href="#building">Building</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#contributing">Contributing</a>
+      <ul>
+        <li><a href="#commit-message-guidelines">Commit Message Guidelines</a></li>
+        <li><a href="#pull-request-guidelines">Pull Request Guidelines</a></li>
+      </ul>
+    </li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
