@@ -103,3 +103,15 @@ labels:
   - name: "help wanted"
     color: 008672
     description: Help wanted
+
+  - name: "Scope: Server"
+    color: B08EC1
+    description: This change affects the server.
+
+  - name: "Scope: Client"
+    color: B08EC1
+    description: This change affects the client.
+
+  - name: "Scope: Utilities"
+    color: B08EC1
+    description: This change affects utilities.
