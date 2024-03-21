@@ -8,5 +8,6 @@
     "strict": true,
     "composite": true,
     "declarationMap": true,
+    "outDir": "dist"
   }
 }
