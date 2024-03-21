@@ -71,7 +71,7 @@ cd nyp_y2_fullstack
 #### 2. Install Dependencies
 
 ```sh
-npm i && npm run i
+npm i # This will install all workspace dependencies as well
 ```
 
 #### 3. Run Development Server
@@ -98,9 +98,7 @@ The server API is built with `Express` and `Typescript`.
 ### Installing dependencies
 
 ```sh
-npm run i        # Install dependencies on all packages
-npm run i:client # Install dependencies on client
-npm run i:server # Install dependencies on server
+npm i # Install dependencies on all packages
 ```
 
 ### Running locally
