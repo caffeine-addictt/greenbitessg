@@ -6,16 +6,16 @@
     "dev": "concurrently -c green,blue \"npm:dev:*\"",
     "build:client": "npm run build --workspace=client",
     "build:server": "npm run build --workspace=server",
-    "build": "concurrently -c green,blue \"npm:build:*\"",
+    "build": "npm run build --workspaces --if-present",
     "test:client": "npm run test --workspace=client",
     "test:server": "npm run test --workspace=server",
-    "test": "concurrently -c green,blue \"npm:test:*\"",
+    "test": "npm run test --workspaces --if-present",
     "lint:client": "npm run lint --workspace=client",
     "lint:server": "npm run lint --workspace=server",
-    "lint": "concurrently -c green,blue \"npm:lint:*(!fix)\"",
+    "lint": "npm run lint --workspaces --if-present",
     "lint:client:fix": "npm run lint:fix --workspace=client",
     "lint:server:fix": "npm run lint:fix --workspace=server",
-    "lint:fix": "concurrently -c green,blue \"npm:lint:*:fix\""
+    "lint:fix": "npm run lint:fix --workspaces --if-present"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
