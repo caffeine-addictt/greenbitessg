@@ -1,0 +1,13 @@
+{
+  "name": "@repo-utils/api-types",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .ts,.js src",
+    "test": "exit 0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.3"
+  }
+}
