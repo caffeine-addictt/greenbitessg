@@ -1,26 +1,32 @@
 {
   "private": true,
   "scripts": {
-    "dev:client": "cd client && npm run dev",
-    "dev:server": "cd server && npm run dev",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
     "dev": "concurrently -c green,blue \"npm:dev:*\"",
-    "build:client": "cd client && npm run build",
-    "build:server": "cd server && npm run build",
-    "build": "concurrently -c green,blue \"npm:build:*\"",
-    "test:client": "cd client && npm run test",
-    "test:server": "cd server && npm run test",
-    "test": "concurrently -c green,blue \"npm:test:*\"",
-    "lint:client": "cd client && npm run lint",
-    "lint:server": "cd server && npm run lint",
-    "lint": "concurrently -c green,blue \"npm:lint:*(!fix)\"",
-    "lint:client:fix": "cd client && npm run lint:fix",
-    "lint:server:fix": "cd server && npm run lint:fix",
-    "lint:fix": "concurrently -c green,blue \"npm:lint:*:fix\"",
-    "i:client": "cd client && npm i",
-    "i:server": "cd server && npm i",
-    "i": "concurrently -c green,blue \"npm:i:*\""
+    "build:client": "npm run build --workspace=client",
+    "build:server": "npm run build --workspace=server",
+    "build": "npm run build --workspaces --if-present",
+    "test:client": "npm run test --workspace=client",
+    "test:server": "npm run test --workspace=server",
+    "test": "npm run test --workspaces --if-present",
+    "lint:client": "npm run lint --workspace=client",
+    "lint:server": "npm run lint --workspace=server",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:client:fix": "npm run lint:fix --workspace=client",
+    "lint:server:fix": "npm run lint:fix --workspace=server",
+    "lint:fix": "npm run lint:fix --workspaces --if-present"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
-  }
+  },
+  "engines": {
+    "node": "21.6.1",
+    "npm": "10.4.0"
+  },
+  "workspaces": [
+    "client",
+    "server",
+    "shared/*"
+  ]
 }

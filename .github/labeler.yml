@@ -13,3 +13,15 @@ Documentation:
 "Type: CI":
   - changed-files:
       - any-glob-to-any-file: [.github/workflows/**]
+
+"Scope: Server":
+  - changed-files:
+      - any-glob-to-any-file: [server/**]
+
+"Scope: Client":
+  - changed-files:
+      - any-glob-to-any-file: [client/**]
+
+"Scope: Utilities":
+  - changed-files:
+      - any-glob-to-any-file: [shared/**]
