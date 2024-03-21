@@ -86,6 +86,25 @@ later
 
 
 
+### Built with
+
+These are the major frameworks and libraries used in this project.
+
+* ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+* ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+* ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+* ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+* ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+* ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
+* ![Nodemon](https://img.shields.io/badge/NODEMON-%23323330.svg?style=for-the-badge&logo=nodemon&logoColor=%BBDEAD)
+* ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
+* ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+* ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -127,13 +146,8 @@ npm run dev
 <!-- DOCS -->
 ## Documentation
 
-This project hosts 2 web apps hosted with Vercel, a front-end and a back-end API.
 You can find the front-end app in the `client/` directory and the back-end API in the `server/` directory.
-
-### Technology used
-
-The client app is built with `Vite`, `React`, `Typescript` and `Tailwindcss`.
-The server API is built with `Express` and `Typescript`.
+API types are shared in the `shared/api-types/` directory and can be imported with `npm i -D @repo-utils/api-types`.
 
 ### Installing dependencies
 
