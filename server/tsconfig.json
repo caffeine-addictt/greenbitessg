@@ -8,9 +8,16 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ]
+    }
   },
   "include": [
-    "api/**/*.ts"
+    "./src/**/*"
   ],
 }
