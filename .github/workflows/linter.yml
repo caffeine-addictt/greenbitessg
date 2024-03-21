@@ -26,7 +26,6 @@ jobs:
         run: |
           set -xe
           npm i
-          npm run i
 
       - name: Lint
         run: |
