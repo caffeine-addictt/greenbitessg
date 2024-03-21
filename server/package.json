@@ -2,9 +2,9 @@
   "name": "server",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "main": "api/index.ts",
   "scripts": {
-    "dev": "exit 0",
+    "dev": "nodemon ./api/index.ts",
     "build": "tsc",
     "lint": "exit 0",
     "lint:fix": "exit 0",
