@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "exit 0",
-    "build": "exit 0",
+    "build": "tsc -b api",
     "lint": "exit 0",
     "lint:fix": "exit 0",
     "test": "exit 0"
