@@ -58,6 +58,7 @@
         <li><a href="#linting">Linting</a></li>
         <li><a href="#testing">Testing</a></li>
         <li><a href="#building">Building</a></li>
+        <li><a href="#running-commands">Running commands</a></li>
       </ul>
     </li>
     <li>
@@ -192,6 +193,19 @@ npm run test:server # Run tests on server
 npm run build        # Build all packages
 npm run build:client # Build the client
 npm run build:server # Build the server
+```
+
+### Running commands
+
+We use NPM workspaces to share updates to the client and server packages.
+You can use the `-w` flag to run a command in a workspace with the path.
+
+#### For example:
+
+```sh
+npm i tailwindcss -w server # Installs the tailwindcss package in the server workspace
+npm i -D eslint -w shared/api-types # Installs the eslint package in the shared/api-types workspace as a dev dependency
+npm uninstall vite -w client # Uninstalls the vite package in the client workspace
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
