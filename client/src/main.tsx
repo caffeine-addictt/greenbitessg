@@ -2,8 +2,8 @@ import * as React from 'react'
 import ReactDOM from 'react-dom/client'
 import '@styles/globals.css'
 
+export const Layout = (): JSX.Element => {
 
-export const Layout = ({ children }: { children: React.ReactNode }): JSX.Element => {
   return (
     <main className='flex min-h-screen min-w-full max-w-full flex-col'>
       {/* Navbar here */}
@@ -15,7 +15,6 @@ export const Layout = ({ children }: { children: React.ReactNode }): JSX.Element
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Layout>
-    </Layout>
+      <Layout />
   </React.StrictMode>,
 )
