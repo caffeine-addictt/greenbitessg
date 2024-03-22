@@ -5,7 +5,7 @@
   "main": "api/index.ts",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon ./api/index.ts",
+    "dev": "nodemon ./index.ts",
     "build": "rimraf dist && tsc",
     "lint": "exit 0",
     "lint:fix": "exit 0",
