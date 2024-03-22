@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { useLocation, Route, Routes, BrowserRouter } from 'react-router-dom'
 import '@styles/globals.css'
 
-import routes from '@route-map'
+import routes from '@pages/route-map'
 
 
 export const Layout = (): JSX.Element => {
