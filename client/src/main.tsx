@@ -11,9 +11,9 @@ import Navbar from '@components/navbar'
 import Footer from '@components/footer'
 
 
-export const WrappedComponent = ({ component: Component, title, description }: RouteDetails): JSX.Element => (
+export const WrappedComponent = ({ path, component: Component, title, description }: RouteDetails & { path: string }): JSX.Element => (
   <>
-    <Helmet>
+    <Helmet titleTemplate={path !== '/' ? '%s | Fullstack' : '%s'} >
       <title>{title}</title>
       <meta name='description' content={description ?? 'This is the default description'} />
     </Helmet>
@@ -31,7 +31,7 @@ export const Layout = (): JSX.Element => {
       <div className='flex w-full max-w-full grow'>
         <Routes location={location}>
           {Object.entries(routes).map(([path, details]) =>
-            <Route path={path} element={<WrappedComponent {...details} />} />
+            <Route path={path} element={<WrappedComponent {...details} path={location.pathname} />} />
           )}
         </Routes>
       </div>
