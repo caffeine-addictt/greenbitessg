@@ -9,12 +9,14 @@ import RootPage from '@pages/root'
 
 export type PathStr = '*' | '/' | `/${string}`
 export type PageComponent = () => React.JSX.Element
-export type RouteMap = Record<PathStr, PageComponent>
+
+export type RouteDetails = { component: PageComponent, title: string }
+export type RouteMap = Record<PathStr, RouteDetails>
 
 
 const routes: RouteMap = {
-  '*': NotFound,
-  '/': RootPage,
+  '*': { component: NotFound, title: 'Page Not Found' },
+  '/': { component: RootPage, title: 'Home' },
 }
 
 export default routes

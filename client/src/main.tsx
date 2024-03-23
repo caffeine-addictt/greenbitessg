@@ -3,12 +3,22 @@ import ReactDOM from 'react-dom/client'
 import { useLocation, Route, Routes, BrowserRouter } from 'react-router-dom'
 import '@styles/globals.css'
 
-import routes from '@pages/route-map'
+import { Helmet } from 'react-helmet'
+import routes, { type RouteDetails } from '@pages/route-map'
 
 // Components
 import Navbar from '@components/navbar'
 import Footer from '@components/footer'
 
+
+export const WrappedComponent = ({ component: Component, title }: RouteDetails): JSX.Element => (
+  <>
+    <Helmet>
+      <title>{title}</title>
+    </Helmet>
+    <Component />
+  </>
+)
 
 export const Layout = (): JSX.Element => {
   const location = useLocation()
@@ -19,8 +29,8 @@ export const Layout = (): JSX.Element => {
 
       <div className='flex w-full max-w-full grow'>
         <Routes location={location}>
-          {Object.entries(routes).map(([path, Component]) =>
-            <Route path={path} element={<Component />} />
+          {Object.entries(routes).map(([path, details]) =>
+            <Route path={path} element={<WrappedComponent {...details} />} />
           )}
         </Routes>
       </div>
