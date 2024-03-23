@@ -1,6 +1,7 @@
+import type { PageComponent } from '@pages/route-map'
 
 
-const NotFound = () => {
+const NotFound: PageComponent = () => {
   return (
     <div>
       <h1>Page Not Found</h1>
