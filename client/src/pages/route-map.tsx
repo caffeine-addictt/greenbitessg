@@ -10,7 +10,7 @@ import RootPage from '@pages/root'
 export type PathStr = '*' | '/' | `/${string}`
 export type PageComponent = () => React.JSX.Element
 
-export type RouteDetails = { component: PageComponent, title: string }
+export type RouteDetails = { component: PageComponent, title: string, description?: string }
 export type RouteMap = Record<PathStr, RouteDetails>
 
 

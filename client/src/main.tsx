@@ -11,10 +11,11 @@ import Navbar from '@components/navbar'
 import Footer from '@components/footer'
 
 
-export const WrappedComponent = ({ component: Component, title }: RouteDetails): JSX.Element => (
+export const WrappedComponent = ({ component: Component, title, description }: RouteDetails): JSX.Element => (
   <>
     <Helmet>
       <title>{title}</title>
+      <meta name='description' content={description ?? 'This is the default description'} />
     </Helmet>
     <Component />
   </>
