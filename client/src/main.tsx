@@ -16,11 +16,15 @@ export const Layout = (): JSX.Element => {
   return (
     <main className='flex min-h-screen min-w-full max-w-full flex-col'>
       <Navbar location={location} isAdmin />
-      <Routes location={location}>
-        {Object.entries(routes).map(([path, Component]) =>
-          <Route path={path} element={<Component />} />
-        )}
-      </Routes>
+
+      <div className='flex w-full max-w-full grow'>
+        <Routes location={location}>
+          {Object.entries(routes).map(([path, Component]) =>
+            <Route path={path} element={<Component />} />
+          )}
+        </Routes>
+      </div>
+
       <Footer location={location} isAdmin />
     </main>
   )
