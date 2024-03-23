@@ -8,12 +8,12 @@ import RootPage from '@pages/root'
 
 
 export type PathStr = '*' | '/' | `/${string}`
-export type RouteMap = Record<PathStr, React.ReactNode>
+export type RouteMap = Record<PathStr, () => React.ReactNode>
 
 
 const routes: RouteMap = {
-  '*': <NotFound />,
-  '/': <RootPage />,
+  '*': NotFound,
+  '/': RootPage,
 }
 
 export default routes

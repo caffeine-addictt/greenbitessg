@@ -17,8 +17,8 @@ export const Layout = (): JSX.Element => {
     <main className='flex min-h-screen min-w-full max-w-full flex-col'>
       <Navbar location={location} isAdmin />
       <Routes location={location}>
-        {Object.entries(routes).map(([path, node]) =>
-          <Route path={path} element={node} />
+        {Object.entries(routes).map(([path, Component]) =>
+          <Route path={path} element={<Component />} />
         )}
       </Routes>
       <Footer location={location} isAdmin />
