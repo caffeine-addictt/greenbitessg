@@ -8,7 +8,8 @@ import RootPage from '@pages/root'
 
 
 export type PathStr = '*' | '/' | `/${string}`
-export type RouteMap = Record<PathStr, () => React.ReactNode>
+export type PageComponent = () => React.JSX.Element
+export type RouteMap = Record<PathStr, PageComponent>
 
 
 const routes: RouteMap = {
