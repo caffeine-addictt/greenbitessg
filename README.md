@@ -213,6 +213,8 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- COMMIT GUIDELINES -->
@@ -240,8 +242,6 @@ git commit -m "docs(client): Updated README.md in client/"
 git commit -m "revert(server): Fall back to old typing"
 git commit -m "docs: Moved README.md"
 ```
-
-See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
