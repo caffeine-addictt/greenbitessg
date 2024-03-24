@@ -8,6 +8,7 @@ on: [pull_request]
 
 jobs:
   labeler:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/labeler@v5
