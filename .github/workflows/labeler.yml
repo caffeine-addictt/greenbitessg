@@ -6,6 +6,9 @@ on: [pull_request]
 # 1. Repository Settings -> Actions -> General -> Workflow permissions
 #   Check "Read and write permissions"
 
+permissions:
+  pull-requests: write
+
 jobs:
   labeler:
     if: ${{ github.actor != 'dependabot[bot]' }}
