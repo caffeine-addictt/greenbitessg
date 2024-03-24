@@ -273,7 +273,7 @@ You can test locally by running `npm run test` in the root of the project.
 
 ## License
 
-Distributed under the MIT License. See [LICENSE.txt](./LICENSE.txt) for more information.
+Distributed under the GNU General Public License version 3.0. See [LICENSE.txt](./LICENSE.txt) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
