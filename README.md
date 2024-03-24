@@ -188,7 +188,7 @@ npm run build:server # Build the server
 We use NPM workspaces to share updates to the client and server packages.
 You can use the `-w` flag to run a command in a workspace with the path.
 
-#### For example:
+#### For example
 
 ```sh
 npm i tailwindcss -w server # Installs the tailwindcss package in the server workspace
