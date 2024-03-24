@@ -1,9 +1,6 @@
 <!-- Allow inline html -->
 <!-- markdownlint-disable MD033 -->
 
-<!-- Allow consecutive blank lines -->
-<!-- markdownlint-disable MD012 -->
-
 <!-- Ignore line length -->
 <!-- markdownlint-disable MD013 -->
 
