@@ -18,7 +18,8 @@
     "lint:fix": "npm run lint:fix --workspaces --if-present"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "prettier": "^3.2.5"
   },
   "engines": {
     "node": "21.6.1",
