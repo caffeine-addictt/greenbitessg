@@ -1,8 +1,6 @@
-import type { PageComponent } from '@pages/route-map'
-
+import type { PageComponent } from '@pages/route-map';
 
 const RootPage: PageComponent = () => {
-  return <>hi</>
-}
-export default RootPage
-
+  return <>hi</>;
+};
+export default RootPage;
