@@ -156,15 +156,17 @@ npm run dev:server # Run development server on server
 ### Linting
 
 ```sh
-npm run lint        # Run linting on all packages
-npm run lint:client # Run linting on client
-npm run lint:server # Run linting on server
+npm run lint        # Run ESLint and Prettier on the whole project
+npm run lint:eslint # Run ESLint on all packages
+npm run lint:client # Run ESLint on client
+npm run lint:server # Run ESLint on server
 ```
 
 ```sh
-npm run lint:fix        # Run linting on all packages and fix any linting errors
-npm run lint:client:fix # Run linting on client and fix any linting errors
-npm run lint:server:fix # Run linting on server and fix any linting errors
+npm run lint:fix        # Run ESLint and Prettier on the whole project
+npm run lint:eslint:fix # Run ESLint on all packages and fix any linting errors
+npm run lint:client:fix # Run ESLint on client and fix any linting errors
+npm run lint:server:fix # Run ESLint on server and fix any linting errors
 ```
 
 ### Testing
