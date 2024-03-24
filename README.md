@@ -255,6 +255,7 @@ We require the following CI to pass before the PR can be merged:
 
 - Linting
 - Tests
+- Client and Server Preview Deployments
 
 #### Linting locally
 
