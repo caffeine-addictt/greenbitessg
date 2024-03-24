@@ -12,10 +12,14 @@
     "test": "npm run test --workspaces --if-present",
     "lint:client": "npm run lint --workspace=client",
     "lint:server": "npm run lint --workspace=server",
-    "lint": "npm run lint --workspaces --if-present",
+    "lint:eslint": "npm run lint --workspaces --if-present",
+    "lint:prettier": "prettier --check .",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
     "lint:client:fix": "npm run lint:fix --workspace=client",
     "lint:server:fix": "npm run lint:fix --workspace=server",
-    "lint:fix": "npm run lint:fix --workspaces --if-present"
+    "lint:eslint:fix": "npm run lint:fix --workspaces --if-present",
+    "lint:prettier:fix": "prettier --write .",
+    "lint:fix": "npm run lint:eslint:fix && npm run lint:prettier:fix"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
