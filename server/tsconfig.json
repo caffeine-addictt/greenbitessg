@@ -11,13 +11,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "node_modules/*",
-        "api/types/*"
-      ]
+      "*": ["node_modules/*", "api/types/*"]
     }
   },
-  "include": [
-    "./api/**/*"
-  ],
+  "include": ["./api/**/*"]
 }
