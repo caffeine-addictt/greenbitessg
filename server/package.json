@@ -26,9 +26,11 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.0",
     "pre-commit": "^1.2.2",
     "rimraf": "^5.0.5",
+    "supertest": "^6.3.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   }
