@@ -16,3 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_BASE_URL: string;
+  readonly VITE_API_BASE_URL: string;
+  readonly VITE_API_VERSION: `v${number}`;
+}
