@@ -21,6 +21,9 @@
     "lint:prettier:fix": "prettier --write .",
     "lint:fix": "npm run lint:eslint:fix && npm run lint:prettier:fix"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "devDependencies": {
     "concurrently": "^8.2.2",
     "pre-commit": "^1.2.2",
