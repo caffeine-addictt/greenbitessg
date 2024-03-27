@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "lint": "eslint --ext .ts,.js src",
-    "lint:fix": "eslint --ext .ts,.js src --fix"
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0 --cache",
+    "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --cache --fix"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
