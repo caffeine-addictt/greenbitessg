@@ -10,3 +10,6 @@
 # Logs
 **/logs/
 **/*.log*
+
+# Cache
+**/.eslintcache

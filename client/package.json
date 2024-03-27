@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
-    "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --fix",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0 --cache",
+    "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --cache --fix",
     "preview": "vite preview",
     "test": "vitest --run --passWithNoTests"
   },
