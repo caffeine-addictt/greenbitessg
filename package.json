@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
+    "pre-commit": "^1.2.2",
     "prettier": "^3.2.5"
   },
   "engines": {
