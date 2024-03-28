@@ -22,7 +22,7 @@
     "lint:fix": "echo \"Formatting code\" && npm run lint:eslint:fix && npm run lint:prettier:fix"
   },
   "pre-commit": [
-    "lint:fix"
+    "lint"
   ],
   "devDependencies": {
     "concurrently": "^8.2.2",
