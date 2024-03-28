@@ -18,6 +18,8 @@
 import express from 'express';
 const app = express();
 
+// Register routes
+app.use('/static', express.static('public'));
 app.get('/', (_, res) => res.status(200).send('Hello World!'));
 app.get('/api', (_, res) => res.status(200).send('This is an API!'));
 
