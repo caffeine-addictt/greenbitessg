@@ -5,7 +5,7 @@
   "main": "api/index.ts",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon ./index.ts",
+    "dev": "nodemon ./src/index.ts",
     "build": "rimraf dist && tsc",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0 --cache",
     "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --cache --fix",
