@@ -20,7 +20,7 @@ import path from 'path';
 import express from 'express';
 import 'express-async-errors';
 
-import errorHandler from './middleware/errors';
+import { errorHandler, notfoundHandler } from './middleware/errors';
 
 const app = express();
 
@@ -34,6 +34,7 @@ app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/api', (_, res) => res.status(200).send('This is an API!'));
 
 // Handle Errors
+app.use(notfoundHandler);
 app.use(errorHandler);
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));

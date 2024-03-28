@@ -52,7 +52,8 @@ export class AppError extends Error {
   }
 }
 
-const handler = (
+// Handle Errors
+export const errorHandler = (
   err: Error,
   _: express.Request,
   res: express.Response,
@@ -84,4 +85,14 @@ const handler = (
   res.status(500).json({ errors: [{ message: 'Something went wrong!' }] });
   return;
 };
-export default handler;
+
+// Handle 404 Errors
+export const notfoundHandler = (
+  req: express.Request,
+  res: express.Response,
+  __: express.NextFunction,
+): void => {
+  res
+    .status(404)
+    .json({ status: 404, message: `${req.path} is not implemented!` });
+};
