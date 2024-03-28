@@ -19,6 +19,9 @@ import path from 'path';
 import express from 'express';
 const app = express();
 
+// Server Config
+app.use(express.json());
+
 // Register routes
 app.use('/static', express.static('public'));
 app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'index.html')));
