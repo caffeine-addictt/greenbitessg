@@ -4,7 +4,6 @@
 Documentation:
   - changed-files:
       - any-glob-to-any-file: [docs/**, '**/*.{md,mdx}']
-      - all-globs-to-all-files: '!**/*.{yaml,yml}'
 
 'Type: Test':
   - changed-files:
