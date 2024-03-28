@@ -15,12 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import path from 'path';
 import express from 'express';
 const app = express();
 
 // Register routes
 app.use('/static', express.static('public'));
-app.get('/', (_, res) => res.status(200).send('Hello World!'));
+app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/api', (_, res) => res.status(200).send('This is an API!'));
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));
