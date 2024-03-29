@@ -15,12 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import express from 'express';
-const app = express();
+import rateLimit from 'express-rate-limit';
 
-app.get('/', (_, res) => res.status(200).send('Hello World!'));
-app.get('/api', (_, res) => res.status(200).send('This is an API!'));
-
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
-
-module.exports = app;
+export default rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests within the window
+  standardHeaders: true,
+  handler: (_, res, __) => {
+    return res.status(429).json({
+      status: 429,
+      message: 'Too many requests, please try again later',
+    });
+  },
+});
