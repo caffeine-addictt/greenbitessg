@@ -29,7 +29,7 @@ const iCachingMiddleware = (
   prefix: string = '__global__',
   time?: number,
 ) => {
-  const key = `${prefix}${req.originalUrl || req.url}`;
+  const key = `${prefix}${req.originalUrl || req.url}${req.method}`;
   const cached = memCache.get(key);
 
   if (cached) return res.status(302).send(cached);
