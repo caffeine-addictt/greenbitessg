@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cors from 'cors';
+import morgan from 'morgan';
 import express from 'express';
 import 'express-async-errors';
 
@@ -31,6 +32,9 @@ const app = express();
 // Server Config
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
+
+// Logging
+app.use(morgan('tiny'));
 
 // Register routes
 app.use('/static', express.static('public'));
