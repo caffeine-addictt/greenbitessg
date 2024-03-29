@@ -18,6 +18,7 @@
 import cors from 'cors';
 import morgan from 'morgan';
 import express from 'express';
+import compression from 'compression';
 import 'express-async-errors';
 
 import routeMap from './route-map';
@@ -45,6 +46,9 @@ app.use(morgan('tiny'));
 
 // Caching
 app.use(cachingMiddleware);
+
+// Compression
+app.use(compression());
 
 // Register routes
 app.use('/static', express.static('public'));
