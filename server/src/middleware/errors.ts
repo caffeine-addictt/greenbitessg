@@ -93,11 +93,10 @@ export const notfoundHandler = (
   req: express.Request,
   res: express.Response,
   __: express.NextFunction,
-): void => {
+) =>
   res
     .status(404)
     .json({ status: 404, message: `${req.path} is not implemented!` });
-};
 
 // Handle 405 Errors according to RFC
 export const methodNotFoundHandler = (
