@@ -19,8 +19,12 @@ import cors from 'cors';
 import express from 'express';
 import 'express-async-errors';
 
-import { errorHandler, notfoundHandler } from './middleware/errors';
 import routeMap from './route-map';
+import {
+  errorHandler,
+  notfoundHandler,
+  methodNotFoundHandler,
+} from './middleware/errors';
 
 const app = express();
 
@@ -76,6 +80,7 @@ Object.entries(routeMap).forEach(([route, detail]) => {
 });
 
 // Handle Errors
+app.use(methodNotFoundHandler);
 app.use(notfoundHandler);
 app.use(errorHandler);
 

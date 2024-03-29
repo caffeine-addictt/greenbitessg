@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import express from 'express';
+
+import routeMap, { RoutingMap } from '../route-map';
 import errorCodes from '../utils/error-code';
 
 // Types
@@ -95,4 +97,49 @@ export const notfoundHandler = (
   res
     .status(404)
     .json({ status: 404, message: `${req.path} is not implemented!` });
+};
+
+// Handle 405 Errors according to RFC
+export const methodNotFoundHandler = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  // Find the url mapping
+  let routeHandlers = routeMap[req.path as unknown as keyof RoutingMap];
+
+  // Account for /a/b/c/:id
+  if (routeHandlers === undefined) {
+    // Convert /a/b/c/d to /a/b/c
+    const trimedRoute = req.path.slice(0, req.path.lastIndexOf('/'));
+    for (const route in Object.keys(routeMap).filter((x) => x.includes(':'))) {
+      // Convert /a/b/:id to RegEx pattern /a/b/[\w\d-]+ which matches words (\w), digits (\d) and hyphens (-)
+      // Due to (+), /a/b/ will not match a :id.
+      if (
+        new RegExp(route.replace(/:(\w-\**)?/g, '([\\w-\\d]+)'), 'g').test(
+          trimedRoute,
+        )
+      ) {
+        routeHandlers = routeMap[route as unknown as keyof RoutingMap];
+        break;
+      }
+    }
+  }
+
+  // Pass to next middleware as this is a 404 error
+  if (!routeHandlers) next();
+
+  const allowedMethods = Object.keys(routeHandlers).join(',');
+  res.setHeader('Allow', allowedMethods);
+
+  if (req.method == 'OPTIONS')
+    return res.status(200).json({
+      status: 200,
+      message: allowedMethods,
+    });
+  else
+    return res.status(405).json({
+      status: 405,
+      message: `The ${req.method.toUpperCase()} method is not allowed for this endpoint!`,
+    });
 };
