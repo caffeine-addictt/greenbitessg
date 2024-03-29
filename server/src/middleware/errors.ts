@@ -127,7 +127,7 @@ export const methodNotFoundHandler = (
   }
 
   // Pass to next middleware as this is a 404 error
-  if (!routeHandlers) next();
+  if (!routeHandlers) return next();
 
   const allowedMethods = Object.keys(routeHandlers).join(',');
   res.setHeader('Allow', allowedMethods);
