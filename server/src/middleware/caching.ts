@@ -15,11 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import express, { type Response } from 'express';
+import express from 'express';
 import memCache from 'memory-cache';
 
 // Config
 const cacheTime = 10000 as const; // 10seconds
+export interface CachedResponse<B> {
+  contentType?: string;
+  body?: B;
+}
 
 // Exports
 const iCachingMiddleware = (
@@ -30,13 +34,24 @@ const iCachingMiddleware = (
   time?: number,
 ) => {
   const key = `${prefix}${req.originalUrl || req.url}${req.method}`;
-  const cached = memCache.get(key);
+  const rawCached: string = memCache.get(key);
 
-  if (cached) return res.status(302).send(cached);
+  if (rawCached) {
+    const cached: CachedResponse<unknown> = JSON.parse(rawCached);
+
+    if (cached.contentType) res.set('Content-Type', cached.contentType);
+    return res.status(302).send(cached.body);
+  }
+
   // @ts-expect-error Alter Response object without having to update other references
   res.sendResponse = res.send;
-  res.send = <A, B, C>(body: A): Response<B, Record<string, C>> => {
-    memCache.put(key, body, time || cacheTime);
+  res.send = (body) => {
+    const data: string = JSON.stringify({
+      contentType: res.get('Content-Type'),
+      body: body,
+    } satisfies CachedResponse<typeof body>);
+    memCache.put(key, data, time || cacheTime);
+
     // @ts-expect-error Alter Response object without having to update other references
     return res.sendResponse(body);
   };
