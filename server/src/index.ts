@@ -26,6 +26,7 @@ import {
   notfoundHandler,
   methodNotFoundHandler,
 } from './middleware/errors';
+import cachingMiddleware from './middleware/caching';
 
 const app = express();
 
@@ -35,6 +36,9 @@ app.use(express.json());
 
 // Logging
 app.use(morgan('tiny'));
+
+// Caching
+app.use(cachingMiddleware);
 
 // Register routes
 app.use('/static', express.static('public'));
