@@ -21,7 +21,7 @@ import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 
-import routeMap from './route-map';
+import routeMap, { isCachingHandler } from './route-map';
 import {
   errorHandler,
   notfoundHandler,
@@ -55,7 +55,8 @@ app.use('/static', express.static('public'));
 Object.entries(routeMap).forEach(([route, methods]) => {
   Object.entries(methods).forEach(([method, detail]) => {
     const stack = [detail.handler];
-    if (detail.caching) stack.unshift(routeCachingMiddleware(detail.caching));
+    if (isCachingHandler(detail))
+      stack.unshift(routeCachingMiddleware(detail.prefix, detail.caching));
 
     switch (method) {
       case 'GET':

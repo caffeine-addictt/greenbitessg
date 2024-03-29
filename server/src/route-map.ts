@@ -28,14 +28,25 @@ export type RouteHandler = (
   next: NextFunction,
 ) => Response | void;
 
-export interface RouteDetails {
-  caching?: number;
+export interface RouteDetailsHandler {
   handler: RouteHandler;
 }
+export interface RouteDetailsCaching extends RouteDetailsHandler {
+  caching?: number;
+  prefix: string;
+}
+export type RouteDetails = RouteDetailsHandler | RouteDetailsCaching;
 export type RouteHandlers = { [M in Methods]?: RouteDetails };
 export type RoutingMap = {
   [uri: `/${string}`]: RouteHandlers;
 };
+
+/* eslint-disable-next-line */
+export const isBareHandler = (a: any): a is RouteDetailsHandler =>
+  !a.caching && !a.prefix;
+/* eslint-disable-next-line */
+export const isCachingHandler = (a: any): a is RouteDetailsCaching =>
+  !!a.prefix;
 
 // Mapping routes
 const routeMap: RoutingMap = {
