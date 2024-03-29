@@ -16,11 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cors from 'cors';
-import path from 'path';
 import express from 'express';
 import 'express-async-errors';
 
 import { errorHandler, notfoundHandler } from './middleware/errors';
+import routeMap from './route-map';
 
 const app = express();
 
@@ -30,8 +30,50 @@ app.use(express.json());
 
 // Register routes
 app.use('/static', express.static('public'));
-app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'index.html')));
-app.get('/api', (_, res) => res.status(200).send('This is an API!'));
+Object.entries(routeMap).forEach(([route, detail]) => {
+  Object.entries(detail).forEach(([method, handler]) => {
+    switch (method) {
+      case 'GET':
+        app.get(route, handler);
+        break;
+
+      case 'HEAD':
+        app.head(route, handler);
+        break;
+
+      case 'POST':
+        app.post(route, handler);
+        break;
+
+      case 'PUT':
+        app.put(route, handler);
+        break;
+
+      case 'DELETE':
+        app.delete(route, handler);
+        break;
+
+      case 'CONNECT':
+        app.connect(route, handler);
+        break;
+
+      case 'OPTIONS':
+        app.options(route, handler);
+        break;
+
+      case 'TRACE':
+        app.trace(route, handler);
+        break;
+
+      case 'PATCH':
+        app.patch(route, handler);
+        break;
+
+      default:
+        throw new Error('PANIC: Misconfigured methods!');
+    }
+  });
+});
 
 // Handle Errors
 app.use(notfoundHandler);
