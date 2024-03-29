@@ -26,7 +26,9 @@ import {
   notfoundHandler,
   methodNotFoundHandler,
 } from './middleware/errors';
-import cachingMiddleware from './middleware/caching';
+import cachingMiddleware, {
+  routeCachingMiddleware,
+} from './middleware/caching';
 
 const app = express();
 
@@ -42,43 +44,46 @@ app.use(cachingMiddleware);
 
 // Register routes
 app.use('/static', express.static('public'));
-Object.entries(routeMap).forEach(([route, detail]) => {
-  Object.entries(detail).forEach(([method, handler]) => {
+Object.entries(routeMap).forEach(([route, methods]) => {
+  Object.entries(methods).forEach(([method, detail]) => {
+    const stack = [detail.handler];
+    if (detail.caching) stack.unshift(routeCachingMiddleware(detail.caching));
+
     switch (method) {
       case 'GET':
-        app.get(route, handler);
+        app.get(route, ...stack);
         break;
 
       case 'HEAD':
-        app.head(route, handler);
+        app.head(route, ...stack);
         break;
 
       case 'POST':
-        app.post(route, handler);
+        app.post(route, ...stack);
         break;
 
       case 'PUT':
-        app.put(route, handler);
+        app.put(route, ...stack);
         break;
 
       case 'DELETE':
-        app.delete(route, handler);
+        app.delete(route, ...stack);
         break;
 
       case 'CONNECT':
-        app.connect(route, handler);
+        app.connect(route, ...stack);
         break;
 
       case 'OPTIONS':
-        app.options(route, handler);
+        app.options(route, ...stack);
         break;
 
       case 'TRACE':
-        app.trace(route, handler);
+        app.trace(route, ...stack);
         break;
 
       case 'PATCH':
-        app.patch(route, handler);
+        app.patch(route, ...stack);
         break;
 
       default:

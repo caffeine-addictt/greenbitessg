@@ -27,15 +27,24 @@ export type RouteHandler = (
   res: Response,
   next: NextFunction,
 ) => Response | void;
-export type RouteHandlers = { [M in Methods]?: RouteHandler };
+
+export interface RouteDetails {
+  caching?: number;
+  handler: RouteHandler;
+}
+export type RouteHandlers = { [M in Methods]?: RouteDetails };
 export type RoutingMap = {
   [uri: `/${string}`]: RouteHandlers;
 };
 
 // Mapping routes
 const routeMap: RoutingMap = {
-  '/': { GET: (_, res) => res.sendFile(path.join(__dirname, 'index.html')) },
-  '/api': { GET: (_, res) => res.send('This is a test route') },
+  '/': {
+    GET: {
+      handler: (_, res) => res.sendFile(path.join(__dirname, 'index.html')),
+    },
+  },
+  '/api': { GET: { handler: (_, res) => res.send('This is a test route') } },
 } as const;
 
 export default routeMap;
