@@ -29,8 +29,12 @@ import {
 import cachingMiddleware, {
   routeCachingMiddleware,
 } from './middleware/caching';
+import rateLimitMiddleware from './middleware/rate-limiting';
 
 const app = express();
+
+// Rate Limiting
+app.use(rateLimitMiddleware);
 
 // Server Config
 app.use(cors({ origin: '*', credentials: true }));
