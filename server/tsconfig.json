@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "baseUrl": "."
   },
-  "include": ["src/*"]
+  "include": ["src/*", "src/types/*"]
 }
