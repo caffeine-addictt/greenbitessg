@@ -103,14 +103,13 @@ const registerFormSchema = z
     path: ['confirm'],
   });
 
-// Components
+// Page
 export type SubmitHandlerType = SubmitHandler<
   z.infer<typeof registerFormSchema>
 >;
-export const RegisterForm = ({
-  onSubmit,
-}: {
-  onSubmit: SubmitHandlerType;
+const RegisterPage: PageComponent = ({
+  className,
+  ...props
 }): React.JSX.Element => {
   const registerForm = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -123,140 +122,154 @@ export const RegisterForm = ({
       agreePolicy: false,
     },
   });
-
   const { isSubmitting } = useFormState({ control: registerForm.control });
 
-  return (
-    <Form {...registerForm}>
-      <form
-        onSubmit={registerForm.handleSubmit(onSubmit)}
-        className="space-y-1"
-      >
-        <FormField
-          control={registerForm.control}
-          name="username"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="John Doe" {...field} />
-              </FormControl>
-              {fieldState.error ? <FormMessage /> : <div className="h-5 w-1" />}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={registerForm.control}
-          name="email"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="johndoe@example.com" {...field} />
-              </FormControl>
-              {fieldState.error ? <FormMessage /> : <div className="h-5 w-1" />}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={registerForm.control}
-          name="password"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Your password" type="password" {...field} />
-              </FormControl>
-              {fieldState.error ? <FormMessage /> : <div className="h-5 w-1" />}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={registerForm.control}
-          name="confirm"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Confirm Your Password</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Retype your password"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              {fieldState.error ? (
-                <FormMessage className="h-6" />
-              ) : (
-                <div className="h-5 w-1" />
-              )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={registerForm.control}
-          name="agreeMarketting"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel>Marketing emails</FormLabel>
-                <FormDescription>
-                  Receive emails about new products, features, and more.
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={registerForm.control}
-          name="agreePolicy"
-          render={({ field, fieldState }) => (
-            <FormItem
-              className={cn(
-                'flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm',
-                { 'border-red-700': fieldState.error },
-              )}
-            >
-              <div className="space-y-0.5">
-                <FormLabel>
-                  Agree to our terms of service{' '}
-                  <span className="text-red-700">*</span>
-                </FormLabel>
-                <FormDescription>
-                  Learn more about our <a href="">Terms of Service</a>.
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Registering...' : 'Register'}
-        </Button>
-      </form>
-    </Form>
-  );
-};
+  // Handling submiting
+  const handleSubmit: SubmitHandlerType = async (data) => {
+    console.log(data);
+    return data;
+  };
 
-// Page
-const RegisterPage: PageComponent = ({ className, ...props }) => {
   return (
     <div
       {...props}
       className={cn(className, 'flex-col justify-center items-center')}
     >
       <h1 className="text-2xl font-bold">Register</h1>
-      <RegisterForm onSubmit={(data) => console.log(data)} />
+      <Form {...registerForm}>
+        <form
+          onSubmit={registerForm.handleSubmit(handleSubmit)}
+          className="space-y-1"
+        >
+          <FormField
+            control={registerForm.control}
+            name="username"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage />
+                ) : (
+                  <div className="h-5 w-1" />
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="johndoe@example.com" {...field} />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage />
+                ) : (
+                  <div className="h-5 w-1" />
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Your password"
+                    type="password"
+                    {...field}
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage />
+                ) : (
+                  <div className="h-5 w-1" />
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="confirm"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Confirm Your Password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Retype your password"
+                    type="password"
+                    {...field}
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage className="h-6" />
+                ) : (
+                  <div className="h-5 w-1" />
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="agreeMarketting"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                  <FormLabel>Marketing emails</FormLabel>
+                  <FormDescription>
+                    Receive emails about new products, features, and more.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="agreePolicy"
+            render={({ field, fieldState }) => (
+              <FormItem
+                className={cn(
+                  'flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm',
+                  { 'border-red-700': fieldState.error },
+                )}
+              >
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    Agree to our terms of service{' '}
+                    <span className="text-red-700">*</span>
+                  </FormLabel>
+                  <FormDescription>
+                    Learn more about our <a href="">Terms of Service</a>.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Registering...' : 'Register'}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };
