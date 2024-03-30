@@ -21,13 +21,15 @@ import * as React from 'react';
 import NotFound from '@pages/404';
 import RootPage from '@pages/root';
 
-export type PathStr = '*' | '/' | `/${string}`;
+export type PathStr = `/${string}`;
+export type RootPathStr = '*' | '/' | PathStr;
 export type PageComponent = () => React.JSX.Element;
 
 export type RouteDetails = { component: PageComponent; title: string };
 export type RouteMap = Record<PathStr, RouteDetails>;
+export type RootRouteMap = Record<RootPathStr, RouteDetails>;
 
-const routes: RouteMap = {
+const routes: RootRouteMap = {
   '*': { component: NotFound, title: 'Page Not Found' },
   '/': { component: RootPage, title: 'Home' },
 };
