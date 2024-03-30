@@ -46,7 +46,7 @@ const registerFormSchema = z
       .min(1, { message: 'Please provide a username!' })
       .min(3, { message: 'Username needs to be at least 3 characters!' })
       .max(20, { message: 'Username cannot be longer than 20 characters!' })
-      .regex(/[\w\d-_]/, {
+      .regex(/^[\w\d-_]+$/, {
         message: 'Username may only contain alphanumeric characters and (-_)',
       }),
 
@@ -80,7 +80,7 @@ const registerFormSchema = z
         message:
           'Password needs to contain at least 1 special character! (!#$%&?\'")',
       })
-      .regex(/^[a-zA-Z\d]+$/, {
+      .regex(/^[a-zA-Z\d!#$%&?'"]+$/, {
         message:
           'Passwords may only contain alphanumeric characters and (!#$%&?\'")',
       }),
