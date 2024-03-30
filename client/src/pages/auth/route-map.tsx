@@ -1,4 +1,4 @@
-// Top-level route mapping for Frontend App
+// Register page for the Frontend App
 //
 // Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //
@@ -15,24 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as React from 'react';
+import type { RouteMap } from '@pages/route-map';
 
-// Page imports
-import NotFound from '@pages/404';
-import RootPage from '@pages/root';
-import routeMap from '@pages/auth/route-map';
+// Import pages
+import RegisterPage from './register';
 
-export type PathStr = `/${string}`;
-export type RootPathStr = '*' | '/' | PathStr;
-export type PageComponent = () => React.JSX.Element;
-
-export type RouteDetails = { component: PageComponent; title: string };
-export type RouteMap = Record<PathStr, RouteDetails>;
-export type RootRouteMap = Record<RootPathStr, RouteDetails>;
-
-const routes: RootRouteMap = {
-  '*': { component: NotFound, title: 'Page Not Found' },
-  '/': { component: RootPage, title: 'Home' },
-  ...routeMap,
+const routeMap: RouteMap = {
+  '/register': { title: 'Register', component: RegisterPage },
 } as const;
-export default routes;
+export default routeMap;

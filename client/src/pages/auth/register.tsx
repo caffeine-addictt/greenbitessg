@@ -88,3 +88,11 @@ const registerFormSchema = z
     path: ['confirm'],
   });
 
+// Page
+const RegisterPage = (): React.JSX.Element => {
+  return (
+    <div>
+    </div>
+  );
+};
+export default RegisterPage;
