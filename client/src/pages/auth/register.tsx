@@ -81,7 +81,9 @@ const registerFormSchema = z
 
     agreeMarketting: z.boolean().optional(),
 
-    agreePolicy: z.boolean(),
+    agreePolicy: z.boolean().refine((val) => val === true, {
+      message: 'Please agree to our Terms of Service!',
+    }),
   })
   .refine((data) => data.password === data.confirm, {
     message: 'Passwords do not match!',
