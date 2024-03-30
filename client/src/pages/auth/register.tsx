@@ -249,9 +249,9 @@ export const RegisterForm = ({
 };
 
 // Page
-const RegisterPage: PageComponent = (props) => {
+const RegisterPage: PageComponent = ({ className, ...props }) => {
   return (
-    <div {...props}>
+    <div {...props} className={cn(className, 'justify-center items-center')}>
       <RegisterForm onSubmit={(data) => console.log(data)} />
     </div>
   );
