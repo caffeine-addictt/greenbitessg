@@ -251,7 +251,11 @@ export const RegisterForm = ({
 // Page
 const RegisterPage: PageComponent = ({ className, ...props }) => {
   return (
-    <div {...props} className={cn(className, 'justify-center items-center')}>
+    <div
+      {...props}
+      className={cn(className, 'flex-col justify-center items-center')}
+    >
+      <h1 className="text-2xl font-bold">Register</h1>
       <RegisterForm onSubmit={(data) => console.log(data)} />
     </div>
   );
