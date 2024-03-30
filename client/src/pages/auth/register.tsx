@@ -17,6 +17,7 @@
 
 import * as React from 'react';
 import { cn } from '@utils/tailwind';
+import type { PageComponent } from '@pages/route-map';
 
 import * as z from 'zod';
 import { SubmitHandler, useForm, useFormState } from 'react-hook-form';
@@ -248,9 +249,9 @@ export const RegisterForm = ({
 };
 
 // Page
-const RegisterPage = (): React.JSX.Element => {
+const RegisterPage: PageComponent = (props) => {
   return (
-    <div>
+    <div {...props}>
       <RegisterForm onSubmit={(data) => console.log(data)} />
     </div>
   );

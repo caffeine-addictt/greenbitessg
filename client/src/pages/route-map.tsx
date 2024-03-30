@@ -24,7 +24,9 @@ import routeMap from '@pages/auth/route-map';
 
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
-export type PageComponent = () => React.JSX.Element;
+export type PageComponent = (
+  props: React.ComponentProps<'div'>,
+) => React.JSX.Element;
 
 export type RouteDetails = { component: PageComponent; title: string };
 export type RouteMap = Record<PathStr, RouteDetails>;

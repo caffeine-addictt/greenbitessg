@@ -35,7 +35,7 @@ export const WrappedComponent = ({
     <Helmet>
       <title>{title}</title>
     </Helmet>
-    <Component />
+    <Component className="flex w-full max-w-full grow" />
   </>
 );
 
@@ -46,13 +46,11 @@ export const Layout = (): JSX.Element => {
     <main className="flex min-h-screen min-w-full max-w-full flex-col">
       <Navbar location={location} isAdmin />
 
-      <div className="flex w-full max-w-full grow">
-        <Routes location={location}>
-          {Object.entries(routes).map(([path, details]) => (
-            <Route path={path} element={<WrappedComponent {...details} />} />
-          ))}
-        </Routes>
-      </div>
+      <Routes location={location}>
+        {Object.entries(routes).map(([path, details]) => (
+          <Route path={path} element={<WrappedComponent {...details} />} />
+        ))}
+      </Routes>
 
       <Footer location={location} isAdmin />
     </main>

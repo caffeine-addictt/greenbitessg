@@ -17,9 +17,9 @@
 
 import type { PageComponent } from '@pages/route-map';
 
-const NotFound: PageComponent = () => {
+const NotFound: PageComponent = (props) => {
   return (
-    <div>
+    <div {...props}>
       <h1>Page Not Found</h1>
     </div>
   );

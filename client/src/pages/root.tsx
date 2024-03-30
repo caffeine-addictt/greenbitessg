@@ -17,7 +17,7 @@
 
 import type { PageComponent } from '@pages/route-map';
 
-const RootPage: PageComponent = () => {
-  return <>hi</>;
+const RootPage: PageComponent = (props) => {
+  return <div {...props}>hi</div>;
 };
 export default RootPage;
