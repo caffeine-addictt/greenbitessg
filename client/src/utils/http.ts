@@ -37,7 +37,7 @@ export type JSONserializable =
   | IJSONSerializable[]
   | Map<string, IJSONSerializable>;
 export interface APIRequestParams {
-  uri: string;
+  uri: `/${string}`;
   queryParams?: string;
   withCredentials?: boolean;
   options?: AxiosRequestConfig;
@@ -80,7 +80,7 @@ class HTTPClient implements APIHttpClient {
     options,
   }: APIGetRequestParams): Promise<T> =>
     new Promise<T>((resolve, reject) => {
-      const url = `${API_URL}/${uri}${queryParams ? `?${queryParams}` : ''}`;
+      const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
       const opts: AxiosRequestConfig = withCredentials
         ? addCredentials(options ?? DEFAULT_OPTS)
         : options ?? DEFAULT_OPTS;
