@@ -20,7 +20,9 @@ import { cn } from '@utils/tailwind';
 import type { PageComponent } from '@pages/route-map';
 
 import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm, useFormState } from 'react-hook-form';
+
 import {
   Form,
   FormDescription,
@@ -33,7 +35,6 @@ import {
 import { Input } from '@components/ui/input';
 import { Switch } from '@components/ui/switch';
 import { Button } from '@components/ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 // Setup
 const registerFormSchema = z
