@@ -18,31 +18,15 @@
 import express from 'express';
 
 import routeMap, { RoutingMap } from '../route-map';
-import { errors } from 'caffeine-addictt-fullstack-api-types';
-
-// Types
-export interface ErrorContext {
-  [x: string]: unknown;
-}
-export interface ErrorParameters {
-  code: errors.HttpErrorCode;
-  message: string;
-  context?: ErrorContext;
-  logging?: boolean;
-}
-
-export type CustomErrorContext = {
-  message: string;
-  context?: ErrorContext;
-};
+import { ErrorResponse, errors } from 'caffeine-addictt-fullstack-api-types';
 
 // App Error
 export class AppError extends Error {
   readonly statusCode: number;
-  readonly errors: CustomErrorContext[];
+  readonly errors: errors.CustomErrorContext[];
   readonly logging: boolean;
 
-  constructor(params: ErrorParameters) {
+  constructor(params: errors.ErrorParameters) {
     const { code, message, logging, context } = params;
 
     super(message);
@@ -79,12 +63,17 @@ export const errorHandler = (
     res.status(err.statusCode).json({
       status: err.statusCode,
       errors: err.errors,
-    });
+    } satisfies ErrorResponse);
     return;
   }
 
   // Handle un-caught error
-  res.status(500).json({ errors: [{ message: 'Something went wrong!' }] });
+  res
+    .status(500)
+    .json({
+      status: 500,
+      errors: [{ message: 'Something went wrong!' }],
+    } satisfies ErrorResponse);
   return;
 };
 
@@ -96,7 +85,10 @@ export const notfoundHandler = (
 ) =>
   res
     .status(404)
-    .json({ status: 404, message: `${req.path} is not implemented!` });
+    .json({
+      status: 404,
+      errors: [{ message: `${req.path} is not implemented!` }],
+    } satisfies ErrorResponse);
 
 // Handle 405 Errors according to RFC
 export const methodNotFoundHandler = (
@@ -134,11 +126,15 @@ export const methodNotFoundHandler = (
   if (req.method == 'OPTIONS')
     return res.status(200).json({
       status: 200,
-      message: allowedMethods,
-    });
+      errors: [{ message: allowedMethods }],
+    } satisfies ErrorResponse);
   else
     return res.status(405).json({
       status: 405,
-      message: `The ${req.method.toUpperCase()} method is not allowed for this endpoint!`,
-    });
+      errors: [
+        {
+          message: `The ${req.method.toUpperCase()} method is not allowed for this endpoint!`,
+        },
+      ],
+    } satisfies ErrorResponse);
 };
