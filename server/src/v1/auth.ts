@@ -1,6 +1,6 @@
-// Shared API Types
+// Backend API v1
 //
-// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>
+// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,9 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Successful response for /v1/availability endpoint
- */
-export interface AvailabilityAPI {
-  available: boolean;
-}
+import { SuccessResponse, auth } from 'caffeine-addictt-fullstack-api-types';
+import { RouteHandler } from '../route-map';
+
+export const availability: RouteHandler = (_, res) => {
+  res.status(200).json({
+    status: 200,
+    data: {
+      available: true,
+    },
+  } satisfies SuccessResponse<auth.AvailabilityAPI>);
+};

@@ -1,6 +1,6 @@
-// Shared API Types
+// Backend API v1
 //
-// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>
+// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,9 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Successful response for /v1/availability endpoint
- */
-export interface AvailabilityAPI {
-  available: boolean;
+import type {
+  RoutingMap as IndexRoutingMap,
+  RouteHandlers,
+} from '../route-map';
+interface RoutingMap extends IndexRoutingMap {
+  [path: `/v1/${string}`]: RouteHandlers;
 }
+
+// Import endpoints
+import { availability } from './auth';
+
+const routeMap: RoutingMap = {
+  '/v1/availability': {
+    GET: { handler: availability },
+  },
+} as const;
+
+export default routeMap;

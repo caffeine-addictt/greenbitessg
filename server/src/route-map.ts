@@ -20,6 +20,7 @@ import Methods from './utils/http-methods';
 import type { Request, Response, NextFunction } from 'express';
 
 // Importing route handlers
+import v1 from './v1/route-map';
 
 // Types
 export type RouteHandler = (
@@ -56,6 +57,7 @@ const routeMap: RoutingMap = {
     },
   },
   '/api': { GET: { handler: (_, res) => res.send('This is a test route') } },
+  ...v1,
 } as const;
 
 export default routeMap;
