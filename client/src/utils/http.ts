@@ -24,7 +24,11 @@ const API_VERSION = import.meta.env.VITE_API_VERSION;
 
 const API_URL = `${API_BASE_URL}/${API_VERSION}`;
 
-export const DEFAULT_OPTS: AxiosRequestConfig = {};
+export const DEFAULT_OPTS: AxiosRequestConfig = {
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+  },
+};
 
 // Wrapper
 export type IJSONSerializable = string | number | boolean | null;
