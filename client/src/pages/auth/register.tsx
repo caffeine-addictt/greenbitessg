@@ -36,6 +36,13 @@ import { Input } from '@components/ui/input';
 import { Switch } from '@components/ui/switch';
 import { Button } from '@components/ui/button';
 
+import httpClient from '@utils/http';
+import type {
+  SuccessResponse,
+  auth,
+} from 'caffeine-addictt-fullstack-api-types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
 // Setup
 const registerFormSchema = z
   .object({
@@ -125,9 +132,31 @@ const RegisterPage: PageComponent = ({
   });
   const { isSubmitting } = useFormState({ control: registerForm.control });
 
+  const queryClient = useQueryClient();
+
+  // Validating username
+  const username = registerForm.watch('username');
+  const { data } = useQuery(
+    {
+      queryKey: ['registerUsernameCheck', username],
+      queryFn: async () => {
+        const res = await httpClient
+          .get<
+            SuccessResponse<auth.AvailabilityAPI>
+          >({ uri: `/availability?username=${username}` })
+          .catch((err) => console.log(err));
+        console.log(res ? res.data : false);
+        return res ? res.data : false;
+      },
+      enabled: !!username, // Run check immediately only if username has a value
+      refetchInterval: 60000, // Run check every minute
+    },
+    queryClient,
+  );
+
   // Handling submiting
   const handleSubmit: SubmitHandlerType = async (data) => {
-    console.log(data);
+    // TODO: Implement axios to create a new account
     return data;
   };
 
@@ -154,7 +183,13 @@ const RegisterPage: PageComponent = ({
                 {fieldState.error ? (
                   <FormMessage />
                 ) : (
-                  <div className="h-5 w-1" />
+                  <>
+                    {data && !data?.available ? (
+                      <FormMessage>This username is not available!</FormMessage>
+                    ) : (
+                      <div className="h-5 w-1" />
+                    )}
+                  </>
                 )}
               </FormItem>
             )}
