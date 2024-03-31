@@ -3,9 +3,19 @@
     "module": "commonjs",
     "target": "ES2020",
     "lib": ["ES2020"],
+    "skipLibCheck": true,
     "strict": true,
     "composite": true,
     "declarationMap": true,
-    "outDir": "dist"
-  }
+    "outDir": "dist",
+    "paths": {
+      "@*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "src"
+    }
+  ]
 }

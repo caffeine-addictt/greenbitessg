@@ -18,14 +18,14 @@
 import express from 'express';
 
 import routeMap, { RoutingMap } from '../route-map';
-import errorCodes from '../utils/error-code';
+import { errors } from 'caffeine-addictt-fullstack-api-types';
 
 // Types
 export interface ErrorContext {
   [x: string]: unknown;
 }
 export interface ErrorParameters {
-  code: errorCodes;
+  code: errors.HttpErrorCode;
   message: string;
   context?: ErrorContext;
   logging?: boolean;

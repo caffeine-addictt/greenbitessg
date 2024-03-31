@@ -1,4 +1,4 @@
-// Backend API
+// Shared API Types
 //
 // Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //
@@ -19,7 +19,7 @@
  * Hypertext Transfer Protocol (HTTP) error response status codes.
  * @see {@link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes}
  */
-enum HttpStatusCode {
+enum HttpErrorCode {
   /**
    * The server cannot or will not process the request due to an apparent client error
    * (e.g., malformed request syntax, too large size, invalid request message framing, or deceptive request routing).
@@ -248,4 +248,35 @@ enum HttpStatusCode {
   NETWORK_AUTHENTICATION_REQUIRED = 511,
 }
 
-export default HttpStatusCode;
+export interface ErrorContext {
+  [x: string]: unknown;
+}
+export interface ErrorParameters {
+  code: HttpErrorCode;
+  message: string;
+  context?: ErrorContext;
+  logging?: boolean;
+}
+
+export type CustomErrorContext = {
+  message: string;
+  context?: ErrorContext;
+};
+
+// App Error
+export class AppError extends Error {
+  readonly statusCode: number;
+  readonly errors: CustomErrorContext[];
+  readonly logging: boolean;
+
+  constructor(params: ErrorParameters) {
+    const { code, message, logging, context } = params;
+
+    super(message);
+    this.statusCode = code;
+    this.logging = logging || false;
+    this.errors = [{ message: message, context: context }];
+
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}
