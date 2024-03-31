@@ -17,6 +17,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import axios, { type AxiosRequestConfig } from 'axios';
+import {
+  SuccessResponse,
+  ErrorResponse,
+} from 'caffeine-addictt-fullstack-api-types';
 
 // Config
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -57,6 +61,11 @@ export interface APIHttpClient {
 }
 
 // Implementation
+const isAPIResponse = <T>(
+  // eslint-disable-next-line
+  val: any,
+): val is SuccessResponse<T> | ErrorResponse => 'status' in val.data;
+
 const addCredentials = (options: AxiosRequestConfig): AxiosRequestConfig => {
   const token = sessionStorage.getItem('token');
   if (!token) {
@@ -87,7 +96,12 @@ class HTTPClient implements APIHttpClient {
 
       axios
         .get<T>(url, opts)
-        .then((response) => resolve(response.data as T))
+        .then((response) => {
+          if (response.status === 200) return resolve(response.data as T);
+          if (isAPIResponse(response.data) && response.data.status === 200)
+            return resolve(response.data as T);
+          return reject(response);
+        })
         .catch((err) => reject(err));
     });
 
@@ -106,7 +120,12 @@ class HTTPClient implements APIHttpClient {
 
       axios
         .post(url, payload, opts)
-        .then((response) => resolve(response.data as T))
+        .then((response) => {
+          if (response.status === 200) return resolve(response.data as T);
+          if (isAPIResponse(response.data) && response.data.status === 200)
+            return resolve(response.data as T);
+          return reject(response);
+        })
         .catch((err) => reject(err));
     });
 }
