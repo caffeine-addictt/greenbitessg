@@ -25,7 +25,7 @@ export type SuccessResponse<T> = {
 
 export type ErrorResponse = {
   status: errors.HTTPErrorCode;
-  errors: errors;
+  errors: errors.CustomErrorContext[];
 };
 
 export { auth, errors };
