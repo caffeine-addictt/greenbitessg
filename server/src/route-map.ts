@@ -27,7 +27,7 @@ export type RouteHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => Response | void;
+) => Response | Promise<Response> | void;
 
 export interface RouteDetailsHandler {
   handler: RouteHandler;
