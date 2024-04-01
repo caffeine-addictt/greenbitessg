@@ -168,10 +168,7 @@ const RegisterPage: PageComponent = ({
   };
 
   return (
-    <div
-      {...props}
-      className={cn(className, 'flex-col justify-center items-center')}
-    >
+    <div {...props} className={cn(className, 'flex-col pt-10 items-center')}>
       <h1 className="text-2xl font-bold">Register</h1>
       <Form {...registerForm}>
         <form
