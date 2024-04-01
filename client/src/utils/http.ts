@@ -17,7 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import axios, { type AxiosRequestConfig } from 'axios';
-import {
+import type {
+  errors,
   SuccessResponse,
   ErrorResponse,
 } from 'caffeine-addictt-fullstack-api-types';
@@ -61,10 +62,10 @@ export interface APIHttpClient {
 }
 
 // Implementation
-const isAPIResponse = <T>(
+const isAPIResponse = <T, D extends errors.CustomErrorContext[]>(
   // eslint-disable-next-line
   val: any,
-): val is SuccessResponse<T> | ErrorResponse => 'status' in val.data;
+): val is SuccessResponse<T> | ErrorResponse<D> => 'status' in val.data;
 
 const addCredentials = (options: AxiosRequestConfig): AxiosRequestConfig => {
   const token = sessionStorage.getItem('token');

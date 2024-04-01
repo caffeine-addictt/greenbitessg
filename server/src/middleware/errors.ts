@@ -63,7 +63,7 @@ export const errorHandler = (
     res.status(err.statusCode).json({
       status: err.statusCode,
       errors: err.errors,
-    } satisfies ErrorResponse);
+    } satisfies ErrorResponse<errors.CustomErrorContext[]>);
     return;
   }
 
@@ -71,7 +71,7 @@ export const errorHandler = (
   res.status(500).json({
     status: 500,
     errors: [{ message: 'Something went wrong!' }],
-  } satisfies ErrorResponse);
+  } satisfies ErrorResponse<errors.CustomErrorContext[]>);
   return;
 };
 
@@ -84,7 +84,7 @@ export const notfoundHandler = (
   res.status(404).json({
     status: 404,
     errors: [{ message: `${req.path} is not implemented!` }],
-  } satisfies ErrorResponse);
+  } satisfies ErrorResponse<errors.CustomErrorContext[]>);
 
 // Handle 405 Errors according to RFC
 export const methodNotFoundHandler = (
@@ -123,7 +123,7 @@ export const methodNotFoundHandler = (
     return res.status(200).json({
       status: 200,
       errors: [{ message: allowedMethods }],
-    } satisfies ErrorResponse);
+    } satisfies ErrorResponse<errors.CustomErrorContext[]>);
   else
     return res.status(405).json({
       status: 405,
@@ -132,5 +132,5 @@ export const methodNotFoundHandler = (
           message: `The ${req.method.toUpperCase()} method is not allowed for this endpoint!`,
         },
       ],
-    } satisfies ErrorResponse);
+    } satisfies ErrorResponse<errors.CustomErrorContext[]>);
 };
