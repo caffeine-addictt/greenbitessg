@@ -187,7 +187,7 @@ const RegisterPage: PageComponent = ({
                 {fieldState.error ? (
                   <FormMessage />
                 ) : (
-                  <div className="h-5 w-1" />
+                  <FormDescription>Your account username.</FormDescription>
                 )}
               </FormItem>
             )}
@@ -204,7 +204,7 @@ const RegisterPage: PageComponent = ({
                 {fieldState.error ? (
                   <FormMessage />
                 ) : (
-                  <div className="h-5 w-1" />
+                  <FormDescription>Your email address.</FormDescription>
                 )}
               </FormItem>
             )}
@@ -225,7 +225,7 @@ const RegisterPage: PageComponent = ({
                 {fieldState.error ? (
                   <FormMessage />
                 ) : (
-                  <div className="h-5 w-1" />
+                  <FormDescription>Your account password.</FormDescription>
                 )}
               </FormItem>
             )}
@@ -244,9 +244,9 @@ const RegisterPage: PageComponent = ({
                   />
                 </FormControl>
                 {fieldState.error ? (
-                  <FormMessage className="h-6" />
+                  <FormMessage className="h-5" />
                 ) : (
-                  <div className="h-5 w-1" />
+                  <FormDescription>Retype your password.</FormDescription>
                 )}
               </FormItem>
             )}
