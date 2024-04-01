@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { SuccessResponse, auth } from 'caffeine-addictt-fullstack-api-types';
+import { auth } from 'caffeine-addictt-fullstack-api-types';
 import { RouteHandler } from '../route-map';
 
 export const availability: RouteHandler = (_, res) => {
@@ -24,5 +24,5 @@ export const availability: RouteHandler = (_, res) => {
     data: {
       available: true,
     },
-  } satisfies SuccessResponse<auth.AvailabilityAPI>);
+  } satisfies auth.AvailabilityAPI);
 };

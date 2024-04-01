@@ -38,10 +38,7 @@ import { Switch } from '@components/ui/switch';
 import { Button } from '@components/ui/button';
 
 import httpClient from '@utils/http';
-import type {
-  SuccessResponse,
-  auth,
-} from 'caffeine-addictt-fullstack-api-types';
+import type { auth } from 'caffeine-addictt-fullstack-api-types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 // Page
@@ -143,9 +140,9 @@ const RegisterPage: PageComponent = ({
       queryKey: ['registerUsernameCheck', username],
       queryFn: async () => {
         const res = await httpClient
-          .get<
-            SuccessResponse<auth.AvailabilityAPI>
-          >({ uri: `/availability?username=${username}` })
+          .get<auth.AvailabilitySuccAPI>({
+            uri: `/availability?username=${username}`,
+          })
           .catch((err) => console.log(err));
 
         // Update validation state
