@@ -68,12 +68,10 @@ export const errorHandler = (
   }
 
   // Handle un-caught error
-  res
-    .status(500)
-    .json({
-      status: 500,
-      errors: [{ message: 'Something went wrong!' }],
-    } satisfies ErrorResponse);
+  res.status(500).json({
+    status: 500,
+    errors: [{ message: 'Something went wrong!' }],
+  } satisfies ErrorResponse);
   return;
 };
 
@@ -83,12 +81,10 @@ export const notfoundHandler = (
   res: express.Response,
   __: express.NextFunction,
 ) =>
-  res
-    .status(404)
-    .json({
-      status: 404,
-      errors: [{ message: `${req.path} is not implemented!` }],
-    } satisfies ErrorResponse);
+  res.status(404).json({
+    status: 404,
+    errors: [{ message: `${req.path} is not implemented!` }],
+  } satisfies ErrorResponse);
 
 // Handle 405 Errors according to RFC
 export const methodNotFoundHandler = (
