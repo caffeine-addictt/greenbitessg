@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from 'react';
+import { useState } from 'react';
 import { cn } from '@utils/tailwind';
 import type { PageComponent } from '@pages/route-map';
 
@@ -48,6 +49,8 @@ const RegisterPage: PageComponent = ({
   className,
   ...props
 }): React.JSX.Element => {
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
+
   const registerFormSchema = z
     .object({
       username: z
@@ -60,6 +63,9 @@ const RegisterPage: PageComponent = ({
         .max(20, { message: 'Username cannot be longer than 20 characters!' })
         .regex(/^[\w\d-_]+$/, {
           message: 'Username may only contain alphanumeric characters and (-_)',
+        })
+        .refine(() => usernameAvailable, {
+          message: 'Username already taken!',
         }),
 
       email: z
@@ -132,7 +138,7 @@ const RegisterPage: PageComponent = ({
 
   // Validating username
   const username = registerForm.watch('username');
-  const { data } = useQuery(
+  useQuery(
     {
       queryKey: ['registerUsernameCheck', username],
       queryFn: async () => {
@@ -141,7 +147,10 @@ const RegisterPage: PageComponent = ({
             SuccessResponse<auth.AvailabilityAPI>
           >({ uri: `/availability?username=${username}` })
           .catch((err) => console.log(err));
-        console.log(res ? res.data : false);
+
+        // Update validation state
+        setUsernameAvailable(res?.data.available || false);
+        registerForm.trigger('username', { shouldFocus: true });
         return res ? res.data : false;
       },
       enabled: !!username, // Run check immediately only if username has a value
@@ -181,13 +190,7 @@ const RegisterPage: PageComponent = ({
                 {fieldState.error ? (
                   <FormMessage />
                 ) : (
-                  <>
-                    {data && !data?.available ? (
-                      <FormMessage>This username is not available!</FormMessage>
-                    ) : (
-                      <div className="h-5 w-1" />
-                    )}
-                  </>
+                  <div className="h-5 w-1" />
                 )}
               </FormItem>
             )}
