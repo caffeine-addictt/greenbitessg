@@ -43,82 +43,78 @@ import type {
 } from 'caffeine-addictt-fullstack-api-types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-// Setup
-const registerFormSchema = z
-  .object({
-    username: z
-      .string({
-        invalid_type_error: 'Please provide a username!',
-        required_error: 'Please provide a username!',
-      })
-      .min(1, { message: 'Please provide a username!' })
-      .min(3, { message: 'Username needs to be at least 3 characters!' })
-      .max(20, { message: 'Username cannot be longer than 20 characters!' })
-      .regex(/^[\w\d-_]+$/, {
-        message: 'Username may only contain alphanumeric characters and (-_)',
-      }),
-
-    email: z
-      .string({
-        invalid_type_error: 'Please provide an email!',
-        required_error: 'Please provide an email!',
-      })
-      .min(1, { message: 'Please provide an email!' })
-      .email({ message: 'Email is not valid!' }),
-
-    password: z
-      .string({
-        invalid_type_error: 'Please provide a password!',
-        required_error: 'Please provide a password!',
-      })
-      .min(1, { message: 'Please provide a password!' })
-      .min(8, { message: 'Password needs to be at least 8 characters!' })
-      .regex(/[a-z]/, {
-        message:
-          'Password needs to contain at least 1 lower case character! (a-z)',
-      })
-      .regex(/[A-Z]/, {
-        message:
-          'Password needs to contain at least 1 upper case character! (A-Z)',
-      })
-      .regex(/[\d]/, {
-        message: 'Password needs to contain at least 1 digit! (0-9)',
-      })
-      .regex(/[!#$%&?'"]/, {
-        message:
-          'Password needs to contain at least 1 special character! (!#$%&?\'")',
-      })
-      .regex(/^[a-zA-Z\d!#$%&?'"]+$/, {
-        message:
-          'Passwords may only contain alphanumeric characters and (!#$%&?\'")',
-      }),
-
-    confirm: z
-      .string({
-        invalid_type_error: 'Please retype your password!',
-        required_error: 'Please retype your password!',
-      })
-      .min(1, { message: 'Please retype your password!' }),
-
-    agreeMarketting: z.boolean().optional(),
-
-    agreePolicy: z.boolean().refine((val) => val === true, {
-      message: 'Please agree to our Terms of Service!',
-    }),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: 'Passwords do not match!',
-    path: ['confirm'],
-  });
-
 // Page
-export type SubmitHandlerType = SubmitHandler<
-  z.infer<typeof registerFormSchema>
->;
 const RegisterPage: PageComponent = ({
   className,
   ...props
 }): React.JSX.Element => {
+  const registerFormSchema = z
+    .object({
+      username: z
+        .string({
+          invalid_type_error: 'Please provide a username!',
+          required_error: 'Please provide a username!',
+        })
+        .min(1, { message: 'Please provide a username!' })
+        .min(3, { message: 'Username needs to be at least 3 characters!' })
+        .max(20, { message: 'Username cannot be longer than 20 characters!' })
+        .regex(/^[\w\d-_]+$/, {
+          message: 'Username may only contain alphanumeric characters and (-_)',
+        }),
+
+      email: z
+        .string({
+          invalid_type_error: 'Please provide an email!',
+          required_error: 'Please provide an email!',
+        })
+        .min(1, { message: 'Please provide an email!' })
+        .email({ message: 'Email is not valid!' }),
+
+      password: z
+        .string({
+          invalid_type_error: 'Please provide a password!',
+          required_error: 'Please provide a password!',
+        })
+        .min(1, { message: 'Please provide a password!' })
+        .min(8, { message: 'Password needs to be at least 8 characters!' })
+        .regex(/[a-z]/, {
+          message:
+            'Password needs to contain at least 1 lower case character! (a-z)',
+        })
+        .regex(/[A-Z]/, {
+          message:
+            'Password needs to contain at least 1 upper case character! (A-Z)',
+        })
+        .regex(/[\d]/, {
+          message: 'Password needs to contain at least 1 digit! (0-9)',
+        })
+        .regex(/[!#$%&?'"]/, {
+          message:
+            'Password needs to contain at least 1 special character! (!#$%&?\'")',
+        })
+        .regex(/^[a-zA-Z\d!#$%&?'"]+$/, {
+          message:
+            'Passwords may only contain alphanumeric characters and (!#$%&?\'")',
+        }),
+
+      confirm: z
+        .string({
+          invalid_type_error: 'Please retype your password!',
+          required_error: 'Please retype your password!',
+        })
+        .min(1, { message: 'Please retype your password!' }),
+
+      agreeMarketting: z.boolean().optional(),
+
+      agreePolicy: z.boolean().refine((val) => val === true, {
+        message: 'Please agree to our Terms of Service!',
+      }),
+    })
+    .refine((data) => data.password === data.confirm, {
+      message: 'Passwords do not match!',
+      path: ['confirm'],
+    });
+
   const registerForm = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -155,7 +151,9 @@ const RegisterPage: PageComponent = ({
   );
 
   // Handling submiting
-  const handleSubmit: SubmitHandlerType = async (data) => {
+  const handleSubmit: SubmitHandler<
+    z.infer<typeof registerFormSchema>
+  > = async (data) => {
     // TODO: Implement axios to create a new account
     return data;
   };
