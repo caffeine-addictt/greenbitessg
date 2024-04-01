@@ -251,9 +251,6 @@ const RegisterPage: PageComponent = ({
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Registering...' : 'Register'}
-          </Button>
           <div className="space-y-2 pt-4">
             <FormField
               control={registerForm.control}
@@ -303,6 +300,11 @@ const RegisterPage: PageComponent = ({
                 </FormItem>
               )}
             />
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button type="submit" variant="secondary" disabled={isSubmitting}>
+              {isSubmitting ? 'Registering...' : 'Register'}
+            </Button>
           </div>
         </form>
       </Form>
