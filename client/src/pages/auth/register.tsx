@@ -302,6 +302,14 @@ const RegisterPage: PageComponent = ({
             />
           </div>
           <div className="flex justify-end space-x-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => registerForm.reset()}
+              disabled={isSubmitting || !registerForm.formState.isDirty}
+            >
+              Clear
+            </Button>
             <Button type="submit" variant="secondary" disabled={isSubmitting}>
               {isSubmitting ? 'Registering...' : 'Register'}
             </Button>
