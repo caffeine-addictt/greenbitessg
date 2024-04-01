@@ -173,7 +173,7 @@ const RegisterPage: PageComponent = ({
       <Form {...registerForm}>
         <form
           onSubmit={registerForm.handleSubmit(handleSubmit)}
-          className="space-y-1"
+          className="space-y-4"
         >
           <FormField
             control={registerForm.control}
