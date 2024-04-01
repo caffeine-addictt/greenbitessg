@@ -251,57 +251,59 @@ const RegisterPage: PageComponent = ({
               </FormItem>
             )}
           />
-          <FormField
-            control={registerForm.control}
-            name="agreeMarketting"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm">
-                <div className="space-y-0.5">
-                  <FormLabel>Marketing emails</FormLabel>
-                  <FormDescription>
-                    Receive emails about new products, features, and more.
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={registerForm.control}
-            name="agreePolicy"
-            render={({ field, fieldState }) => (
-              <FormItem
-                className={cn(
-                  'flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm',
-                  { 'border-red-700': fieldState.error },
-                )}
-              >
-                <div className="space-y-0.5">
-                  <FormLabel>
-                    Agree to our terms of service{' '}
-                    <span className="text-red-700">*</span>
-                  </FormLabel>
-                  <FormDescription>
-                    Learn more about our <a href="">Terms of Service</a>.
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Registering...' : 'Register'}
           </Button>
+          <div className="space-y-2 pt-4">
+            <FormField
+              control={registerForm.control}
+              name="agreeMarketting"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Marketing emails</FormLabel>
+                    <FormDescription>
+                      Receive emails about new products, features, and more.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={registerForm.control}
+              name="agreePolicy"
+              render={({ field, fieldState }) => (
+                <FormItem
+                  className={cn(
+                    'flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm',
+                    { 'border-red-700': fieldState.error },
+                  )}
+                >
+                  <div className="space-y-0.5">
+                    <FormLabel>
+                      Agree to our terms of service{' '}
+                      <span className="text-red-700">*</span>
+                    </FormLabel>
+                    <FormDescription>
+                      Learn more about our <a href="">Terms of Service</a>.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
         </form>
       </Form>
     </div>
