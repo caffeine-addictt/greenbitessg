@@ -140,7 +140,7 @@ const RegisterPage: PageComponent = ({
       queryKey: ['registerUsernameCheck', username],
       queryFn: async () => {
         const res = await httpClient
-          .get<auth.AvailabilitySuccAPI>({
+          .get<auth.AvailabilityAPI>({
             uri: `/availability?username=${username}`,
           })
           .catch((err) => console.log(err));
