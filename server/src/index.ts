@@ -56,7 +56,9 @@ Object.entries(routeMap).forEach(([route, methods]) => {
   Object.entries(methods).forEach(([method, detail]) => {
     const stack = [detail!.handler];
     if (isCachingHandler(detail))
-      stack.unshift(routeCachingMiddleware(detail.prefix, detail.caching));
+      stack.unshift(
+        routeCachingMiddleware(detail.prefix, detail.caching, true),
+      );
 
     switch (method) {
       case 'GET':
