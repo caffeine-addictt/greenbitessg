@@ -16,10 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import rateLimit from 'express-rate-limit';
-import type {
-  errors,
-  ErrorResponse,
-} from 'caffeine-addictt-fullstack-api-types';
+import type { ErrorResponse } from 'caffeine-addictt-fullstack-api-types';
 
 export default rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -29,6 +26,6 @@ export default rateLimit({
     return res.status(429).json({
       status: 429,
       errors: [{ message: 'Too many requests, please try again later' }],
-    } satisfies ErrorResponse<errors.CustomErrorContext[]>);
+    } satisfies ErrorResponse);
   },
 });

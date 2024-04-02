@@ -24,10 +24,34 @@ export type SuccessResponse<T> = {
   data: T;
 };
 
-export type ErrorResponse<T extends errors.CustomErrorContext> = {
-  status: errors.HTTPErrorCode;
-  errors: (T | errors.CustomErrorContext)[];
-};
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type ErrorResponse<T = void extends string ? T : string & {}> =
+  | {
+      status: errors.HTTPErrorCode;
+      errors: T extends string
+        ? errors.CustomErrorContext<T>[]
+        : // eslint-disable-next-line @typescript-eslint/ban-types
+          errors.CustomErrorContext<string & {}>[];
+    }
+  | {
+      status: 429;
+      errors: [
+        errors.CustomErrorContext<'Too many requests, please try again later'>,
+      ];
+    }
+  | {
+      status: 500;
+      errors: errors.CustomErrorContext<'Something went wrong!'>[];
+    }
+  | {
+      status: 404;
+      errors: [errors.CustomErrorContext<`/${string} is not implemented!`>];
+    }
+  | {
+      status: 405;
+      errors: [
+        errors.CustomErrorContext<`The ${keyof typeof httpMethods} method is not allowed for this endpoint!`>,
+      ];
     };
 
 export { auth, errors, httpMethods };

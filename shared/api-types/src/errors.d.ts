@@ -252,7 +252,10 @@ export interface ErrorContext {
   [x: string]: unknown;
 }
 
-export type CustomErrorContext = {
-  message: string;
+export type HintedString<KnownTypes extends string> =
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  (string & {}) | KnownTypes;
+export type CustomErrorContext<T = void> = {
+  message: HintedString<T>;
   context?: ErrorContext;
 };
