@@ -179,7 +179,11 @@ const RegisterPage: PageComponent = ({
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input
+                    placeholder="John Doe"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field}
+                  />
                 </FormControl>
                 {fieldState.error ? (
                   <FormMessage />
@@ -196,7 +200,11 @@ const RegisterPage: PageComponent = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="johndoe@example.com" {...field} />
+                  <Input
+                    placeholder="johndoe@example.com"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field}
+                  />
                 </FormControl>
                 {fieldState.error ? (
                   <FormMessage />
@@ -216,6 +224,7 @@ const RegisterPage: PageComponent = ({
                   <Input
                     placeholder="Your password"
                     type="password"
+                    className={fieldState.error ? 'border-red-700' : ''}
                     {...field}
                   />
                 </FormControl>
@@ -237,6 +246,7 @@ const RegisterPage: PageComponent = ({
                   <Input
                     placeholder="Retype your password"
                     type="password"
+                    className={fieldState.error ? 'border-red-700' : ''}
                     {...field}
                   />
                 </FormControl>
