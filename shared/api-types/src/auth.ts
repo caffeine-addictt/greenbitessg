@@ -27,7 +27,7 @@ export interface AvailabilityAPI
  * Successful response for /v1/register endpoint
  */
 export interface RegisterSuccAPI
-  extends SuccessResponse<{ created: boolean }> {}
+  extends SuccessResponse<{ created: boolean }, 201> {}
 export type RegisterFailAPI = ErrorResponse<
   | 'Username already exists'
   | 'Email already exists'

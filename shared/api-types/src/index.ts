@@ -20,8 +20,8 @@ import * as errors from '@errors';
 import * as schemas from '@schemas';
 import httpMethods from '@http-methods';
 
-export type SuccessResponse<T> = {
-  status: 200;
+export type SuccessResponse<T, N = 200> = {
+  status: N;
   data: T;
 };
 
