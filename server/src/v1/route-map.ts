@@ -28,7 +28,7 @@ import { availability } from './auth';
 
 const routeMap: RoutingMap = {
   '/v1/availability': {
-    GET: { handler: availability },
+    GET: { handler: availability, caching: 60000, prefix: 'availability' },
   },
 } as const;
 
