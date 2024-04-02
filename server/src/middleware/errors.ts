@@ -20,13 +20,22 @@ import express from 'express';
 import routeMap, { RoutingMap } from '../route-map';
 import { ErrorResponse, errors } from 'caffeine-addictt-fullstack-api-types';
 
+// Types
+export type CustomErrorCode = Exclude<errors.HttpErrorCode, 429 | 404>;
+export interface ErrorParameters {
+  code: CustomErrorCode;
+  message: string;
+  context?: errors.ErrorContext;
+  logging?: boolean;
+}
+
 // App Error
 export class AppError extends Error {
-  readonly statusCode: number;
+  readonly statusCode: CustomErrorCode;
   readonly errors: errors.CustomErrorContext[];
   readonly logging: boolean;
 
-  constructor(params: errors.ErrorParameters) {
+  constructor(params: ErrorParameters) {
     const { code, message, logging, context } = params;
 
     super(message);
@@ -61,7 +70,7 @@ export const errorHandler = (
       );
 
     res.status(err.statusCode).json({
-      status: err.statusCode,
+      status: err.statusCode as unknown as CustomErrorCode,
       errors: err.errors,
     } satisfies ErrorResponse<errors.CustomErrorContext[]>);
     return;
