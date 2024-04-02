@@ -147,7 +147,7 @@ const RegisterPage: PageComponent = ({
 
         // Update validation state
         setUsernameAvailable(res?.data.available || false);
-        registerForm.trigger('username', { shouldFocus: true });
+        registerForm.trigger('username', { shouldFocus: false });
         return res ? res.data : false;
       },
       enabled: !!username, // Run check immediately only if username has a value
