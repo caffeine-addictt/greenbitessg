@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import { ZodIssue } from 'zod';
 import { RouteHandler } from '../route-map';
 import { auth, errors, schemas } from '@caffeine-addictt/fullstack-api-types';
 import { HttpErrorCode } from '@caffeine-addictt/fullstack-api-types/src/errors';
@@ -36,7 +37,7 @@ export const register: RouteHandler = async (req, res) => {
   const validated = schemas.registerFormSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
-    validated.error.errors.forEach((error) => {
+    validated.error.errors.forEach((error: ZodIssue) => {
       errorStack.push({
         message: error.message,
         context: {
