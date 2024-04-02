@@ -29,10 +29,6 @@
     "pre-commit": "^1.2.2",
     "prettier": "^3.2.5"
   },
-  "engines": {
-    "node": ">=21.6.1",
-    "npm": ">=10.4.0"
-  },
   "workspaces": [
     "client",
     "server",
