@@ -23,3 +23,16 @@ import type { SuccessResponse, ErrorResponse } from '@index';
 export interface AvailabilityAPI
   extends SuccessResponse<{ available: boolean }> {}
 
+/**
+ * Successful response for /v1/register endpoint
+ */
+export interface RegisterSuccAPI
+  extends SuccessResponse<{ created: boolean }> {}
+export type RegisterFailAPI = ErrorResponse<
+  | 'Username already exists'
+  | 'Email already exists'
+  | 'Email could not be reached'
+  | 'Username is not valid'
+  | 'Email is not valid'
+  | 'Password is not valid'
+>;
