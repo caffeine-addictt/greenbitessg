@@ -18,7 +18,7 @@
 import express from 'express';
 
 import routeMap, { RoutingMap } from '../route-map';
-import { ErrorResponse, errors } from 'caffeine-addictt-fullstack-api-types';
+import { ErrorResponse, errors } from '@caffeine-addictt/fullstack-api-types';
 
 // Types
 export type CustomErrorCode = Exclude<

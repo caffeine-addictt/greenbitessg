@@ -21,7 +21,7 @@ import type {
   errors,
   SuccessResponse,
   ErrorResponse,
-} from 'caffeine-addictt-fullstack-api-types';
+} from '@caffeine-addictt/fullstack-api-types';
 
 // Config
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;

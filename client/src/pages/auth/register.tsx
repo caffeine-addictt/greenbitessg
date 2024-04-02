@@ -38,7 +38,7 @@ import { Switch } from '@components/ui/switch';
 import { Button } from '@components/ui/button';
 
 import httpClient from '@utils/http';
-import type { auth } from 'caffeine-addictt-fullstack-api-types';
+import { auth, schemas } from '@caffeine-addictt/fullstack-api-types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 // Page

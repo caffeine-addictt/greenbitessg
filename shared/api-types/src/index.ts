@@ -15,8 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as errors from '@errors';
 import * as auth from '@auth';
+import * as errors from '@errors';
+import * as schemas from '@schemas';
 import httpMethods from '@http-methods';
 
 export type SuccessResponse<T> = {
@@ -25,9 +26,9 @@ export type SuccessResponse<T> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type ErrorResponse<T = void extends string ? T : string & {}> =
+export type ErrorResponse<T = string & {}> =
   | {
-      status: errors.HTTPErrorCode;
+      status: errors.HttpErrorCode;
       errors: T extends string
         ? errors.CustomErrorContext<T>[]
         : // eslint-disable-next-line @typescript-eslint/ban-types
@@ -54,4 +55,4 @@ export type ErrorResponse<T = void extends string ? T : string & {}> =
       ];
     };
 
-export { auth, errors, httpMethods };
+export { auth, errors, schemas, httpMethods };
