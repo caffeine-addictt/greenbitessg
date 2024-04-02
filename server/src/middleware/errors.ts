@@ -21,7 +21,13 @@ import routeMap, { RoutingMap } from '../route-map';
 import { ErrorResponse, errors } from 'caffeine-addictt-fullstack-api-types';
 
 // Types
-export type CustomErrorCode = Exclude<errors.HttpErrorCode, 429 | 404>;
+export type CustomErrorCode = Exclude<
+  errors.HttpErrorCode,
+  | errors.HttpErrorCode.NOT_FOUND
+  | errors.HttpErrorCode.TOO_MANY_REQUESTS
+  | errors.HttpErrorCode.INTERNAL_SERVER_ERROR
+  | errors.HttpErrorCode.METHOD_NOT_ALLOWED
+>;
 export interface ErrorParameters {
   code: CustomErrorCode;
   message: string;
@@ -70,8 +76,8 @@ export const errorHandler = (
       );
 
     res.status(err.statusCode).json({
-      status: err.statusCode as unknown as CustomErrorCode,
-      errors: err.errors,
+      status: err.statusCode,
+      errors: err.errors as unknown as errors.CustomErrorContext<string>[],
     } satisfies ErrorResponse);
     return;
   }
