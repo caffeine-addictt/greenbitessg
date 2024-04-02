@@ -40,7 +40,7 @@ export type IJSONSerializable = string | number | boolean | null;
 export type JSONserializable =
   | IJSONSerializable
   | IJSONSerializable[]
-  | Map<string, IJSONSerializable>;
+  | { [key: string]: IJSONSerializable };
 export interface APIRequestParams {
   uri: `/${string}`;
   queryParams?: string;
@@ -48,17 +48,18 @@ export interface APIRequestParams {
   options?: AxiosRequestConfig;
 }
 
+export interface APIPayload {
+  [key: string]: JSONserializable;
+}
 export interface APIGetRequestParams extends APIRequestParams {}
-export interface APIPostRequestParams<T extends Map<string, JSONserializable>>
+export interface APIPostRequestParams<T extends APIPayload>
   extends APIRequestParams {
   payload?: T;
 }
 
 export interface APIHttpClient {
   get<T>(params: APIGetRequestParams): Promise<T>;
-  post<T, D extends Map<string, JSONserializable>>(
-    params: APIPostRequestParams<D>,
-  ): Promise<T>;
+  post<T, D extends APIPayload>(params: APIPostRequestParams<D>): Promise<T>;
 }
 
 // Implementation
@@ -106,7 +107,7 @@ class HTTPClient implements APIHttpClient {
         .catch((err) => reject(err));
     });
 
-  post = async <T, D extends Map<string, JSONserializable>>({
+  post = async <T, D extends APIPayload>({
     uri,
     queryParams,
     payload,
