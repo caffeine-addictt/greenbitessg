@@ -1,4 +1,4 @@
-// Backend API
+// Shared API Types
 //
 // Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //

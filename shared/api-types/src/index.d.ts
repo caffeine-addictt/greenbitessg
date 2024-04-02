@@ -17,6 +17,7 @@
 
 import * as errors from '@errors';
 import * as auth from '@auth';
+import httpMethods from '@http-methods';
 
 export type SuccessResponse<T> = {
   status: 200;
@@ -27,5 +28,6 @@ export type ErrorResponse<T extends errors.CustomErrorContext> = {
   status: errors.HTTPErrorCode;
   errors: (T | errors.CustomErrorContext)[];
 };
+    };
 
-export { auth, errors };
+export { auth, errors, httpMethods };

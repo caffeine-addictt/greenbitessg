@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import path from 'path';
-import Methods from './utils/http-methods';
+import type { httpMethods } from 'caffeine-addictt-fullstack-api-types';
 import type { Request, Response, NextFunction } from 'express';
 
 // Importing route handlers
@@ -37,7 +37,7 @@ export interface RouteDetailsCaching extends RouteDetailsHandler {
   prefix: string;
 }
 export type RouteDetails = RouteDetailsHandler | RouteDetailsCaching;
-export type RouteHandlers = { [M in Methods]?: RouteDetails };
+export type RouteHandlers = { [M in httpMethods]?: RouteDetails };
 export type RoutingMap = {
   [uri: `/${string}`]: RouteHandlers;
 };
