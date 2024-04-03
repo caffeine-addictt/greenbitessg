@@ -18,7 +18,11 @@
 import express from 'express';
 
 import routeMap, { RoutingMap } from '../route-map';
-import { ErrorResponse, errors } from '@caffeine-addictt/fullstack-api-types';
+import {
+  ErrorResponse,
+  SuccessResponse,
+  errors,
+} from '@caffeine-addictt/fullstack-api-types';
 
 // Types
 export type CustomErrorCode = Exclude<
@@ -137,8 +141,8 @@ export const methodNotFoundHandler = (
   if (req.method == 'OPTIONS')
     return res.status(200).json({
       status: 200,
-      errors: [{ message: allowedMethods }],
-    } satisfies ErrorResponse);
+      data: allowedMethods,
+    } satisfies SuccessResponse<string>);
   else
     return res.status(405).json({
       status: 405,
