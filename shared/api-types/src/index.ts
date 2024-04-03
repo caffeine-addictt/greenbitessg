@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as auth from '@auth';
-import * as errors from '@errors';
-import * as schemas from '@schemas';
-import httpMethods from '@http-methods';
+import * as auth from './auth';
+import * as errors from './errors';
+import * as schemas from './schemas';
+import httpMethods from './http-methods';
 
 export type SuccessResponse<T, N = 200> = {
   status: N;

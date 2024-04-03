@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import httpMethods from '@http-methods';
+import httpMethods from './http-methods';
 
 /**
  * Hypertext Transfer Protocol (HTTP) error response status codes.

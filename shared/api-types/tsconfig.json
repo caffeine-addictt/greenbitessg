@@ -7,10 +7,7 @@
     "strict": true,
     "composite": true,
     "declarationMap": true,
-    "outDir": "dist",
-    "paths": {
-      "@*": ["./src/*"]
-    }
+    "outDir": "dist"
   },
   "include": ["src"]
 }
