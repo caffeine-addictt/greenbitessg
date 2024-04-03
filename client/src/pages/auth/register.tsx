@@ -22,7 +22,7 @@ import type { PageComponent } from '@pages/route-map';
 
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm, useFormState } from 'react-hook-form';
+import { useForm, useFormState } from 'react-hook-form';
 
 import {
   Form,
@@ -39,7 +39,7 @@ import { Button } from '@components/ui/button';
 
 import httpClient from '@utils/http';
 import { auth, schemas } from '@caffeine-addictt/fullstack-api-types';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Page
 const RegisterPage: PageComponent = ({
@@ -92,19 +92,34 @@ const RegisterPage: PageComponent = ({
   );
 
   // Handling submiting
-  const handleSubmit: SubmitHandler<
-    z.infer<typeof registerFormSchema>
-  > = async (data) => {
-    // TODO: Implement axios to create a new account
-    return data;
-  };
+  const { mutate: createAccount } = useMutation(
+    {
+      mutationFn: async (data: z.infer<typeof registerFormSchema>) => {
+        const res = await httpClient
+          .post<
+            auth.RegisterSuccAPI,
+            typeof data
+          >({ uri: '/register', payload: data })
+          .catch((err) => console.log(err));
+        if (res) {
+          // TODO: Render toast
+          // TODO: Redirect to login
+          return res.data.created;
+        }
+
+        // TODO: Handle error
+        return false;
+      },
+    },
+    queryClient,
+  );
 
   return (
     <div {...props} className={cn(className, 'flex-col pt-10 items-center')}>
       <h1 className="text-2xl font-bold">Register</h1>
       <Form {...registerForm}>
         <form
-          onSubmit={registerForm.handleSubmit(handleSubmit)}
+          onSubmit={registerForm.handleSubmit((data) => createAccount(data))}
           className="space-y-4"
         >
           <FormField
