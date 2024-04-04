@@ -1,4 +1,5 @@
-// Root page for the Frontend App
+// Tailwind helper for Frontend App
+// Should only be used for requests to the backend API or risk an XSS vulnerability.
 //
 // Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //
@@ -15,9 +16,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PageComponent } from '@pages/route-map';
+import clsx, { ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-const RootPage: PageComponent = (props) => {
-  return <div {...props}>hi</div>;
+/**
+ * Classess with a higher index overwrite classes with a lower index
+ * * `cn( 'bg-red', 'bg-black' ) -> 'bg-black'`
+ *
+ * @param classes - Classes to merge
+ * @returns Merged classes
+ */
+export const cn = (...classes: ClassValue[]) => {
+  return twMerge(clsx(...classes));
 };
-export default RootPage;

@@ -1,6 +1,6 @@
-// Root page for the Frontend App
+// Shared API Types
 //
-// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
+// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,9 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PageComponent } from '@pages/route-map';
+import type { SuccessResponse, ErrorResponse } from './index';
 
-const RootPage: PageComponent = (props) => {
-  return <div {...props}>hi</div>;
-};
-export default RootPage;
+/**
+ * Successful response for /v1/availability endpoint
+ */
+export interface AvailabilityAPI
+  extends SuccessResponse<{ available: boolean }> {}
+
+/**
+ * Successful response for /v1/register endpoint
+ */
+export interface RegisterSuccAPI
+  extends SuccessResponse<{ created: boolean }, 201> {}
+export type RegisterFailAPI = ErrorResponse<
+  | 'Username already exists'
+  | 'Email already exists'
+  | 'Email could not be reached'
+  | 'Username is not valid'
+  | 'Email is not valid'
+  | 'Password is not valid'
+>;

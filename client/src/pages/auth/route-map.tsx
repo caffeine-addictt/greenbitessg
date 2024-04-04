@@ -1,4 +1,4 @@
-// Root page for the Frontend App
+// Register page for the Frontend App
 //
 // Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //
@@ -15,9 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PageComponent } from '@pages/route-map';
+import type { RouteMap } from '@pages/route-map';
 
-const RootPage: PageComponent = (props) => {
-  return <div {...props}>hi</div>;
-};
-export default RootPage;
+// Import pages
+import RegisterPage from './register';
+
+const routeMap: RouteMap = {
+  '/register': { title: 'Register', component: RegisterPage },
+} as const;
+export default routeMap;

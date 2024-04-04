@@ -1,4 +1,4 @@
-// Root page for the Frontend App
+// Backend API v1
 //
 // Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
 //
@@ -15,9 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PageComponent } from '@pages/route-map';
+import type {
+  RoutingMap as IndexRoutingMap,
+  RouteHandlers,
+} from '../route-map';
+interface RoutingMap extends IndexRoutingMap {
+  [path: `/v1/${string}`]: RouteHandlers;
+}
 
-const RootPage: PageComponent = (props) => {
-  return <div {...props}>hi</div>;
-};
-export default RootPage;
+// Import endpoints
+import { availability } from './auth';
+
+const routeMap: RoutingMap = {
+  '/v1/availability': {
+    GET: { handler: availability, caching: 60000, prefix: 'availability' },
+  },
+} as const;
+
+export default routeMap;

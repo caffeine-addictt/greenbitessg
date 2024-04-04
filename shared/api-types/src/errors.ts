@@ -1,6 +1,6 @@
-// Backend API
+// Shared API Types
 //
-// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
+// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,11 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import httpMethods from './http-methods';
+
 /**
  * Hypertext Transfer Protocol (HTTP) error response status codes.
  * @see {@link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes}
  */
-enum HttpStatusCode {
+export enum HttpErrorCode {
   /**
    * The server cannot or will not process the request due to an apparent client error
    * (e.g., malformed request syntax, too large size, invalid request message framing, or deceptive request routing).
@@ -248,4 +250,48 @@ enum HttpStatusCode {
   NETWORK_AUTHENTICATION_REQUIRED = 511,
 }
 
-export default HttpStatusCode;
+export interface ErrorContext {
+  [x: string]: unknown;
+}
+
+export type HintedString<KnownTypes extends string> =
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  (string & {}) | KnownTypes;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type CustomErrorContext<T = string & {}> = {
+  message: HintedString<T extends string ? T : string>;
+  context?: ErrorContext;
+};
+
+export type SuccessResponse<T> = {
+  status: 200;
+  data: T;
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type ErrorResponse<T = string & {}> =
+  | {
+      status: HttpErrorCode;
+      errors: T extends string
+        ? CustomErrorContext<T>[]
+        : // eslint-disable-next-line @typescript-eslint/ban-types
+          CustomErrorContext<string & {}>[];
+    }
+  | {
+      status: 429;
+      errors: [CustomErrorContext<'Too many requests, please try again later'>];
+    }
+  | {
+      status: 500;
+      errors: CustomErrorContext<'Something went wrong!'>[];
+    }
+  | {
+      status: 404;
+      errors: [CustomErrorContext<`/${string} is not implemented!`>];
+    }
+  | {
+      status: 405;
+      errors: [
+        CustomErrorContext<`The ${keyof typeof httpMethods} method is not allowed for this endpoint!`>,
+      ];
+    };

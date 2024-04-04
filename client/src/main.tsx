@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import ReactDOM from 'react-dom/client';
 import { useLocation, Route, Routes, BrowserRouter } from 'react-router-dom';
 import '@styles/globals.css';
@@ -35,7 +37,7 @@ export const WrappedComponent = ({
     <Helmet>
       <title>{title}</title>
     </Helmet>
-    <Component />
+    <Component className="flex w-full max-w-full grow" />
   </>
 );
 
@@ -46,13 +48,17 @@ export const Layout = (): JSX.Element => {
     <main className="flex min-h-screen min-w-full max-w-full flex-col">
       <Navbar location={location} isAdmin />
 
-      <div className="flex w-full max-w-full grow">
+      <QueryClientProvider client={new QueryClient()}>
         <Routes location={location}>
-          {Object.entries(routes).map(([path, details]) => (
-            <Route path={path} element={<WrappedComponent {...details} />} />
+          {Object.entries(routes).map(([path, details], i) => (
+            <Route
+              key={i}
+              path={path}
+              element={<WrappedComponent {...details} />}
+            />
           ))}
         </Routes>
-      </div>
+      </QueryClientProvider>
 
       <Footer location={location} isAdmin />
     </main>

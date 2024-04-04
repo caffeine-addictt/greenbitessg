@@ -11,5 +11,10 @@
     "skipLibCheck": true,
     "baseUrl": "."
   },
-  "include": ["src/*", "src/types/*"]
+  "include": ["src/*", "src/types/*"],
+  "references": [
+    {
+      "path": "../shared/api-types/"
+    }
+  ]
 }

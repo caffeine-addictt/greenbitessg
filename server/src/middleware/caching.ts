@@ -18,7 +18,7 @@
 import express from 'express';
 import memCache from 'memory-cache';
 
-import Methods from '../utils/http-methods';
+import { httpMethods } from '@caffeine-addictt/fullstack-api-types';
 
 // Config
 const cacheTime = 10000 as const; // 10seconds
@@ -30,7 +30,7 @@ const cacheTime = 10000 as const; // 10seconds
 export const CachableCode: number[] = [
   200, 203, 204, 206, 300, 301, 404, 405, 410, 414, 501,
 ] as const;
-export const CachableMethod: Array<keyof typeof Methods> = [
+export const CachableMethod: Array<keyof typeof httpMethods> = [
   'GET',
   'HEAD',
   'OPTIONS',
@@ -50,7 +50,7 @@ const iCachingMiddleware = (
   ignoreRFC: boolean = false,
 ) => {
   const cachableMethod = CachableMethod.includes(
-    req.method.toUpperCase() as keyof typeof Methods,
+    req.method.toUpperCase() as keyof typeof httpMethods,
   );
   const key = `${prefix}${req.originalUrl || req.url}${req.method}`;
 
