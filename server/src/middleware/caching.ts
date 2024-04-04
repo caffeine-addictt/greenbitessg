@@ -83,7 +83,7 @@ const iCachingMiddleware = (
     return res.sendResponse(body);
   };
 
-  next();
+  return next();
 };
 
 export const routeCachingMiddleware =
