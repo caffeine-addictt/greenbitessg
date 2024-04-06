@@ -15,7 +15,7 @@ fi
 # Verify that it is not already synced
 if [[ $(./check_sync.sh) ]]; then
   echo "Shared/api-types already synced! :D"
-  exit 1
+  exit 0
 fi
 
 # Create directories (if does not exist)
