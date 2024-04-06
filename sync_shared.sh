@@ -44,8 +44,11 @@ mv server/src/lib/src server/src/lib/api-types
 # Store staged
 STAGED="$(git diff --staged --name-only)"
 
-# Unstage all
-git restore --staged $STAGED
+# Unstage all (if needed)
+if [[ $STAGED ]]; then
+  echo "Caching adn removing staged commits"
+  git restore --staged $STAGED
+fi
 
 # Add new changes
 git add client/src/lib/api-types
@@ -55,5 +58,7 @@ git commit -m "chore(sync): Sync shared/api-types
 
 Co-authored-by: AlexNg <contact@ngjx.org>"
 
-# Restore staged files
-git add $STAGED
+# Restore staged files (if needed)
+if [[ $STAGED ]]; then
+  git add $STAGED
+fi
