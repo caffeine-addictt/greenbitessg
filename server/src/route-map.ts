@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import path from 'path';
-import type { httpMethods } from '@caffeine-addictt/fullstack-api-types';
+import type { httpMethods } from './lib/api-types';
 import type { Request, Response, NextFunction } from 'express';
 
 // Importing route handlers

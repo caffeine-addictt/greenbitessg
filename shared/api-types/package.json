@@ -1,12 +1,8 @@
 {
-  "name": "@caffeine-addictt/fullstack-api-types",
-  "version": "1.0.0",
   "private": true,
-  "source": "src/index.ts",
   "main": "src/index.ts",
-  "module": "src/index.ts",
   "files": [
-    "dist"
+    "src"
   ],
   "scripts": {
     "build": "tsc",

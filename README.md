@@ -51,6 +51,7 @@
         <li><a href="#linting">Linting</a></li>
         <li><a href="#testing">Testing</a></li>
         <li><a href="#building">Building</a></li>
+        <li><a href="#syncing-shared">Syncing</a></li>
         <li><a href="#running-commands">Running commands</a></li>
       </ul>
     </li>
@@ -137,7 +138,7 @@ npm run dev
 ## Documentation
 
 You can find the front-end app in the `client/` directory and the back-end API in the `server/` directory.
-API types are shared in the `shared/api-types/` directory and can be imported with `npm i -D @repo-utils/api-types`.
+API types are shared in the `shared/api-types/` directory and needs to be cloned to client and server with `npm run sync`.
 
 ### Installing dependencies
 
@@ -183,6 +184,14 @@ npm run test:server # Run tests on server
 npm run build        # Build all packages
 npm run build:client # Build the client
 npm run build:server # Build the server
+```
+
+### Syncing shared
+
+```sh
+npm run sync       # Sync shared dependencies
+npm run sync:check # Check if shared dependencies are synced
+
 ```
 
 ### Running commands

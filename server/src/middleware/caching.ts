@@ -18,7 +18,7 @@
 import express from 'express';
 import memCache from 'memory-cache';
 
-import { httpMethods } from '@caffeine-addictt/fullstack-api-types';
+import { httpMethods } from '../lib/api-types';
 
 // Config
 const cacheTime = 10000 as const; // 10seconds
@@ -83,7 +83,7 @@ const iCachingMiddleware = (
     return res.sendResponse(body);
   };
 
-  next();
+  return next();
 };
 
 export const routeCachingMiddleware =
