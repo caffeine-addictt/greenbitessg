@@ -50,6 +50,9 @@ if [[ $STAGED ]]; then
   git restore --staged $STAGED
 fi
 
+# Format code
+npm run lint:fix
+
 # Add new changes
 git add client/src/lib/api-types
 git add server/src/lib/api-types
