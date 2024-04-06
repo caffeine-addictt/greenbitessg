@@ -12,6 +12,12 @@ if [[ ! -d "shared/api-types" ]]; then
   exit 1
 fi
 
+# Verify that it is not already synced
+if [[ $(./check_sync.sh) ]]; then
+  echo "Shared/api-types already synced! :D"
+  exit 1
+fi
+
 # Create directories (if does not exist)
 mkdir -p client/src/lib
 mkdir -p server/src/lib
