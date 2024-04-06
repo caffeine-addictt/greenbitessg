@@ -6,6 +6,16 @@ if [[ ! -d "client" || ! -d "server" || ! -d "shared" ]]; then
   exit 1
 fi
 
+# Verify flags
+case $1 in
+"--with-commit") WITH_COMMIT=1 ;;
+"") WITH_COMMIT=0 ;;
+*)
+  echo "Only --with-commit flag is supported"
+  exit 1
+  ;;
+esac
+
 # Verify api-types exists
 if [[ ! -d "shared/api-types" ]]; then
   echo "Shared/api-types not found"
@@ -13,9 +23,10 @@ if [[ ! -d "shared/api-types" ]]; then
 fi
 
 # Verify that it is not already synced
-if [[ $(./check_sync.sh) ]]; then
+IS_SYNCED=$(./check_sync.sh)
+if [[ $? -eq 0 ]]; then
   echo "Shared/api-types already synced! :D"
-  exit 1
+  exit 0
 fi
 
 # Create directories (if does not exist)
@@ -41,6 +52,14 @@ cp -r shared/api-types/src server/src/lib/
 mv client/src/lib/src client/src/lib/api-types
 mv server/src/lib/src server/src/lib/api-types
 
+# Check whether we should commit
+if [[ $WITH_COMMIT -eq 0 ]]; then
+  echo "Skipping commit"
+  exit 0
+fi
+
+echo "Committing changes"
+
 # Store staged
 STAGED="$(git diff --staged --name-only)"
 
@@ -49,6 +68,9 @@ if [[ $STAGED ]]; then
   echo "Caching adn removing staged commits"
   git restore --staged $STAGED
 fi
+
+# Format code
+npm run lint:fix
 
 # Add new changes
 git add client/src/lib/api-types
