@@ -17,8 +17,8 @@
 
 import { ZodIssue } from 'zod';
 import { RouteHandler } from '../route-map';
-import { auth, errors, schemas } from '@caffeine-addictt/fullstack-api-types';
-import { HttpErrorCode } from '@caffeine-addictt/fullstack-api-types/src/errors';
+import { auth, errors, schemas } from '../lib/api-types';
+import { HttpErrorCode } from '../lib/api-types/errors';
 
 // Availability
 export const availability: RouteHandler = (_, res) => {

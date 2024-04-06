@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import rateLimit from 'express-rate-limit';
-import type { ErrorResponse } from '@caffeine-addictt/fullstack-api-types';
+import type { ErrorResponse } from '../lib/api-types';
 
 export default rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
