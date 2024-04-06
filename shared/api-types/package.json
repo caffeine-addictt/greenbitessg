@@ -1,19 +1,21 @@
 {
-  "name": "@repo-utils/api-types",
-  "version": "1.0.0",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
   "files": [
-    "dist"
+    "src"
   ],
   "scripts": {
     "build": "tsc",
-    "lint": "eslint --ext .ts,.js src",
-    "lint:fix": "eslint --ext .ts,.js src --fix"
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0 --cache",
+    "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --cache --fix"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.5.0",
+    "@typescript-eslint/parser": "^7.5.0",
     "eslint": "^8.57.0",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.4"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
   }
 }

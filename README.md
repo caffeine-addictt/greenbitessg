@@ -1,9 +1,6 @@
 <!-- Allow inline html -->
 <!-- markdownlint-disable MD033 -->
 
-<!-- Allow consecutive blank lines -->
-<!-- markdownlint-disable MD012 -->
-
 <!-- Ignore line length -->
 <!-- markdownlint-disable MD013 -->
 
@@ -11,8 +8,6 @@
 <!-- markdownlint-disable MD041 -->
 
 <a name="readme-top"></a>
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -32,8 +27,6 @@
     <a href="https://github.com/caffeine-addictt/nyp_y2_fullstack/issues">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -58,6 +51,7 @@
         <li><a href="#linting">Linting</a></li>
         <li><a href="#testing">Testing</a></li>
         <li><a href="#building">Building</a></li>
+        <li><a href="#syncing-shared">Syncing</a></li>
         <li><a href="#running-commands">Running commands</a></li>
       </ul>
     </li>
@@ -74,9 +68,8 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 ![Social Card](images/socialcard.png)
@@ -85,29 +78,26 @@ later
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 ### Built with
 
 These are the major frameworks and libraries used in this project.
 
-* ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
-* ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-* ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-* ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-* ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-* ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
-* ![Nodemon](https://img.shields.io/badge/NODEMON-%23323330.svg?style=for-the-badge&logo=nodemon&logoColor=%BBDEAD)
-* ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
-* ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-* ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
-* ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+- ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+- ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+- ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+- ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+- ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+- ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
+- ![Nodemon](https://img.shields.io/badge/NODEMON-%23323330.svg?style=for-the-badge&logo=nodemon&logoColor=%BBDEAD)
+- ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
+- ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+- ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
+- ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 This is an example of how you can set up your project locally.
@@ -115,8 +105,8 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-* Node v21.6.1
-* NPM v10.4.0
+- Node v21.6.1
+- NPM v10.4.0
 
 ### Installation
 
@@ -127,7 +117,7 @@ _Below is an example of how you can install the project locally._
 ```sh
 git clone https://github.com/caffeine-addictt/nyp_y2_fullstack
 cd nyp_y2_fullstack
-  ```
+```
 
 #### 2. Install Dependencies
 
@@ -143,13 +133,12 @@ npm run dev
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- DOCS -->
+
 ## Documentation
 
 You can find the front-end app in the `client/` directory and the back-end API in the `server/` directory.
-API types are shared in the `shared/api-types/` directory and can be imported with `npm i -D @repo-utils/api-types`.
+API types are shared in the `shared/api-types/` directory and needs to be cloned to client and server with `npm run sync`.
 
 ### Installing dependencies
 
@@ -168,15 +157,17 @@ npm run dev:server # Run development server on server
 ### Linting
 
 ```sh
-npm run lint        # Run linting on all packages
-npm run lint:client # Run linting on client
-npm run lint:server # Run linting on server
+npm run lint        # Run ESLint and Prettier on the whole project
+npm run lint:eslint # Run ESLint on all packages
+npm run lint:client # Run ESLint on client
+npm run lint:server # Run ESLint on server
 ```
 
 ```sh
-npm run lint:fix        # Run linting on all packages and fix any linting errors
-npm run lint:client:fix # Run linting on client and fix any linting errors
-npm run lint:server:fix # Run linting on server and fix any linting errors
+npm run lint:fix        # Run ESLint and Prettier on the whole project
+npm run lint:eslint:fix # Run ESLint on all packages and fix any linting errors
+npm run lint:client:fix # Run ESLint on client and fix any linting errors
+npm run lint:server:fix # Run ESLint on server and fix any linting errors
 ```
 
 ### Testing
@@ -195,12 +186,20 @@ npm run build:client # Build the client
 npm run build:server # Build the server
 ```
 
+### Syncing shared
+
+```sh
+npm run sync       # Sync shared dependencies
+npm run sync:check # Check if shared dependencies are synced
+
+```
+
 ### Running commands
 
 We use NPM workspaces to share updates to the client and server packages.
 You can use the `-w` flag to run a command in a workspace with the path.
 
-#### For example:
+#### For example
 
 ```sh
 npm i tailwindcss -w server # Installs the tailwindcss package in the server workspace
@@ -210,9 +209,8 @@ npm uninstall vite -w client # Uninstalls the vite package in the client workspa
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. ( ˶ˆᗜˆ˵ )
@@ -226,26 +224,27 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- COMMIT GUIDELINES -->
+
 ### Commit Message Guidelines
 
 When committing, commit messages are prefixed with one of the following depending on the type of change made.
 
-* `feat:` when a new feature is introduced with the changes.
-* `fix:` when a bug fix has occurred.
-* `chore:` for changes that do not relate to a fix or feature and do not modify _source_ or _tests_. (like updating dependencies)
-* `refactor:` for refactoring code that neither fixes a bug nor adds a feature.
-* `docs:` when changes are made to documentation.
-* `style:` when changes that do not affect the code, but modify formatting.
-* `test:` when changes to tests are made.
-* `perf:` for changes that improve performance.
-* `ci:` for changes that affect CI.
-* `build:` for changes that affect the build system or external dependencies.
-* `revert:` when reverting changes.
+- `feat:` when a new feature is introduced with the changes.
+- `fix:` when a bug fix has occurred.
+- `chore:` for changes that do not relate to a fix or feature and do not modify _source_ or _tests_. (like updating dependencies)
+- `refactor:` for refactoring code that neither fixes a bug nor adds a feature.
+- `docs:` when changes are made to documentation.
+- `style:` when changes that do not affect the code, but modify formatting.
+- `test:` when changes to tests are made.
+- `perf:` for changes that improve performance.
+- `ci:` for changes that affect CI.
+- `build:` for changes that affect the build system or external dependencies.
+- `revert:` when reverting changes.
 
 A parenthesis can be placed after the type of change to indicate the scope of the change. Below list some example commit messages.
 
@@ -255,21 +254,19 @@ git commit -m "revert(server): Fall back to old typing"
 git commit -m "docs: Moved README.md"
 ```
 
-See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- PR GUIDELINES -->
+
 ### Pull Request Guidelines
 
 When creating a pull request, please use our PR template and follow the checklist provided.
 
 We require the following CI to pass before the PR can be merged:
 
-* Linting
-* Tests
+- Linting
+- Tests
+- Client and Server Preview Deployments
 
 #### Linting locally
 
@@ -281,34 +278,31 @@ You can test locally by running `npm run test` in the root of the project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- LICENSE -->
+
 ## License
 
-Distributed under the MIT License. See [LICENSE.txt](./LICENSE.txt) for more information.
+Distributed under the GNU General Public License version 3.0. See [LICENSE.txt](./LICENSE.txt) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Jun Xiang - [contact@ngjx.org](mailto:contact@ngjx.org)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
-* [Repository Template](https://github.com/caffeine-addictt/template)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
+- [Repository Template](https://github.com/caffeine-addictt/template)
+- [Choose an Open Source License](https://choosealicense.com)
+- [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
+- [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
+- [Malven's Grid Cheatsheet](https://grid.malven.co/)
+- [Img Shields](https://shields.io)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
