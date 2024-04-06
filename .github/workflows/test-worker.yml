@@ -36,6 +36,25 @@ jobs:
           set -xe
           npm run test
 
+  synced:
+    name: Ensure synced
+    runs-on: ubuntu-latest
+    needs: [tests]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4.0.2
+        with:
+          cache: npm
+
+      - name: Ensure synced
+        run: |
+          set -xe
+          npm run sync:check
+
   # It is recommended to require this check to pass before merging a pull request
   check:
     if: always()
