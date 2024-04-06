@@ -38,7 +38,7 @@ import { Switch } from '@components/ui/switch';
 import { Button } from '@components/ui/button';
 
 import httpClient from '@utils/http';
-import { auth, schemas } from '@caffeine-addictt/fullstack-api-types';
+import { auth, schemas } from '@lib/api-types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Page

@@ -17,11 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import axios, { type AxiosRequestConfig } from 'axios';
-import type {
-  errors,
-  SuccessResponse,
-  ErrorResponse,
-} from '@caffeine-addictt/fullstack-api-types';
+import type { errors, SuccessResponse, ErrorResponse } from '@lib/api-types';
 
 // Config
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
