@@ -13,7 +13,8 @@ if [[ ! -d "shared/api-types" ]]; then
 fi
 
 # Verify that it is not already synced
-if [[ $(./check_sync.sh) -eq 0 ]]; then
+IS_SYNCED=$(./check_sync.sh)
+if [[ $? -eq 0 ]]; then
   echo "Shared/api-types already synced! :D"
   exit 0
 fi
