@@ -20,10 +20,13 @@
     "lint:server:fix": "npm run lint:fix --workspace=server",
     "lint:eslint:fix": "npm run lint:fix --workspaces --if-present",
     "lint:prettier:fix": "prettier . --write --cache --cache-strategy=metadata",
-    "lint:fix": "echo \"Formatting code\" && npm run lint:eslint:fix && npm run lint:prettier:fix"
+    "lint:fix": "echo \"Formatting code\" && npm run lint:eslint:fix && npm run lint:prettier:fix",
+    "sync": "./sync_shared.sh",
+    "sync:check": "./check_sync.sh"
   },
   "pre-commit": [
-    "lint"
+    "lint",
+    "sync:check"
   ],
   "devDependencies": {
     "concurrently": "^8.2.2",
