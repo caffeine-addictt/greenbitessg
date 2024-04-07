@@ -86,11 +86,6 @@ const iCachingMiddleware = (
   return next();
 };
 
-export const routeCachingMiddleware =
-  (prefix: string, time?: number, ignoreRFC?: boolean) =>
-  (req: express.Request, res: express.Response, next: express.NextFunction) =>
-    iCachingMiddleware(req, res, next, `__route_${prefix}__`, time, ignoreRFC);
-
 const cachingMiddleware = (
   req: express.Request,
   res: express.Response,
