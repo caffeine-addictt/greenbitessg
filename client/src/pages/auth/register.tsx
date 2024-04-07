@@ -120,7 +120,7 @@ const RegisterPage: PageComponent = ({
       <Form {...registerForm}>
         <form
           onSubmit={registerForm.handleSubmit((data) => createAccount(data))}
-          className="space-y-4"
+          className="w-[26.5rem] space-y-4"
         >
           <FormField
             control={registerForm.control}
