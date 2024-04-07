@@ -17,6 +17,24 @@
 
 import * as z from 'zod';
 
+export const loginFormSchema = z.object({
+  email: z
+    .string({
+      invalid_type_error: 'Please provide an email!',
+      required_error: 'Please provide an email!',
+    })
+    .min(1, { message: 'Please provide an email!' })
+    .email({
+      message: 'Email is not valid!',
+    }),
+  password: z
+    .string({
+      invalid_type_error: 'Please provide a password!',
+      required_error: 'Please provide a password!',
+    })
+    .min(1, { message: 'Please provide a password!' }),
+});
+
 export const registerFormSchema = z
   .object({
     username: z

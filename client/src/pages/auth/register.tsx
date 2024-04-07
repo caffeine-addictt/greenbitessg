@@ -99,7 +99,7 @@ const RegisterPage: PageComponent = ({
           .post<
             auth.RegisterSuccAPI,
             typeof data
-          >({ uri: '/register', payload: data })
+          >({ uri: '/auth/register', payload: data })
           .catch((err) => console.log(err));
         if (res) {
           // TODO: Render toast

@@ -36,3 +36,15 @@ export type RegisterFailAPI = ErrorResponse<
   | 'Email is not valid'
   | 'Password is not valid'
 >;
+
+/**
+ * Response for /v1/login endpoint
+ */
+export interface LoginSuccAPI
+  extends SuccessResponse<{ access_token: string; refresh_token: string }> {}
+export type LoginFailAPI = ErrorResponse<
+  | 'Please provide an email'
+  | 'Please provide a password'
+  | 'Email is not valid'
+  | 'Invalid email or password'
+>;
