@@ -24,11 +24,17 @@ interface RoutingMap extends IndexRoutingMap {
 }
 
 // Import endpoints
-import { availability } from './auth';
+import { login, register, availability } from './auth';
 
 const routeMap: RoutingMap = {
+  '/v1/auth/login': {
+    POST: { handler: login },
+  },
+  '/v1/auth/register': {
+    POST: { handler: register },
+  },
   '/v1/availability': {
-    GET: { handler: availability, caching: 60000, prefix: 'availability' },
+    GET: { handler: availability },
   },
 } as const;
 

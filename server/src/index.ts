@@ -21,15 +21,13 @@ import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 
-import routeMap, { isCachingHandler } from './route-map';
+import routeMap from './route-map';
 import {
   errorHandler,
   notfoundHandler,
   methodNotFoundHandler,
 } from './middleware/errors';
-import cachingMiddleware, {
-  routeCachingMiddleware,
-} from './middleware/caching';
+import cachingMiddleware from './middleware/caching';
 import rateLimitMiddleware from './middleware/rate-limiting';
 
 const app = express();
@@ -55,10 +53,6 @@ app.use('/static', express.static('public'));
 Object.entries(routeMap).forEach(([route, methods]) => {
   Object.entries(methods).forEach(([method, detail]) => {
     const stack = [detail!.handler];
-    if (isCachingHandler(detail))
-      stack.unshift(
-        routeCachingMiddleware(detail.prefix, detail.caching, true),
-      );
 
     switch (method) {
       case 'GET':

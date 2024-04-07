@@ -99,7 +99,7 @@ const RegisterPage: PageComponent = ({
           .post<
             auth.RegisterSuccAPI,
             typeof data
-          >({ uri: '/register', payload: data })
+          >({ uri: '/auth/register', payload: data })
           .catch((err) => console.log(err));
         if (res) {
           // TODO: Render toast
@@ -120,7 +120,7 @@ const RegisterPage: PageComponent = ({
       <Form {...registerForm}>
         <form
           onSubmit={registerForm.handleSubmit((data) => createAccount(data))}
-          className="space-y-4"
+          className="w-[26.5rem] space-y-4"
         >
           <FormField
             control={registerForm.control}
