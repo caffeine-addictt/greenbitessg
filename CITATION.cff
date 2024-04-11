@@ -12,7 +12,7 @@ cff-version: 1.2.0
 date-released: yyyy-mm-dd
 keywords:
   -
-license: GPL-3.0+
+license: GPL-3.0
 message: If you use this software, please cite it using these metadata.
 repository-code: https://github.com/caffeine-addictt/nyp_y2_fullstack
 title: thread
