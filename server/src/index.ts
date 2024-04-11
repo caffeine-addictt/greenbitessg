@@ -1,19 +1,8 @@
-// Backend API
-//
-// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
 
 import cors from 'cors';
 import morgan from 'morgan';
@@ -21,15 +10,13 @@ import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 
-import routeMap, { isCachingHandler } from './route-map';
+import routeMap from './route-map';
 import {
   errorHandler,
   notfoundHandler,
   methodNotFoundHandler,
 } from './middleware/errors';
-import cachingMiddleware, {
-  routeCachingMiddleware,
-} from './middleware/caching';
+import cachingMiddleware from './middleware/caching';
 import rateLimitMiddleware from './middleware/rate-limiting';
 
 const app = express();
@@ -55,10 +42,6 @@ app.use('/static', express.static('public'));
 Object.entries(routeMap).forEach(([route, methods]) => {
   Object.entries(methods).forEach(([method, detail]) => {
     const stack = [detail!.handler];
-    if (isCachingHandler(detail))
-      stack.unshift(
-        routeCachingMiddleware(detail.prefix, detail.caching, true),
-      );
 
     switch (method) {
       case 'GET':

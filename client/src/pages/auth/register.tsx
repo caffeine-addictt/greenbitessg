@@ -1,19 +1,8 @@
-// Register page for the Frontend App
-//
-// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
 
 import * as React from 'react';
 import { useState } from 'react';
@@ -99,7 +88,7 @@ const RegisterPage: PageComponent = ({
           .post<
             auth.RegisterSuccAPI,
             typeof data
-          >({ uri: '/register', payload: data })
+          >({ uri: '/auth/register', payload: data })
           .catch((err) => console.log(err));
         if (res) {
           // TODO: Render toast
@@ -120,7 +109,7 @@ const RegisterPage: PageComponent = ({
       <Form {...registerForm}>
         <form
           onSubmit={registerForm.handleSubmit((data) => createAccount(data))}
-          className="space-y-4"
+          className="w-[26.5rem] space-y-4"
         >
           <FormField
             control={registerForm.control}

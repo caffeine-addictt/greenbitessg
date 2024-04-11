@@ -10,10 +10,10 @@
     "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --cache --fix"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.5.0",
-    "@typescript-eslint/parser": "^7.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
     "eslint": "^8.57.0",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "zod": "^3.22.4"

@@ -1,19 +1,8 @@
-// Backend API v1
-//
-// Copyright (C) 2024 Ng Jun Xiang <contact@ngjx.org>.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
 
 import { ZodIssue } from 'zod';
 import { RouteHandler } from '../route-map';
@@ -23,12 +12,67 @@ import { HttpErrorCode } from '../lib/api-types/errors';
 // Availability
 export const availability: RouteHandler = (_, res) => {
   // TODO: Implement query to DB
-  res.status(200).json({
+  return res.status(200).json({
     status: 200,
     data: {
       available: false,
     },
   } satisfies auth.AvailabilityAPI);
+};
+
+// Login
+export const login: RouteHandler = async (req, res) => {
+  // Validate request body
+  const validated = schemas.loginFormSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(HttpErrorCode.BAD_REQUEST).json({
+      status: HttpErrorCode.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.LoginFailAPI);
+  }
+
+  // TODO: Implement query to DB (email)
+  const user = true;
+  if (!user) {
+    return res.status(errors.HttpErrorCode.BAD_REQUEST).json({
+      status: errors.HttpErrorCode.BAD_REQUEST,
+      errors: [{ message: 'Invalid email or password' }],
+    } satisfies auth.LoginFailAPI);
+  }
+
+  // TODO: Hash password
+
+  // TODO: Compare password hashes
+  const passwordsMatch = true;
+  if (!passwordsMatch) {
+    return res.status(errors.HttpErrorCode.BAD_REQUEST).json({
+      status: errors.HttpErrorCode.BAD_REQUEST,
+      errors: [{ message: 'Invalid email or password' }],
+    } satisfies auth.LoginFailAPI);
+  }
+
+  // TODO: Generate JWT access & refresh token
+  const accessToken = 'access token';
+  const refreshToken = 'refresh token';
+
+  return res.status(200).json({
+    status: 200,
+    data: {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    },
+  } satisfies auth.LoginSuccAPI);
 };
 
 // Registering

@@ -3,7 +3,8 @@
   "scripts": {
     "dev:client": "npm run dev --workspace=client",
     "dev:server": "npm run dev --workspace=server",
-    "dev": "concurrently -c green,blue \"npm:dev:*\"",
+    "dev": "concurrently -c green,blue,pink \"npm:dev:*\" \"npm:watch:shared\"",
+    "watch:shared": "nodemon -w ./shared/api-types -e ts -x \"./sync_shared.sh\"",
     "build:client": "npm run build --workspace=client",
     "build:server": "npm run build --workspace=server",
     "build": "npm run build --workspaces --if-present",
@@ -20,7 +21,7 @@
     "lint:eslint:fix": "npm run lint:fix --workspaces --if-present",
     "lint:prettier:fix": "prettier . --write --cache --cache-strategy=metadata",
     "lint:fix": "echo \"Formatting code\" && npm run lint:eslint:fix && npm run lint:prettier:fix",
-    "sync": "./sync_shared.sh",
+    "sync": "./sync_shared.sh --with-commit --with-format",
     "sync:check": "./check_sync.sh"
   },
   "pre-commit": [
@@ -29,6 +30,7 @@
   ],
   "devDependencies": {
     "concurrently": "^8.2.2",
+    "nodemon": "^3.1.0",
     "pre-commit": "^1.2.2",
     "prettier": "^3.2.5"
   },
