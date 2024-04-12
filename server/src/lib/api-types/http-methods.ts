@@ -64,4 +64,7 @@ enum Methods {
   PATCH = 'PATCH',
 }
 
+export const isHttpMethod = (method: unknown): method is Methods =>
+  (method as string) in Methods;
+
 export default Methods;
