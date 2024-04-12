@@ -39,7 +39,7 @@ const RegisterPage: PageComponent = ({
 
   const registerFormSchema = schemas.registerFormSchema.refine(
     () => usernameAvailable,
-    { message: 'Username already taken!' },
+    { message: 'Username already taken!', path: ['username'] },
   );
 
   const registerForm = useForm<z.infer<typeof registerFormSchema>>({
