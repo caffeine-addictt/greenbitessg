@@ -5,7 +5,8 @@
  */
 
 import axios, { type AxiosRequestConfig } from 'axios';
-import type { errors, SuccessResponse, ErrorResponse } from '@lib/api-types';
+import { isSuccessResponse } from '@lib/api-types';
+import { isOkStatusCode } from '@lib/api-types/http-codes';
 
 // Config
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -47,11 +48,6 @@ export interface APIHttpClient {
 }
 
 // Implementation
-const isAPIResponse = <T, D extends errors.CustomErrorContext[]>(
-  // eslint-disable-next-line
-  val: any,
-): val is SuccessResponse<T> | ErrorResponse<D> => 'status' in val.data;
-
 const addCredentials = (options: AxiosRequestConfig): AxiosRequestConfig => {
   const token = sessionStorage.getItem('token');
   if (!token) {
@@ -83,8 +79,9 @@ class HTTPClient implements APIHttpClient {
       axios
         .get<T>(url, opts)
         .then((response) => {
-          if (response.status === 200) return resolve(response.data as T);
-          if (isAPIResponse(response.data) && response.data.status === 200)
+          if (isOkStatusCode(response.status))
+            return resolve(response.data as T);
+          if (isSuccessResponse(response.data))
             return resolve(response.data as T);
           return reject(response);
         })
@@ -107,8 +104,9 @@ class HTTPClient implements APIHttpClient {
       axios
         .post(url, payload, opts)
         .then((response) => {
-          if (response.status === 200) return resolve(response.data as T);
-          if (isAPIResponse(response.data) && response.data.status === 200)
+          if (isOkStatusCode(response.status))
+            return resolve(response.data as T);
+          if (isSuccessResponse(response.data))
             return resolve(response.data as T);
           return reject(response);
         })

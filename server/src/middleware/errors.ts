@@ -7,18 +7,12 @@
 import express from 'express';
 
 import routeMap, { RoutingMap } from '../route-map';
-import { ErrorResponse, SuccessResponse, errors } from '../lib/api-types';
+import { HttpErrorCode } from '../lib/api-types/http-codes';
+import { errors, ErrorResponse, SuccessResponse } from '../lib/api-types';
 
 // Types
-export type CustomErrorCode = Exclude<
-  errors.HttpErrorCode,
-  | errors.HttpErrorCode.NOT_FOUND
-  | errors.HttpErrorCode.TOO_MANY_REQUESTS
-  | errors.HttpErrorCode.INTERNAL_SERVER_ERROR
-  | errors.HttpErrorCode.METHOD_NOT_ALLOWED
->;
 export interface ErrorParameters {
-  code: CustomErrorCode;
+  code: HttpErrorCode;
   message: string;
   context?: errors.ErrorContext;
   logging?: boolean;
@@ -26,7 +20,7 @@ export interface ErrorParameters {
 
 // App Error
 export class AppError extends Error {
-  readonly statusCode: CustomErrorCode;
+  readonly statusCode: HttpErrorCode;
   readonly errors: errors.CustomErrorContext[];
   readonly logging: boolean;
 
