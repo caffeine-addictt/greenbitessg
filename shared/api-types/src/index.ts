@@ -8,8 +8,9 @@ import * as auth from './auth';
 import * as errors from './errors';
 import * as schemas from './schemas';
 import httpMethods from './http-methods';
+import * as httpCodes from './http-codes';
 
-export type SuccessResponse<T, N = 200> = {
+export type SuccessResponse<T, N extends httpCodes.HttpOkCode = 200> = {
   status: N;
   data: T;
 };
@@ -17,7 +18,7 @@ export type SuccessResponse<T, N = 200> = {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type ErrorResponse<T = string & {}> =
   | {
-      status: errors.HttpErrorCode;
+      status: httpCodes.HttpErrorCode;
       errors: T extends string
         ? errors.CustomErrorContext<T>[]
         : // eslint-disable-next-line @typescript-eslint/ban-types
@@ -44,4 +45,4 @@ export type ErrorResponse<T = string & {}> =
       ];
     };
 
-export { auth, errors, schemas, httpMethods };
+export { auth, errors, schemas, httpCodes, httpMethods };
