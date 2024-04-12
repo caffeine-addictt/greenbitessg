@@ -7,7 +7,7 @@
 import { ZodIssue } from 'zod';
 import { RouteHandler } from '../route-map';
 import { auth, errors, schemas } from '../lib/api-types';
-import { HttpErrorCode } from '../lib/api-types/errors';
+import { Http4XX } from '../lib/api-types/http-codes';
 
 // Availability
 export const availability: RouteHandler = (_, res) => {
@@ -36,8 +36,8 @@ export const login: RouteHandler = async (req, res) => {
       });
     });
 
-    return res.status(HttpErrorCode.BAD_REQUEST).json({
-      status: HttpErrorCode.BAD_REQUEST,
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
       errors: errorStack,
     } satisfies auth.LoginFailAPI);
   }
@@ -45,8 +45,8 @@ export const login: RouteHandler = async (req, res) => {
   // TODO: Implement query to DB (email)
   const user = true;
   if (!user) {
-    return res.status(errors.HttpErrorCode.BAD_REQUEST).json({
-      status: errors.HttpErrorCode.BAD_REQUEST,
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
       errors: [{ message: 'Invalid email or password' }],
     } satisfies auth.LoginFailAPI);
   }
@@ -56,8 +56,8 @@ export const login: RouteHandler = async (req, res) => {
   // TODO: Compare password hashes
   const passwordsMatch = true;
   if (!passwordsMatch) {
-    return res.status(errors.HttpErrorCode.BAD_REQUEST).json({
-      status: errors.HttpErrorCode.BAD_REQUEST,
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
       errors: [{ message: 'Invalid email or password' }],
     } satisfies auth.LoginFailAPI);
   }
@@ -91,8 +91,8 @@ export const register: RouteHandler = async (req, res) => {
       });
     });
 
-    return res.status(HttpErrorCode.BAD_REQUEST).json({
-      status: HttpErrorCode.BAD_REQUEST,
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
       errors: errorStack,
     } satisfies auth.RegisterFailAPI);
   }
@@ -100,8 +100,8 @@ export const register: RouteHandler = async (req, res) => {
   // TODO: Implement query to DB to check if username is available
   const usernameAvailable = true;
   if (!usernameAvailable) {
-    return res.status(HttpErrorCode.BAD_REQUEST).json({
-      status: HttpErrorCode.BAD_REQUEST,
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
       errors: [{ message: 'Username already exists' }],
     } satisfies auth.RegisterFailAPI);
   }
@@ -109,8 +109,8 @@ export const register: RouteHandler = async (req, res) => {
   // TODO: DNS check on email to ensure it is reachable
   const emailReachable = true;
   if (!emailReachable) {
-    return res.status(HttpErrorCode.BAD_REQUEST).json({
-      status: HttpErrorCode.BAD_REQUEST,
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
       errors: [{ message: 'Email could not be reached' }],
     } satisfies auth.RegisterFailAPI);
   }
@@ -118,8 +118,8 @@ export const register: RouteHandler = async (req, res) => {
   // TODO: Implement query to DB to check if email is available
   const emailAvailable = true;
   if (!emailAvailable) {
-    return res.status(HttpErrorCode.FORBIDDEN).json({
-      status: HttpErrorCode.FORBIDDEN,
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
       errors: [{ message: 'Email already exists' }],
     } satisfies auth.RegisterFailAPI);
   }
@@ -134,8 +134,8 @@ export const register: RouteHandler = async (req, res) => {
   const emailSent = true;
   if (!emailSent) {
     // TODO: Delete created user object
-    return res.status(HttpErrorCode.UNPROCESSABLE_ENTITY).json({
-      status: HttpErrorCode.UNPROCESSABLE_ENTITY,
+    return res.status(Http4XX.UNPROCESSABLE_ENTITY).json({
+      status: Http4XX.UNPROCESSABLE_ENTITY,
       errors: [{ message: 'Email could not be reached' }],
     } satisfies auth.RegisterFailAPI);
   }

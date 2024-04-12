@@ -5,7 +5,7 @@
  */
 
 import path from 'path';
-import type { httpMethods } from './lib/api-types';
+import type httpMethods from './lib/api-types/http-methods';
 import type { Request, Response, NextFunction } from 'express';
 
 // Importing route handlers
