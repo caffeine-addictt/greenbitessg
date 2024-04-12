@@ -7,8 +7,8 @@
 import * as auth from './auth';
 import * as errors from './errors';
 import * as schemas from './schemas';
-import httpMethods from './http-methods';
 import * as httpCodes from './http-codes';
+import * as httpMethods from './http-methods';
 
 export type SuccessResponse<T, N extends httpCodes.HttpOkCode = 200> = {
   status: N;
@@ -44,5 +44,28 @@ export type ErrorResponse<T = string & {}> =
         errors.CustomErrorContext<`The ${keyof typeof httpMethods} method is not allowed for this endpoint!`>,
       ];
     };
+
+export const isSuccessResponse = <T>(
+  response: unknown,
+): response is SuccessResponse<T> => {
+  try {
+    return httpCodes.isOkStatusCode((response as SuccessResponse<T>).status);
+  } catch {
+    return false;
+  }
+};
+export const isErrorResponse = <T>(
+  response: unknown,
+): response is ErrorResponse<T> => {
+  try {
+    return httpCodes.isErrorCode((response as ErrorResponse<T>).status);
+  } catch {
+    return false;
+  }
+};
+export const isAPIResponse = <T>(
+  response: unknown,
+): response is SuccessResponse<T> | ErrorResponse<T> =>
+  isSuccessResponse(response) || isErrorResponse(response);
 
 export { auth, errors, schemas, httpCodes, httpMethods };
