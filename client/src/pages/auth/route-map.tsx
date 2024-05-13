@@ -11,7 +11,15 @@ import LoginPage from './login';
 import RegisterPage from './register';
 
 const routeMap: RouteMap = {
-  '/register': { title: 'Register', component: RegisterPage },
-  '/login': { title: 'Login', component: LoginPage },
+  '/register': {
+    title: 'Register',
+    description: 'Register a new account with us!',
+    component: RegisterPage,
+  },
+  '/login': {
+    title: 'Login',
+    description: 'Login to your account',
+    component: LoginPage,
+  },
 } as const;
 export default routeMap;

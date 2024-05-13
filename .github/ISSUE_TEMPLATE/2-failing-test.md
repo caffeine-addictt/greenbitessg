@@ -9,7 +9,7 @@ assignees: caffeine-addictt
 # Failing Test
 
 Your issue may already be reported!
-Please check out our [active issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) before creating one.
+Please check out our [active issues](https://github.com/caffeine-addictt/greenbitessg/issues) before creating one.
 
 ## Which Jobs/Tests are Failing?
 
