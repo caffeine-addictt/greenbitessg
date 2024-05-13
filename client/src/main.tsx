@@ -25,7 +25,7 @@ export const WrappedComponent = ({
   description,
 }: RouteDetails & { path: string }): JSX.Element => (
   <>
-    <Helmet titleTemplate={path !== '/' ? '%s | Fullstack' : '%s'}>
+    <Helmet titleTemplate={path !== '/' ? '%s | GreenBitesSG' : '%s'}>
       <title>{title}</title>
       <meta
         name="description"
