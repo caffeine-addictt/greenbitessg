@@ -29,7 +29,10 @@ export const WrappedComponent = ({
       <title>{title}</title>
       <meta
         name="description"
-        content={description ?? 'This is the default description'}
+        content={
+          description ??
+          'GreenBitesSG is a community of Singaporeans who are passionate about sustainable and healthy food.'
+        }
       />
     </Helmet>
     <Component className="flex w-full max-w-full grow" />
