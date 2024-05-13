@@ -12,19 +12,19 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/caffeine-addictt/nyp_y2_fullstack">
+  <a href="https://github.com/caffeine-addictt/greenbitessg">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Fullstack</h3>
+  <h3 align="center">Green Bites SG</h3>
 
   <p align="center">
-    Nanyang Poly y2 DIT Fullstack
+    Sustainable and healthy eating.
     <br />
     <br />
-    <a href="https://github.com/caffeine-addictt/nyp_y2_fullstack/issues">Report Bug</a>
+    <a href="https://github.com/caffeine-addictt/greenbitessg/issues">Report Bug</a>
     ·
-    <a href="https://github.com/caffeine-addictt/nyp_y2_fullstack/issues">Request Feature</a>
+    <a href="https://github.com/caffeine-addictt/greenbitessg/issues">Request Feature</a>
   </p>
 </div>
 
@@ -115,8 +115,8 @@ _Below is an example of how you can install the project locally._
 #### 1. Clone the Repository
 
 ```sh
-git clone https://github.com/caffeine-addictt/nyp_y2_fullstack
-cd nyp_y2_fullstack
+git clone https://github.com/caffeine-addictt/greenbitessg
+cd greenbitessg
 ```
 
 #### 2. Install Dependencies
@@ -224,7 +224,7 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-See the [open issues](https://github.com/caffeine-addictt/nyp_y2_fullstack/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/caffeine-addictt/greenbitessg/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

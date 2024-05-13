@@ -6,7 +6,7 @@ authors:
     orcid: https://orcid.org/0009-0001-1641-9397
 identifiers:
   - type: url
-    value: https://github.com/caffeine-addictt/nyp_y2_fullstack/releases/tag/v1.0.0
+    value: https://github.com/caffeine-addictt/greenbitessg/releases/tag/v1.0.0
     description: The GitHub release URL of tag v1.0.0.
 cff-version: 1.2.0
 date-released: yyyy-mm-dd
@@ -14,7 +14,7 @@ keywords:
   -
 license: GPL-3.0
 message: If you use this software, please cite it using these metadata.
-repository-code: https://github.com/caffeine-addictt/nyp_y2_fullstack
+repository-code: https://github.com/caffeine-addictt/greenbitessg
 title: GreenBitesSG
 type: software
 version: 1.0.1
