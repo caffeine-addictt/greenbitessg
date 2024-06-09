@@ -20,11 +20,20 @@ import Footer from '@components/footer';
 
 export const WrappedComponent = ({
   component: Component,
+  path,
   title,
-}: RouteDetails): JSX.Element => (
+  description,
+}: RouteDetails & { path: string }): JSX.Element => (
   <>
-    <Helmet>
+    <Helmet titleTemplate={path !== '/' ? '%s | GreenBitesSG' : '%s'}>
       <title>{title}</title>
+      <meta
+        name="description"
+        content={
+          description ??
+          'GreenBitesSG is a community of Singaporeans who are passionate about sustainable and healthy food.'
+        }
+      />
     </Helmet>
     <Component className="flex w-full max-w-full grow" />
   </>
@@ -43,7 +52,9 @@ export const Layout = (): JSX.Element => {
             <Route
               key={i}
               path={path}
-              element={<WrappedComponent {...details} />}
+              element={
+                <WrappedComponent {...details} path={location.pathname} />
+              }
             />
           ))}
         </Routes>

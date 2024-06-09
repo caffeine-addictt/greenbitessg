@@ -17,7 +17,11 @@ export type PageComponent = (
   props: React.ComponentProps<'div'>,
 ) => React.JSX.Element;
 
-export type RouteDetails = { component: PageComponent; title: string };
+export type RouteDetails = {
+  component: PageComponent;
+  title: string;
+  description?: string;
+};
 export type RouteMap = Record<PathStr, RouteDetails>;
 export type RootRouteMap = Record<RootPathStr, RouteDetails>;
 
