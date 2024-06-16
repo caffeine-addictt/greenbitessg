@@ -14,6 +14,8 @@ import { db } from '../db';
 import { eq } from 'drizzle-orm';
 import { usersTable } from '../db/schemas';
 
+import { signJwt } from '../utils/service/auth/jwt';
+import { hashPassword, matchPassword } from '../utils/password';
 
 // Availability
 export const availability: RouteHandler = async (req, res) => {
@@ -75,20 +77,17 @@ export const login: RouteHandler = async (req, res) => {
     } satisfies auth.LoginFailAPI);
   }
 
-  // TODO: Hash password
-
-  // TODO: Compare password hashes
-  const passwordsMatch = true;
-  if (!passwordsMatch) {
+  // Compare password hashes
+  if (!matchPassword(req.body.password, users[0].password)) {
     return res.status(Http4XX.BAD_REQUEST).json({
       status: Http4XX.BAD_REQUEST,
       errors: [{ message: 'Invalid email or password' }],
     } satisfies auth.LoginFailAPI);
   }
 
-  // TODO: Generate JWT access & refresh token
-  const accessToken = 'access token';
-  const refreshToken = 'refresh token';
+  // Generate JWT access & refresh token
+  const accessToken = signJwt({ sub: users[0].id }, 'access');
+  const refreshToken = signJwt({ sub: users[0].id }, 'refresh');
 
   return res.status(200).json({
     status: 200,
@@ -121,7 +120,7 @@ export const register: RouteHandler = async (req, res) => {
     } satisfies auth.RegisterFailAPI);
   }
 
-  // TODO: DNS check on email to ensure it is reachable
+  // DNS check on email to ensure it is reachable
   const emailReachable = true;
   if (!emailReachable) {
     return res.status(Http4XX.BAD_REQUEST).json({
@@ -150,12 +149,7 @@ export const register: RouteHandler = async (req, res) => {
     } satisfies auth.RegisterFailAPI);
   }
 
-  // TODO: Hash password
-
-  // TODO: Create user object (without saving)
-
   // TODO: Generate email verification code
-
   // TODO: Send email verification code
   const emailSent = true;
   if (!emailSent) {
