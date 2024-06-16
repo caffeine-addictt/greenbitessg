@@ -8,11 +8,12 @@ import { ZodIssue } from 'zod';
 import { RouteHandler } from '../route-map';
 import { auth, errors, schemas } from '../lib/api-types';
 import { Http4XX } from '../lib/api-types/http-codes';
+import { ErrorResponse } from '../lib/api-types/errors';
 
 import { db } from '../db';
 import { eq } from 'drizzle-orm';
 import { usersTable } from '../db/schemas';
-import { ErrorResponse } from '@src/lib/api-types/errors';
+
 
 // Availability
 export const availability: RouteHandler = async (req, res) => {
@@ -26,7 +27,7 @@ export const availability: RouteHandler = async (req, res) => {
   }
 
   const user = await db
-    .select({ username: usersTable.username })
+    .select({})
     .from(usersTable)
     .where(eq(usersTable.username, username))
     .limit(1);
@@ -61,9 +62,13 @@ export const login: RouteHandler = async (req, res) => {
     } satisfies auth.LoginFailAPI);
   }
 
-  // TODO: Implement query to DB (email)
-  const user = true;
-  if (!user) {
+  // DB query
+  const users = await db
+    .select({ id: usersTable.id, password: usersTable.password })
+    .from(usersTable)
+    .where(eq(usersTable.email, req.body.email))
+    .limit(1);
+  if (users.length === 0) {
     return res.status(Http4XX.BAD_REQUEST).json({
       status: Http4XX.BAD_REQUEST,
       errors: [{ message: 'Invalid email or password' }],
@@ -116,15 +121,6 @@ export const register: RouteHandler = async (req, res) => {
     } satisfies auth.RegisterFailAPI);
   }
 
-  // TODO: Implement query to DB to check if username is available
-  const usernameAvailable = true;
-  if (!usernameAvailable) {
-    return res.status(Http4XX.BAD_REQUEST).json({
-      status: Http4XX.BAD_REQUEST,
-      errors: [{ message: 'Username already exists' }],
-    } satisfies auth.RegisterFailAPI);
-  }
-
   // TODO: DNS check on email to ensure it is reachable
   const emailReachable = true;
   if (!emailReachable) {
@@ -134,12 +130,23 @@ export const register: RouteHandler = async (req, res) => {
     } satisfies auth.RegisterFailAPI);
   }
 
-  // TODO: Implement query to DB to check if email is available
-  const emailAvailable = true;
-  if (!emailAvailable) {
-    return res.status(Http4XX.FORBIDDEN).json({
-      status: Http4XX.FORBIDDEN,
-      errors: [{ message: 'Email already exists' }],
+  // Check if username and email is available
+  const usersExisting = await db
+    .select({ username: usersTable.username, email: usersTable.email })
+    .from(usersTable)
+    .where(eq(usersTable.username, validated.data.username))
+    .limit(1);
+  if (usersExisting.length !== 0) {
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: [
+        {
+          message:
+            usersExisting[0].username === validated.data.username
+              ? 'Username already exists'
+              : 'Email already exists',
+        },
+      ],
     } satisfies auth.RegisterFailAPI);
   }
 
@@ -159,7 +166,15 @@ export const register: RouteHandler = async (req, res) => {
     } satisfies auth.RegisterFailAPI);
   }
 
-  // TODO: Save user object
+  // Create and save user
+  await db
+    .insert(usersTable)
+    .values({
+      username: validated.data.username,
+      email: validated.data.email,
+      password: await hashPassword(validated.data.password),
+    })
+    .returning({ id: usersTable.id });
 
   return res.status(201).json({
     status: 201,
