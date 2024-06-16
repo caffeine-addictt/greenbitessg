@@ -22,7 +22,10 @@
     "lint:prettier:fix": "prettier . --write --cache --cache-strategy=metadata",
     "lint:fix": "echo \"Formatting code\" && npm run lint:eslint:fix && npm run lint:prettier:fix",
     "sync": "./sync_shared.sh --with-commit --with-format",
-    "sync:check": "./check_sync.sh"
+    "sync:check": "./check_sync.sh",
+    "db-generate": "npm run db-generate -w server",
+    "db-migrate": "npm run db-migrate -w server",
+    "db-push": "npm run db-push -w server"
   },
   "pre-commit": [
     "lint",
@@ -30,9 +33,9 @@
   ],
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "nodemon": "^3.1.1",
+    "nodemon": "^3.1.3",
     "pre-commit": "^1.2.2",
-    "prettier": "^3.2.5"
+    "prettier": "^3.3.1"
   },
   "workspaces": [
     "client",
