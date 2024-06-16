@@ -11,7 +11,10 @@
     "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --cache --fix",
     "test": "jest --passWithNoTests",
     "ts.check": "tsc --project tsconfig.json",
-    "add-build": "git add dist"
+    "add-build": "git add dist",
+    "db-generate": "drizzle-kit generate",
+    "db-migrate": "drizzle-kit migrate",
+    "db-push": "drizzle-kit push"
   },
   "pre-commit": [
     "ts.check",
