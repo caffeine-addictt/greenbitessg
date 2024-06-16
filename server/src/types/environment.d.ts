@@ -9,6 +9,8 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production';
       DATABASE_URL: string;
+      JWT_ACCESS_KEY: string;
+      JWT_REFRESH_KEY: string;
     }
   }
 }
