@@ -9,13 +9,32 @@ import { RouteHandler } from '../route-map';
 import { auth, errors, schemas } from '../lib/api-types';
 import { Http4XX } from '../lib/api-types/http-codes';
 
+import { db } from '../db';
+import { eq } from 'drizzle-orm';
+import { usersTable } from '../db/schemas';
+import { ErrorResponse } from '@src/lib/api-types/errors';
+
 // Availability
-export const availability: RouteHandler = (_, res) => {
-  // TODO: Implement query to DB
+export const availability: RouteHandler = async (req, res) => {
+  const username = req.query.username;
+
+  if (typeof username !== 'string') {
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: [{ message: 'Missing username' }],
+    } satisfies ErrorResponse);
+  }
+
+  const user = await db
+    .select({ username: usersTable.username })
+    .from(usersTable)
+    .where(eq(usersTable.username, username))
+    .limit(1);
+
   return res.status(200).json({
     status: 200,
     data: {
-      available: false,
+      available: user.length === 0,
     },
   } satisfies auth.AvailabilityAPI);
 };
