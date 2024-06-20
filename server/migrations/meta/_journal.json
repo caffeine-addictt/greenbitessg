@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1718520861784,
-      "tag": "0000_broken_may_parker",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1718530884947,
-      "tag": "0001_peaceful_wild_pack",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1718530975653,
-      "tag": "0002_wet_deadpool",
+      "when": 1718894592654,
+      "tag": "0000_green_wallflower",
       "breakpoints": true
     }
   ]
