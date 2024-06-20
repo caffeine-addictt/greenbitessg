@@ -169,6 +169,8 @@ export const register: RouteHandler = async (req, res) => {
   await db
     .insert(usersTable)
     .values({
+      permission: 0,
+      dateOfBirth: '2024-03-25',
       username: validated.data.username,
       email: validated.data.email,
       password: await hashPassword(validated.data.password),
