@@ -29,6 +29,7 @@ import { EyeNoneIcon, EyeClosedIcon } from '@radix-ui/react-icons';
 import httpClient from '@utils/http';
 import { auth, schemas } from '@lib/api-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { setAuthCookie } from '@utils/jwt';
 
 // Page
 const RegisterPage: PageComponent = ({
@@ -53,11 +54,16 @@ const RegisterPage: PageComponent = ({
   const { mutate: passwordLogin } = useMutation(
     {
       mutationFn: async (data: z.infer<typeof loginFormSchema>) => {
-        const response = await httpClient.post<auth.LoginSuccAPI, typeof data>({
-          uri: '/auth/login',
-          payload: data,
-        });
-        return response.data;
+        await httpClient
+          .post<auth.LoginSuccAPI, typeof data>({
+            uri: '/auth/login',
+            payload: data,
+          })
+          .then((res: auth.LoginSuccAPI) => {
+            setAuthCookie(res.data.access_token, 'access');
+            setAuthCookie(res.data.refresh_token, 'refresh');
+          })
+          .catch((e) => console.log(e));
       },
     },
     queryClient,
