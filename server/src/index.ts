@@ -9,6 +9,8 @@ import morgan from 'morgan';
 import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
+import { config } from 'dotenv';
+config();
 
 import routeMap from './route-map';
 import {
