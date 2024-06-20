@@ -11,7 +11,7 @@ import { Http4XX } from '../lib/api-types/http-codes';
 import { ErrorResponse } from '../lib/api-types/errors';
 
 import { db } from '../db';
-import { eq } from 'drizzle-orm';
+import { eq, or } from 'drizzle-orm';
 import { usersTable } from '../db/schemas';
 
 import { signJwt } from '../utils/service/auth/jwt';
@@ -133,7 +133,12 @@ export const register: RouteHandler = async (req, res) => {
   const usersExisting = await db
     .select({ username: usersTable.username, email: usersTable.email })
     .from(usersTable)
-    .where(eq(usersTable.username, validated.data.username))
+    .where(
+      or(
+        eq(usersTable.username, validated.data.username),
+        eq(usersTable.email, validated.data.email),
+      ),
+    )
     .limit(1);
   if (usersExisting.length !== 0) {
     return res.status(Http4XX.BAD_REQUEST).json({
