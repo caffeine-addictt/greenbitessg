@@ -66,10 +66,6 @@ export const registerFormSchema = z
       .regex(/[!#$%&?'"]/, {
         message:
           'Password needs to contain at least 1 special character! (!#$%&?\'")',
-      })
-      .regex(/^[a-zA-Z\d!#$%&?'"]+$/, {
-        message:
-          'Passwords may only contain alphanumeric characters and (!#$%&?\'")',
       }),
 
     confirm: z
