@@ -13,11 +13,18 @@ interface RoutingMap extends IndexRoutingMap {
 }
 
 // Import endpoints
-import { login, register, availability } from './auth';
+import { login, refresh, register, availability } from './auth';
 
 const routeMap: RoutingMap = {
   '/v1/auth/login': {
     POST: { handler: login },
+  },
+  '/v1/auth/refresh': {
+    POST: {
+      handler: refresh,
+      tokenType: 'refresh',
+      accessLevel: 'authenticated',
+    },
   },
   '/v1/auth/register': {
     POST: { handler: register },

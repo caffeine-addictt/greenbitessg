@@ -10,14 +10,21 @@ import type { Request, Response, NextFunction } from 'express';
 
 // Importing route handlers
 import v1 from './v1/route-map';
+import { AuthenticatedRequest } from './middleware/jwt';
 
 // Types
 export type RouteAccessLevel = 'authenticated' | 'admin';
-export type RouteHandler = (
+export type IBareRouteHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => Response | Promise<Response> | void;
+export type IAuthedRouteHandler = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => Response | Promise<Response> | void;
+export type RouteHandler = IBareRouteHandler | IAuthedRouteHandler;
 
 export type AuthenticationOptions = {
   accessLevel?: RouteAccessLevel;
@@ -35,10 +42,15 @@ export type RoutingMap = {
 const routeMap: RoutingMap = {
   '/': {
     GET: {
-      handler: (_, res) => res.sendFile(path.join(__dirname, 'index.html')),
+      handler: (_: Request, res: Response) =>
+        res.sendFile(path.join(__dirname, 'index.html')),
     },
   },
-  '/api': { GET: { handler: (_, res) => res.send('This is a test route') } },
+  '/api': {
+    GET: {
+      handler: (_: Request, res: Response) => res.send('This is a test route'),
+    },
+  },
   ...v1,
 } as const;
 

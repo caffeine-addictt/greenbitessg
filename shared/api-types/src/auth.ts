@@ -13,7 +13,15 @@ export interface AvailabilityAPI
   extends SuccessResponse<{ available: boolean }> {}
 
 /**
+ * Successful response for /v1/refresh endpoint
  */
+export interface RefreshSuccAPI
+  extends SuccessResponse<
+    { access_token: string; refresh_token: string },
+    201
+  > {}
+export type RefreshFailAPI = ErrorResponse<
+  'Invalid refresh token' | 'Missing token'
 >;
 
 /**

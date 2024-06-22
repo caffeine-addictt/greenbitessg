@@ -6,6 +6,15 @@
 
 import * as z from 'zod';
 
+export const refreshTokenSchema = z.object({
+  access_token: z
+    .string({
+      invalid_type_error: 'Please provide an access token!',
+      required_error: 'Please provide an access token!',
+    })
+    .min(1, { message: 'Please provide an access token!' }),
+});
+
 export const loginFormSchema = z.object({
   email: z
     .string({

@@ -11,7 +11,7 @@ import compression from 'compression';
 import 'express-async-errors';
 import './check-env';
 
-import routeMap, { type RouteDetails } from './route-map';
+import routeMap, { IBareRouteHandler, type RouteDetails } from './route-map';
 import {
   errorHandler,
   notfoundHandler,
@@ -45,7 +45,7 @@ Object.entries(routeMap).forEach(([route, methods]) => {
   Object.entries(methods).forEach(([method, detail]) => {
     if (method === 'accessLevel') return;
     const detailCasted = detail as RouteDetails;
-    const stack: RequestHandler[] = [detailCasted.handler];
+    const stack: RequestHandler[] = [detailCasted.handler as IBareRouteHandler];
 
     // To make only 1 jwt verify middleware
     let authLevel = 0;

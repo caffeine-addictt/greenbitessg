@@ -5,7 +5,7 @@
  */
 
 import { ZodIssue } from 'zod';
-import { RouteHandler } from '../route-map';
+import { IAuthedRouteHandler, IBareRouteHandler } from '../route-map';
 import { auth, errors, schemas } from '../lib/api-types';
 import { Http4XX } from '../lib/api-types/http-codes';
 import { ErrorResponse } from '../lib/api-types/errors';
@@ -16,9 +16,10 @@ import { usersTable } from '../db/schemas';
 
 import { signJwt } from '../utils/service/auth/jwt';
 import { hashPassword, matchPassword } from '../utils/password';
+import { AuthenticatedRequest } from '../middleware/jwt';
 
 // Availability
-export const availability: RouteHandler = async (req, res) => {
+export const availability: IBareRouteHandler = async (req, res) => {
   const username = req.query.username;
 
   if (typeof username !== 'string') {
@@ -42,8 +43,47 @@ export const availability: RouteHandler = async (req, res) => {
   } satisfies auth.AvailabilityAPI);
 };
 
+// Refresh
+export const refresh: IAuthedRouteHandler = async (
+  req: AuthenticatedRequest,
+  res,
+) => {
+  const validated = schemas.refreshTokenSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.RefreshFailAPI);
+  }
+
+  // TODO: Add to token blacklist
+
+  // Generate new tokens
+  const accessToken = signJwt({ sub: req.user.id }, 'access');
+  const refreshToken = signJwt({ sub: req.user.id }, 'refresh');
+
+  return res.status(201).json({
+    status: 201,
+    data: {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    },
+  } satisfies auth.RefreshSuccAPI);
+};
+
 // Login
-export const login: RouteHandler = async (req, res) => {
+export const login: IBareRouteHandler = async (req, res) => {
   // Validate request body
   const validated = schemas.loginFormSchema.safeParse(req.body);
   if (!validated.success) {
@@ -99,7 +139,7 @@ export const login: RouteHandler = async (req, res) => {
 };
 
 // Registering
-export const register: RouteHandler = async (req, res) => {
+export const register: IBareRouteHandler = async (req, res) => {
   // Validate request body
   const validated = schemas.registerFormSchema.safeParse(req.body);
   if (!validated.success) {
