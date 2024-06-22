@@ -7,6 +7,7 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import { isSuccessResponse } from '@lib/api-types';
 import { isOkStatusCode } from '@lib/api-types/http-codes';
+import { getAuthCookie } from './jwt';
 
 // Config
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -29,7 +30,7 @@ export type JSONserializable =
 export interface APIRequestParams {
   uri: `/${string}`;
   queryParams?: string;
-  withCredentials?: boolean;
+  withCredentials?: 'access' | 'refresh';
   options?: AxiosRequestConfig;
 }
 
@@ -48,8 +49,11 @@ export interface APIHttpClient {
 }
 
 // Implementation
-const addCredentials = (options: AxiosRequestConfig): AxiosRequestConfig => {
-  const token = sessionStorage.getItem('token');
+const addCredentials = (
+  tokenType: 'access' | 'refresh',
+  options: AxiosRequestConfig,
+): AxiosRequestConfig => {
+  const token = getAuthCookie(tokenType);
   if (!token) {
     throw new Error('No token found');
   }
@@ -73,7 +77,7 @@ class HTTPClient implements APIHttpClient {
     new Promise<T>((resolve, reject) => {
       const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
       const opts: AxiosRequestConfig = withCredentials
-        ? addCredentials(options ?? DEFAULT_OPTS)
+        ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
         : options ?? DEFAULT_OPTS;
 
       axios
@@ -98,7 +102,7 @@ class HTTPClient implements APIHttpClient {
     new Promise<T>((resolve, reject) => {
       const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
       const opts: AxiosRequestConfig = withCredentials
-        ? addCredentials(options ?? DEFAULT_OPTS)
+        ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
         : options ?? DEFAULT_OPTS;
 
       axios
