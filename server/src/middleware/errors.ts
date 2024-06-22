@@ -66,6 +66,7 @@ export const errorHandler = (
   }
 
   // Handle un-caught error
+  console.log(err);
   res.status(500).json({
     status: 500,
     errors: [{ message: 'Something went wrong!' }],

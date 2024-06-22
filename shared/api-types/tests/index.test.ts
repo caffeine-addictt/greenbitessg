@@ -1,3 +1,9 @@
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
 import * as index from '../src/index';
 
 // Predefine stuff

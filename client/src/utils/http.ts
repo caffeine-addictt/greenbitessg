@@ -96,7 +96,7 @@ class HTTPClient implements APIHttpClient {
     options,
   }: APIPostRequestParams<D>): Promise<T> =>
     new Promise<T>((resolve, reject) => {
-      const url = `${API_URL}/${uri}${queryParams ? `?${queryParams}` : ''}`;
+      const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
       const opts: AxiosRequestConfig = withCredentials
         ? addCredentials(options ?? DEFAULT_OPTS)
         : options ?? DEFAULT_OPTS;
