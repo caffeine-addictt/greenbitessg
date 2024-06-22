@@ -35,6 +35,16 @@ export type ErrorResponse<T = string & {}> =
           CustomErrorContext<string & {}>[];
     }
   | {
+      status: 401;
+      errors: CustomErrorContext<
+        | 'No token provided!'
+        | 'Invalid token!'
+        | 'Token is expired!'
+        | 'User does not exist!'
+        | 'Unauthorized!'
+      >[];
+    }
+  | {
       status: 429;
       errors: [CustomErrorContext<'Too many requests, please try again later'>];
     }

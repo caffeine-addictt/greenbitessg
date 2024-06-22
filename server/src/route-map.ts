@@ -12,14 +12,21 @@ import type { Request, Response, NextFunction } from 'express';
 import v1 from './v1/route-map';
 
 // Types
+export type RouteAccessLevel = 'authenticated' | 'admin';
 export type RouteHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => Response | Promise<Response> | void;
 
-export type RouteDetails = { handler: RouteHandler };
-export type RouteHandlers = { [M in httpMethods]?: RouteDetails };
+export type AuthenticationOptions = {
+  accessLevel?: RouteAccessLevel;
+  tokenType?: 'access' | 'refresh';
+};
+export type RouteDetails = { handler: RouteHandler } & AuthenticationOptions;
+export type RouteHandlers = {
+  [M in httpMethods]?: RouteDetails;
+} & AuthenticationOptions;
 export type RoutingMap = {
   [uri: `/${string}`]: RouteHandlers;
 };
