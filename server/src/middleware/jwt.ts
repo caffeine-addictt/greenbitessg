@@ -30,7 +30,10 @@ const authenticateJWTMiddlewareGenerator = (
       } satisfies ErrorResponse);
     }
 
-    const verified = verifyJwt(authHeader, tokenType);
+    const verified = verifyJwt(
+      authHeader.substring('Bearer '.length),
+      tokenType,
+    );
     if (!verified) {
       return res.status(401).json({
         status: 401,
