@@ -63,6 +63,9 @@ Object.entries(routeMap).forEach(([route, methods]) => {
           : 0;
 
     if (authLevel !== 0) {
+      console.log(
+        `Adding ${detailCasted.tokenType} JWT middleware for level ${authLevel} route ${route}`,
+      );
       stack.push(
         authenticateJWTMiddlewareGenerator(
           detailCasted.tokenType ?? methods.tokenType,
@@ -70,6 +73,9 @@ Object.entries(routeMap).forEach(([route, methods]) => {
         ),
       );
     }
+
+    // Reverse stack
+    stack.reverse();
 
     switch (method) {
       case 'GET':
