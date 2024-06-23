@@ -27,10 +27,11 @@ import { Button } from '@components/ui/button';
 import { EyeNoneIcon, EyeClosedIcon } from '@radix-ui/react-icons';
 
 import httpClient from '@utils/http';
-import { auth, schemas } from '@lib/api-types';
+import { auth } from '@lib/api-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AuthContext } from '@service/auth';
 import { Navigate, useLocation } from 'react-router-dom';
+import { loginFormSchema } from '@lib/api-types/schemas/auth';
 
 // Page
 const RegisterPage: PageComponent = ({
@@ -43,7 +44,6 @@ const RegisterPage: PageComponent = ({
 
   const [hidePassword, setHidePassword] = useState<boolean>(true);
 
-  const loginFormSchema = schemas.loginFormSchema;
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {

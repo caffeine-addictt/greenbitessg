@@ -48,7 +48,7 @@ export const refresh: IAuthedRouteHandler = async (
   req: AuthenticatedRequest,
   res,
 ) => {
-  const validated = schemas.refreshTokenSchema.safeParse(req.body);
+  const validated = schemas.auth.refreshTokenSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
     validated.error.errors.forEach((error: ZodIssue) => {
@@ -85,7 +85,7 @@ export const refresh: IAuthedRouteHandler = async (
 // Login
 export const login: IBareRouteHandler = async (req, res) => {
   // Validate request body
-  const validated = schemas.loginFormSchema.safeParse(req.body);
+  const validated = schemas.auth.loginFormSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
     validated.error.errors.forEach((error: ZodIssue) => {
@@ -141,7 +141,7 @@ export const login: IBareRouteHandler = async (req, res) => {
 // Registering
 export const register: IBareRouteHandler = async (req, res) => {
   // Validate request body
-  const validated = schemas.registerFormSchema.safeParse(req.body);
+  const validated = schemas.auth.registerFormSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
     validated.error.errors.forEach((error: ZodIssue) => {
