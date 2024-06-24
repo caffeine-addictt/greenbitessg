@@ -29,6 +29,13 @@ export type RouteHandler = IBareRouteHandler | IAuthedRouteHandler;
 export type AuthenticationOptions = {
   accessLevel?: RouteAccessLevel;
   tokenType?: 'access' | 'refresh';
+  authOptions?: {
+    /** Compare against `DefaultTokenOption.minDuration` */
+    freshTokenOnly?: boolean;
+
+    /** Whether to allow expired token */
+    allowExpired?: boolean;
+  };
 };
 export type RouteDetails = { handler: RouteHandler } & AuthenticationOptions;
 export type RouteHandlers = {

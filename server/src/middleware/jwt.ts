@@ -5,17 +5,20 @@
  */
 
 import express from 'express';
+import { eq } from 'drizzle-orm';
 
-import { verifyJwt } from '../utils/service/auth/jwt';
-import { ErrorResponse } from '../lib/api-types';
 import { db } from '../db';
 import { SelectUser, usersTable } from '../db/schemas';
-import { eq } from 'drizzle-orm';
+
+import { ErrorResponse } from '../lib/api-types';
+import { DEFAULT_TOKEN_OPTIONS, verifyJwt } from '../utils/service/auth/jwt';
+import type { AuthenticationOptions } from '../route-map';
 
 export type AuthenticatedRequest = express.Request & { user: SelectUser };
 const authenticateJWTMiddlewareGenerator = (
-  tokenType: 'access' | 'refresh' = 'access',
-  accessLevel: 'authenticated' | 'admin',
+  tokenType: AuthenticationOptions['tokenType'] = 'access',
+  accessLevel: AuthenticationOptions['accessLevel'],
+  authOptions: AuthenticationOptions['authOptions'],
 ) => {
   return async (
     req: express.Request,
@@ -34,6 +37,7 @@ const authenticateJWTMiddlewareGenerator = (
       authHeader.substring('Bearer '.length),
       tokenType,
     );
+
     if (!verified) {
       return res.status(401).json({
         status: 401,
@@ -41,11 +45,27 @@ const authenticateJWTMiddlewareGenerator = (
       } satisfies ErrorResponse);
     }
 
-    if (Math.floor(Date.now() / 1000) - verified.exp >= 0) {
+    // Check expiry
+    if (
+      (authOptions?.allowExpired === undefined || !authOptions?.allowExpired) &&
+      Math.floor(Date.now() / 1000) - verified.exp >= 0
+    ) {
       return res.status(401).json({
         status: 401,
         errors: [{ message: 'Token expired!' }],
       } satisfies ErrorResponse);
+    }
+
+    // Check freshness
+    if (
+      authOptions?.freshTokenOnly &&
+      Math.floor(Date.now() / 1000) - verified.iat >
+        DEFAULT_TOKEN_OPTIONS[tokenType].minDuration
+    ) {
+      return res.status(401).json({
+        status: 401,
+        errors: [{ message: 'Token no longer fresh!' }],
+      });
     }
 
     // Ensure user exists

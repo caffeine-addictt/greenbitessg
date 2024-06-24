@@ -70,6 +70,7 @@ Object.entries(routeMap).forEach(([route, methods]) => {
         authenticateJWTMiddlewareGenerator(
           detailCasted.tokenType ?? methods.tokenType,
           authLevel === 1 ? 'authenticated' : 'admin',
+          detailCasted.authOptions,
         ),
       );
     }
