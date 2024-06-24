@@ -9,7 +9,7 @@ import axios, {
   isAxiosError,
   type AxiosRequestConfig,
 } from 'axios';
-import { isSuccessResponse, SuccessResponse } from '@lib/api-types';
+import { isSuccessResponse } from '@lib/api-types';
 import { getAuthCookie } from './jwt';
 
 // Config
@@ -92,11 +92,11 @@ class HTTPClient implements APIHttpClient {
     }
 
     // See if cached
-    const data = resp.response?.data as SuccessResponse<T>;
+    const data = resp.response?.data as T;
     if (!data) throw resp;
 
     // Resolve if cached is OK
-    if (isSuccessResponse(data)) return data.data;
+    if (isSuccessResponse(data)) return data;
 
     throw resp;
   };
@@ -113,7 +113,9 @@ class HTTPClient implements APIHttpClient {
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
       : options ?? DEFAULT_OPTS;
 
-    const resp = await axios.post<T>(url, payload, opts);
+    const resp = await axios
+      .post<T>(url, payload, opts)
+      .catch((err: AxiosError) => err);
     const isErr = isAxiosError(resp);
 
     if (!isErr && isSuccessResponse(resp.data)) {
@@ -123,11 +125,11 @@ class HTTPClient implements APIHttpClient {
     }
 
     // See if cached
-    const data = resp.response?.data as SuccessResponse<T>;
+    const data = resp.response?.data as T;
     if (!data) throw resp;
 
     // Resolve if cached is OK
-    if (isSuccessResponse(data)) return data.data;
+    if (isSuccessResponse(data)) return data;
 
     throw resp;
   };
