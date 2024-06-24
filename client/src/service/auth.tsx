@@ -58,6 +58,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return err;
       });
 
+  const refreshToken = () =>
+    httpClient
+      .post<RefreshSuccAPI, z.infer<typeof refreshTokenSchema>>({
+        uri: '/auth/refresh',
+        withCredentials: 'refresh',
+        payload: { access_token: getAuthCookie('access')! },
+      })
+      .then((res) => res.data)
+      .catch((err: AxiosError<RefreshFailAPI> | Error) => {
+        if (!isAxiosError(err)) {
+          console.log('Failed to refresh token:', err.message);
+          return;
+        }
+        return err;
+      });
+
   useEffect(() => {
     (async () => {
       const validate = await validateUser();
@@ -68,7 +84,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-    // TODO: HTTP validate and refresh token (if needed)
+      // See if fail reason is expired access token
+      const castedErr = validate.response?.data as RefreshFailAPI | undefined;
+      if (!castedErr || castedErr.errors[0].message !== 'Token is expired!') {
+        setState('done');
+        return;
+      }
+
+      // Handle refreshing token
+      const refreshTokenResp = await refreshToken();
+
+      // Non-axios error
+      if (!refreshTokenResp) {
+        setState('done');
+        return;
+      }
+
+      // Handle axios error
+      if (isAxiosError(refreshTokenResp)) {
+        console.log('Failed to refresh token:', refreshTokenResp.message);
+        setState('done');
+        return;
+      }
+
+      // Handle success refresh
+      const validateAfterRefresh = await validateUser();
+
+      // Handle non-axios error or validated
+      if (!validateAfterRefresh) {
+        setState('done');
+        return;
+      }
 
       console.log(
         'Failed to authenticate user after refreshing token:',
