@@ -37,7 +37,7 @@ const RegisterPage: PageComponent = ({
 }): React.JSX.Element => {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
 
-  const registerFormSchema = schemas.registerFormSchema.refine(
+  const registerFormSchema = schemas.auth.registerFormSchema.refine(
     () => usernameAvailable,
     { message: 'Username already taken!', path: ['username'] },
   );
