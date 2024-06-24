@@ -37,6 +37,9 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
   jwtTokenBlocklist: many(jwtTokenBlocklist, {
     relationName: 'one_user_to_many_jwt_token_blocklist_association',
   }),
+  tokens: many(tokens, {
+    relationName: 'one_user_to_many_tokens_association',
+  }),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
@@ -66,3 +69,28 @@ export const jwtTokenBlocklistRelations = relations(
 );
 export type InsertJwtTokenBlocklist = typeof jwtTokenBlocklist.$inferInsert;
 export type SelectJwtTokenBlocklist = typeof jwtTokenBlocklist.$inferSelect;
+
+/**
+ * Tokens
+ */
+export const tokens = pgTable('tokens', {
+  id: serial('id').primaryKey(),
+  token: text('token').notNull(),
+  tokenType: text('token_type').$type<TokenType>().notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const tokensRelations = relations(tokens, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [tokens.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type TokenType = 'verification';
+export type InsertToken = typeof tokens.$inferInsert;
+export type SelectToken = typeof tokens.$inferSelect;
