@@ -52,7 +52,7 @@ export const jwtTokenBlocklist = pgTable('jwt_token_blocklist', {
   exp: timestamp('expired_at').notNull(),
   userId: integer('user_id')
     .notNull()
-    .references((): AnyPgColumn => usersTable.id),
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
@@ -79,7 +79,7 @@ export const tokens = pgTable('tokens', {
   tokenType: text('token_type').$type<TokenType>().notNull(),
   userId: integer('user_id')
     .notNull()
-    .references((): AnyPgColumn => usersTable.id),
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
