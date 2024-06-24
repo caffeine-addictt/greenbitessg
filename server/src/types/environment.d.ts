@@ -11,6 +11,7 @@ declare global {
       DATABASE_URL: string;
       JWT_ACCESS_KEY: string;
       JWT_REFRESH_KEY: string;
+      RESEND_API_KEY: string;
     }
   }
 }

@@ -19,3 +19,4 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 requireEnv('DATABASE_URL');
 requireEnv('JWT_ACCESS_KEY');
 requireEnv('JWT_REFRESH_KEY');
+requireEnv('RESEND_API_KEY');
