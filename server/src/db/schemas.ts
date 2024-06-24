@@ -34,12 +34,8 @@ export const usersTable = pgTable('users_table', {
     .$onUpdate(() => new Date()),
 });
 export const usersRelations = relations(usersTable, ({ many }) => ({
-  jwtTokenBlocklist: many(jwtTokenBlocklist, {
-    relationName: 'one_user_to_many_jwt_token_blocklist_association',
-  }),
-  tokens: many(tokens, {
-    relationName: 'one_user_to_many_tokens_association',
-  }),
+  jwtTokenBlocklist: many(jwtTokenBlocklist),
+  tokens: many(tokens),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
