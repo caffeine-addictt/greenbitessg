@@ -43,6 +43,50 @@ export const availability: IBareRouteHandler = async (req, res) => {
   } satisfies auth.AvailabilityAPI);
 };
 
+// Invalidate tokens
+export const invalidate: IAuthedRouteHandler = async (req, res) => {
+  const validated = schemas.auth.invalidateTokenSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.RefreshFailAPI);
+  }
+
+  // Decode tokens
+  const refreshJTI = req.headers.authorization!.substring('Bearer '.length);
+  const refreshData = decodeJwt(refreshJTI)!;
+
+  const accessData = decodeJwt(validated.data.access_token)!;
+
+  // Add to token blacklist
+  await db.insert(jwtTokenBlocklist).values([
+    {
+      jti: refreshJTI,
+      exp: new Date(refreshData.exp * 1000),
+      userId: req.user.id,
+    },
+    {
+      jti: validated.data.access_token,
+      exp: new Date(accessData.exp * 1000),
+      userId: req.user.id,
+    },
+  ]);
+
+  return res.status(200);
+};
+
 // Refresh
 export const refresh: IAuthedRouteHandler = async (
   req: AuthenticatedRequest,

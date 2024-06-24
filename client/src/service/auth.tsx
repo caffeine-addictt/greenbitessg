@@ -135,7 +135,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         logout: () => {
           if (!isLoggedIn) navigate('/', { replace: true });
 
-          // TODO: Invalidate tokens HTTP
+          // Invalidate tokens HTTP
+          (async () => {
+            await httpClient
+              .post({
+                uri: '/auth/invalidate-tokens',
+                withCredentials: 'refresh',
+              })
+              .catch((res) =>
+                console.log('Failed to invalidate tokens:', res.message),
+              );
+          })();
 
           unsetAuthCookie('access');
           unsetAuthCookie('refresh');
