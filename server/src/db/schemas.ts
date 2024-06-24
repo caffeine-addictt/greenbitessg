@@ -11,6 +11,7 @@ import {
   timestamp,
   date,
   smallint,
+  integer,
   AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
@@ -46,7 +47,7 @@ export type SelectUser = typeof usersTable.$inferSelect;
 export const jwtTokenBlocklist = pgTable('jwt_token_blocklist', {
   jti: text('jti').notNull().primaryKey(),
   exp: timestamp('expired_at').notNull(),
-  userId: serial('user_id')
+  userId: integer('user_id')
     .notNull()
     .references((): AnyPgColumn => usersTable.id),
   createdAt: timestamp('created_at').notNull().defaultNow(),

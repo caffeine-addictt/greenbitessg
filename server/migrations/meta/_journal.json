@@ -15,6 +15,13 @@
       "when": 1719203183463,
       "tag": "0001_faulty_tag",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1719229829657,
+      "tag": "0002_petite_tarot",
+      "breakpoints": true
     }
   ]
 }
