@@ -41,22 +41,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  useEffect(() => {
-    const access = getAuthCookie('access');
-    const refresh = getAuthCookie('refresh');
+  const validateUser = () =>
+    getUserInfo()
+      .then((res) => {
+        console.log('Authenticated');
+        setUser(res.data);
+        setIsLoggedIn(true);
+        setIsAdmin(res.data.permission === 0);
+        return null;
+      })
+      .catch((err: AxiosError) => {
+        console.log(
+          'An error occurred while trying to authenticate user:',
+          err.message,
+        );
+        return err;
+      });
 
-    if (!access || !refresh) {
-      unsetAuthCookie('access');
-      unsetAuthCookie('refresh');
-      setState('done');
-      return;
-    }
+  useEffect(() => {
+    (async () => {
+      const validate = await validateUser();
+
+      // Handle validated
+      if (!validate) {
+        setState('done');
+        return;
+      }
 
     // TODO: HTTP validate and refresh token (if needed)
 
-    setIsAdmin(false);
-    setIsLoggedIn(false);
-    setState('done');
+      console.log(
+        'Failed to authenticate user after refreshing token:',
+        validateAfterRefresh.message,
+      );
+      setState('done');
+    })();
   }, []);
 
   return (
