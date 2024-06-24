@@ -8,7 +8,7 @@ import express from 'express';
 import { eq } from 'drizzle-orm';
 
 import { db } from '../db';
-import { SelectUser, usersTable } from '../db/schemas';
+import { jwtTokenBlocklist, SelectUser, usersTable } from '../db/schemas';
 
 import { ErrorResponse } from '../lib/api-types';
 import { DEFAULT_TOKEN_OPTIONS, verifyJwt } from '../utils/service/auth/jwt';
@@ -33,10 +33,8 @@ const authenticateJWTMiddlewareGenerator = (
       } satisfies ErrorResponse);
     }
 
-    const verified = verifyJwt(
-      authHeader.substring('Bearer '.length),
-      tokenType,
-    );
+    const token = authHeader.substring('Bearer '.length);
+    const verified = verifyJwt(token, tokenType);
 
     if (!verified) {
       return res.status(401).json({
@@ -44,6 +42,18 @@ const authenticateJWTMiddlewareGenerator = (
         errors: [{ message: 'Invalid token!' }],
       } satisfies ErrorResponse);
     }
+
+    // Check blacklist
+    const blocked = await db
+      .select({})
+      .from(jwtTokenBlocklist)
+      .where(eq(jwtTokenBlocklist.jti, token))
+      .limit(1);
+    if (blocked.length > 0)
+      return res.status(401).json({
+        status: 401,
+        errors: [{ message: 'Invalid token!' }],
+      } satisfies ErrorResponse);
 
     // Check expiry
     if (

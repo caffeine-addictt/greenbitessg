@@ -12,9 +12,9 @@ import { ErrorResponse } from '../lib/api-types/errors';
 
 import { db } from '../db';
 import { eq, or } from 'drizzle-orm';
-import { usersTable } from '../db/schemas';
+import { jwtTokenBlocklist, usersTable } from '../db/schemas';
 
-import { signJwt } from '../utils/service/auth/jwt';
+import { decodeJwt, signJwt } from '../utils/service/auth/jwt';
 import { hashPassword, matchPassword } from '../utils/password';
 import { AuthenticatedRequest } from '../middleware/jwt';
 
@@ -67,7 +67,25 @@ export const refresh: IAuthedRouteHandler = async (
     } satisfies auth.RefreshFailAPI);
   }
 
-  // TODO: Add to token blacklist
+  // Decode tokens
+  const refreshJTI = req.headers.authorization!.substring('Bearer '.length);
+  const refreshData = decodeJwt(refreshJTI)!;
+
+  const accessData = decodeJwt(validated.data.access_token)!;
+
+  // Add to token blacklist
+  await db.insert(jwtTokenBlocklist).values([
+    {
+      jti: refreshJTI,
+      exp: new Date(refreshData.exp * 1000),
+      userId: req.user.id,
+    },
+    {
+      jti: validated.data.access_token,
+      exp: new Date(accessData.exp * 1000),
+      userId: req.user.id,
+    },
+  ]);
 
   // Generate new tokens
   const accessToken = signJwt({ sub: req.user.id }, 'access');
