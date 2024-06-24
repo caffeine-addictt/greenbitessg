@@ -13,6 +13,7 @@ import {
   smallint,
   AnyPgColumn,
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 /**
  * Permission:
@@ -31,6 +32,11 @@ export const usersTable = pgTable('users_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  jwtTokenBlocklist: many(jwtTokenBlocklist, {
+    relationName: 'one_user_to_many_jwt_token_blocklist_association',
+  }),
+}));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
@@ -48,5 +54,14 @@ export const jwtTokenBlocklist = pgTable('jwt_token_blocklist', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
+export const jwtTokenBlocklistRelations = relations(
+  jwtTokenBlocklist,
+  ({ one }) => ({
+    user: one(usersTable, {
+      fields: [jwtTokenBlocklist.userId],
+      references: [usersTable.id],
+    }),
+  }),
+);
 export type InsertJwtTokenBlocklist = typeof jwtTokenBlocklist.$inferInsert;
 export type SelectJwtTokenBlocklist = typeof jwtTokenBlocklist.$inferSelect;
