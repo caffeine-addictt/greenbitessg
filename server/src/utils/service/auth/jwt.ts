@@ -44,6 +44,10 @@ export const DEFAULT_TOKEN_OPTIONS = {
   } satisfies DefaultTokenOption,
 } as const;
 
+/** @returns Decoded JWT Payload */
+export const decodeJwt = (token: string): JwtPayload | null =>
+  jwt.decode(token) as JwtPayload | null;
+
 /** @returns Signed JWT */
 export const signJwt = (
   payload: Omit<JwtPayload, 'iat' | 'exp'>,

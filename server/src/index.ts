@@ -6,12 +6,12 @@
 
 import cors from 'cors';
 import morgan from 'morgan';
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 import './check-env';
 
-import routeMap from './route-map';
+import routeMap, { IBareRouteHandler, type RouteDetails } from './route-map';
 import {
   errorHandler,
   notfoundHandler,
@@ -19,6 +19,9 @@ import {
 } from './middleware/errors';
 import cachingMiddleware from './middleware/caching';
 import rateLimitMiddleware from './middleware/rate-limiting';
+import authenticateJWTMiddlewareGenerator from './middleware/jwt';
+
+import { startBackgroundJobs } from './cron';
 
 const app = express();
 
@@ -42,7 +45,40 @@ app.use(compression());
 app.use('/static', express.static('public'));
 Object.entries(routeMap).forEach(([route, methods]) => {
   Object.entries(methods).forEach(([method, detail]) => {
-    const stack = [detail!.handler];
+    if (method === 'accessLevel') return;
+    const detailCasted = detail as RouteDetails;
+    const stack: RequestHandler[] = [detailCasted.handler as IBareRouteHandler];
+
+    // To make only 1 jwt verify middleware
+    let authLevel = 0;
+    authLevel =
+      methods.accessLevel === 'authenticated'
+        ? 1
+        : methods.accessLevel === 'admin'
+          ? 2
+          : 0;
+    authLevel =
+      detailCasted.accessLevel === 'authenticated'
+        ? 1
+        : detailCasted.accessLevel === 'admin'
+          ? 2
+          : 0;
+
+    if (authLevel !== 0) {
+      console.log(
+        `Adding ${detailCasted.tokenType} JWT middleware for level ${authLevel} route ${route}`,
+      );
+      stack.push(
+        authenticateJWTMiddlewareGenerator(
+          detailCasted.tokenType ?? methods.tokenType,
+          authLevel === 1 ? 'authenticated' : 'admin',
+          detailCasted.authOptions,
+        ),
+      );
+    }
+
+    // Reverse stack
+    stack.reverse();
 
     switch (method) {
       case 'GET':
@@ -92,6 +128,9 @@ app.use(methodNotFoundHandler);
 app.use(notfoundHandler);
 app.use(errorHandler);
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+app.listen(3000, () => {
+  console.log('Example app listening on port 3000!');
+  startBackgroundJobs();
+});
 
 export default app;

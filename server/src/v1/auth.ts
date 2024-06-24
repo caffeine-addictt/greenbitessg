@@ -5,20 +5,21 @@
  */
 
 import { ZodIssue } from 'zod';
-import { RouteHandler } from '../route-map';
+import { IAuthedRouteHandler, IBareRouteHandler } from '../route-map';
 import { auth, errors, schemas } from '../lib/api-types';
 import { Http4XX } from '../lib/api-types/http-codes';
 import { ErrorResponse } from '../lib/api-types/errors';
 
 import { db } from '../db';
 import { eq, or } from 'drizzle-orm';
-import { usersTable } from '../db/schemas';
+import { jwtTokenBlocklist, usersTable } from '../db/schemas';
 
-import { signJwt } from '../utils/service/auth/jwt';
+import { decodeJwt, signJwt } from '../utils/service/auth/jwt';
 import { hashPassword, matchPassword } from '../utils/password';
+import { AuthenticatedRequest } from '../middleware/jwt';
 
 // Availability
-export const availability: RouteHandler = async (req, res) => {
+export const availability: IBareRouteHandler = async (req, res) => {
   const username = req.query.username;
 
   if (typeof username !== 'string') {
@@ -42,10 +43,111 @@ export const availability: RouteHandler = async (req, res) => {
   } satisfies auth.AvailabilityAPI);
 };
 
+// Invalidate tokens
+export const invalidate: IAuthedRouteHandler = async (req, res) => {
+  const validated = schemas.auth.invalidateTokenSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.RefreshFailAPI);
+  }
+
+  // Decode tokens
+  const refreshJTI = req.headers.authorization!.substring('Bearer '.length);
+  const refreshData = decodeJwt(refreshJTI)!;
+
+  const accessData = decodeJwt(validated.data.access_token)!;
+
+  // Add to token blacklist
+  await db.insert(jwtTokenBlocklist).values([
+    {
+      jti: refreshJTI,
+      exp: new Date(refreshData.exp * 1000),
+      userId: req.user.id,
+    },
+    {
+      jti: validated.data.access_token,
+      exp: new Date(accessData.exp * 1000),
+      userId: req.user.id,
+    },
+  ]);
+
+  return res.status(200);
+};
+
+// Refresh
+export const refresh: IAuthedRouteHandler = async (
+  req: AuthenticatedRequest,
+  res,
+) => {
+  const validated = schemas.auth.refreshTokenSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.RefreshFailAPI);
+  }
+
+  // Decode tokens
+  const refreshJTI = req.headers.authorization!.substring('Bearer '.length);
+  const refreshData = decodeJwt(refreshJTI)!;
+
+  const accessData = decodeJwt(validated.data.access_token)!;
+
+  // Add to token blacklist
+  await db.insert(jwtTokenBlocklist).values([
+    {
+      jti: refreshJTI,
+      exp: new Date(refreshData.exp * 1000),
+      userId: req.user.id,
+    },
+    {
+      jti: validated.data.access_token,
+      exp: new Date(accessData.exp * 1000),
+      userId: req.user.id,
+    },
+  ]);
+
+  // Generate new tokens
+  const accessToken = signJwt({ sub: req.user.id }, 'access');
+  const refreshToken = signJwt({ sub: req.user.id }, 'refresh');
+
+  return res.status(201).json({
+    status: 201,
+    data: {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    },
+  } satisfies auth.RefreshSuccAPI);
+};
+
 // Login
-export const login: RouteHandler = async (req, res) => {
+export const login: IBareRouteHandler = async (req, res) => {
   // Validate request body
-  const validated = schemas.loginFormSchema.safeParse(req.body);
+  const validated = schemas.auth.loginFormSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
     validated.error.errors.forEach((error: ZodIssue) => {
@@ -99,9 +201,9 @@ export const login: RouteHandler = async (req, res) => {
 };
 
 // Registering
-export const register: RouteHandler = async (req, res) => {
+export const register: IBareRouteHandler = async (req, res) => {
   // Validate request body
-  const validated = schemas.registerFormSchema.safeParse(req.body);
+  const validated = schemas.auth.registerFormSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
     validated.error.errors.forEach((error: ZodIssue) => {

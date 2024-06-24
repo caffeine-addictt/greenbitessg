@@ -25,13 +25,13 @@ if [[ ! -d "server/src/lib/api-types" ]]; then
 fi
 
 # Verify shared/api-types and client/src/lib/api-types are in sync
-if [[ $(diff -q shared/api-types/src client/src/lib/api-types) ]]; then
+if [[ $(diff -rq shared/api-types/src client/src/lib/api-types) ]]; then
   echo "Client is out of sync with shared/api-types"
   exit 1
 fi
 
 # Verify shared/api-types and server/src/lib/api-types are in sync
-if [[ $(diff -q shared/api-types/src server/src/lib/api-types) ]]; then
+if [[ $(diff -rq shared/api-types/src server/src/lib/api-types) ]]; then
   echo "Server is out of sync with shared/api-types"
   exit 1
 fi
