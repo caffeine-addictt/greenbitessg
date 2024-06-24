@@ -80,11 +80,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login: (tokens: auth.LoginSuccAPI['data']) => {
           setAuthCookie(tokens.access_token, 'access');
           setAuthCookie(tokens.refresh_token, 'refresh');
-
-          // TODO: HTTP GET user permission level
-          setIsLoggedIn(true);
-          setIsAdmin(false);
-          setState('done');
           navigate(location.state?.from || '/', { replace: true });
         },
       }}
