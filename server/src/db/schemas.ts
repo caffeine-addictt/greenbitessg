@@ -11,6 +11,7 @@ import {
   timestamp,
   date,
   smallint,
+  AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 
 /**
@@ -30,7 +31,22 @@ export const usersTable = pgTable('users_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-
-// Export types
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
+
+/**
+ * JWT token blocklist
+ */
+export const jwtTokenBlocklist = pgTable('jwt_token_blocklist', {
+  jti: text('jti').notNull().primaryKey(),
+  exp: timestamp('expired_at').notNull(),
+  userId: serial('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export type InsertJwtTokenBlocklist = typeof jwtTokenBlocklist.$inferInsert;
+export type SelectJwtTokenBlocklist = typeof jwtTokenBlocklist.$inferSelect;
