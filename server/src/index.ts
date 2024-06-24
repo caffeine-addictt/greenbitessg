@@ -21,6 +21,8 @@ import cachingMiddleware from './middleware/caching';
 import rateLimitMiddleware from './middleware/rate-limiting';
 import authenticateJWTMiddlewareGenerator from './middleware/jwt';
 
+import { startBackgroundJobs } from './cron';
+
 const app = express();
 
 // Rate Limiting
@@ -126,6 +128,9 @@ app.use(methodNotFoundHandler);
 app.use(notfoundHandler);
 app.use(errorHandler);
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+app.listen(3000, () => {
+  console.log('Example app listening on port 3000!');
+  startBackgroundJobs();
+});
 
 export default app;
