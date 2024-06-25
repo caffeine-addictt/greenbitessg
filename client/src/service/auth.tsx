@@ -22,6 +22,7 @@ export type AuthContextType = {
   user: z.infer<typeof userType> | null;
   isLoggedIn: boolean;
   isAdmin: boolean;
+  isActivated: boolean;
   login: (tokens: auth.LoginSuccAPI['data']) => void;
   logout: () => void;
 };
@@ -40,12 +41,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isActivated, setIsActivated] = useState<boolean>(true);
 
   const validateUser = () =>
     getUserInfo()
       .then((res) => {
         console.log('Authenticated');
         setUser(res.data);
+        setIsActivated(true);
         setIsLoggedIn(true);
         setIsAdmin(res.data.permission === 0);
         return null;
@@ -87,6 +90,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // See if fail reason is expired access token
       const castedErr = validate.response?.data as RefreshFailAPI | undefined;
       if (!castedErr || castedErr.errors[0].message !== 'Token is expired!') {
+        // Handle account not activated
+        if (castedErr?.errors[0].message === 'Account not activated!') {
+          setIsActivated(false);
+        }
         setState('done');
         return;
       }
@@ -132,6 +139,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user: user,
         isLoggedIn: isLoggedIn,
         isAdmin: isAdmin,
+        isActivated: isActivated,
         logout: () => {
           if (!isLoggedIn) navigate('/', { replace: true });
 
