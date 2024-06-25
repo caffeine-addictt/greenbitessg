@@ -59,17 +59,17 @@ const generateActivationEmail = ({
     <body>
       <div class="container">
         <div class="header">
-          <h2>Welcome to Our Service, ${name}!</h2>
+          <h2>Welcome to Green Bites, ${name}!</h2>
         </div>
         <div>
-          <p>Thank you for signing up for our service. To complete your registration, please activate your account by clicking the button below.</p>
+          <p>Thank you for signing up for Green Bites. To complete your registration, please activate your account by clicking the button below.</p>
           <a href="${activationLink}" class="button">Activate Account</a>
           <p>If the button above does not work, copy and paste the following link into your web browser:</p>
           <a href="${activationLink}">${activationLink}</a>
           <p>If you did not sign up for this account, please disregard this email.</p>
         </div>
         <div class="footer">
-          <p>&copy; ${new Date().getFullYear()} Our Service. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Green Bites SG. All rights reserved.</p>
         </div>
       </div>
     </body>
