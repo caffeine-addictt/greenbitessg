@@ -13,6 +13,7 @@ import {
   smallint,
   integer,
   AnyPgColumn,
+  uuid,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -70,8 +71,7 @@ export type SelectJwtTokenBlocklist = typeof jwtTokenBlocklist.$inferSelect;
  * Tokens
  */
 export const tokens = pgTable('tokens', {
-  id: serial('id').primaryKey(),
-  token: text('token').notNull(),
+  token: uuid('token').defaultRandom().primaryKey(),
   tokenType: text('token_type').$type<TokenType>().notNull(),
   userId: integer('user_id')
     .notNull()
@@ -87,6 +87,6 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
     references: [usersTable.id],
   }),
 }));
-export type TokenType = 'verification';
+export type TokenType = 'verification' | 'activation';
 export type InsertToken = typeof tokens.$inferInsert;
 export type SelectToken = typeof tokens.$inferSelect;
