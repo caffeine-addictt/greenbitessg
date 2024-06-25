@@ -73,7 +73,7 @@ export const Layout = (): JSX.Element => {
   const location = useLocation();
 
   return (
-    <main className="flex min-h-screen min-w-full max-w-full flex-col">
+    <main className="flex min-h-screen min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
       <Navbar location={location} isAdmin />
 
       <QueryClientProvider client={new QueryClient()}>
