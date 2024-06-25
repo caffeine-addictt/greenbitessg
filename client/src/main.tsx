@@ -26,6 +26,11 @@ import Footer from '@components/footer';
 import { AuthContext, AuthProvider } from '@service/auth';
 import Unauthorized from '@pages/401';
 
+const nonAuth = (level: RouteDetails['accessLevel']): boolean =>
+  level === 'public' || level === 'public-only';
+const isAuth = (level: RouteDetails['accessLevel']): boolean =>
+  level === 'authenticated' || level === 'admin';
+
 export const WrappedComponent = ({
   component: Component,
   path,
@@ -33,23 +38,29 @@ export const WrappedComponent = ({
   description,
   accessLevel,
 }: RouteDetails & { path: string }): JSX.Element | null => {
-  const { isAdmin, isLoggedIn } = React.useContext(AuthContext)!;
+  const { isAdmin, isLoggedIn, isActivated, state } =
+    React.useContext(AuthContext)!;
 
-  if (accessLevel === 'public-only' && isLoggedIn) {
-    return <Navigate to={'/'} replace />;
+  // Check only if done and needs auth
+  if (accessLevel !== 'public' && state === 'done') {
+    // Check public-only
+    if (accessLevel === 'public-only' && isLoggedIn && path !== '/') {
+      return <Navigate to={'/'} />;
+    }
+
+    // Check auth
+    if (isAuth(accessLevel) && !isLoggedIn && path !== '/login') {
+      return <Navigate to={'/login'} state={{ from: path }} replace />;
+    }
+
+    // Check admin
+    if (accessLevel === 'admin' && !isAdmin) {
+      title = 'Unauthorized';
+      description = 'You do not have permission to access this page.';
+      Component = Unauthorized;
+    }
   }
 
-  if (
-    (accessLevel === 'authenticated' || accessLevel === 'admin') &&
-    !isLoggedIn
-  ) {
-    return <Navigate to={'/login'} state={{ from: path }} replace />;
-  }
-
-  if (accessLevel === 'admin' && !isAdmin) {
-    title = 'Unauthorized';
-    description = 'You do not have permission to access this page.';
-    Component = Unauthorized;
   }
 
   return (
