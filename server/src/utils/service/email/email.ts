@@ -6,24 +6,49 @@
 
 import { Resend } from 'resend';
 
+import generateActivationEmail, {
+  ActivationEmailProps,
+} from './templates/account-activation';
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Constants
 type EmailLike = `${string}@greenbitessg.ngjx.org`;
-type EmailWithSenderLike = `${string} <${EmailLike}`;
+type EmailWithSenderLike = `${string} <${EmailLike}>`;
+
+interface IEmailOptions {
+  type: string;
+}
+export type EmailOptions = IEmailOptions & ActivationEmailProps;
+
+interface IEmailDetails {
+  from: EmailWithSenderLike;
+  to: string;
+  subject?: string;
+  text?: string;
+  options: EmailOptions;
+}
 
 // Functions
 export const sendEmail = (
-  from: EmailWithSenderLike,
-  to: string,
-  subject: string,
-  text: string,
-  html: string,
-): ReturnType<typeof resend.emails.send> =>
-  resend.emails.send({
-    from: from,
-    to: to,
-    subject: subject,
-    text: text,
-    html: html,
+  details: IEmailDetails,
+): ReturnType<typeof resend.emails.send> => {
+  let generated: string;
+
+  switch (details.options.type) {
+    case 'activation':
+      generated = generateActivationEmail(details.options);
+      break;
+
+    default:
+      throw new Error('Invalid email type');
+  }
+
+  return resend.emails.send({
+    from: details.from,
+    to: details.to,
+    subject: details.subject ?? '',
+    text: details.text,
+    html: generated,
   });
+};
