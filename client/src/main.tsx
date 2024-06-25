@@ -43,6 +43,11 @@ export const WrappedComponent = ({
 
   // Check only if done and needs auth
   if (accessLevel !== 'public' && state === 'done') {
+    // Check activation
+    if (!nonAuth(accessLevel) && !isActivated && path !== '/verify') {
+      return <Navigate to={'/verify'} state={{ from: path }} replace />;
+    }
+
     // Check public-only
     if (accessLevel === 'public-only' && isLoggedIn && path !== '/') {
       return <Navigate to={'/'} />;
