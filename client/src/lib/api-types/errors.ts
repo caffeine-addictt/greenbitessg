@@ -41,6 +41,7 @@ export type ErrorResponse<T = string & {}> =
         | 'Invalid token!'
         | 'Token is expired!'
         | 'User does not exist!'
+        | 'Account not activated!'
         | 'Unauthorized!'
       >[];
     }

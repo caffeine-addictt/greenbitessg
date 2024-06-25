@@ -5,10 +5,15 @@
  */
 
 import express from 'express';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import { db } from '../db';
-import { jwtTokenBlocklist, SelectUser, usersTable } from '../db/schemas';
+import {
+  jwtTokenBlocklist,
+  SelectUser,
+  tokens,
+  usersTable,
+} from '../db/schemas';
 
 import { ErrorResponse } from '../lib/api-types';
 import { DEFAULT_TOKEN_OPTIONS, verifyJwt } from '../utils/service/auth/jwt';
@@ -79,26 +84,40 @@ const authenticateJWTMiddlewareGenerator = (
     }
 
     // Ensure user exists
-    const users = await db
+    const queried = await db
       .select()
       .from(usersTable)
       .where(eq(usersTable.id, verified.sub))
+      .leftJoin(
+        tokens,
+        and(
+          eq(tokens.userId, usersTable.id),
+          eq(tokens.tokenType, 'activation'),
+        ),
+      )
       .limit(1);
-    if (users.length !== 1) {
+    if (queried.length !== 1) {
       return res.status(401).json({
         status: 401,
         errors: [{ message: 'User does not exist!' }],
       } satisfies ErrorResponse);
     }
 
-    if (accessLevel === 'admin' && users[0].permission !== 0) {
+    if (accessLevel === 'admin' && queried[0].users_table.permission !== 0) {
       return res.status(401).json({
         status: 401,
         errors: [{ message: 'Unauthorized!' }],
       } satisfies ErrorResponse);
     }
 
-    (req as AuthenticatedRequest).user = users[0];
+    if (queried[0].tokens) {
+      return res.status(401).json({
+        status: 401,
+        errors: [{ message: 'Account not activated!' }],
+      } satisfies ErrorResponse);
+    }
+
+    (req as AuthenticatedRequest).user = queried[0].users_table;
     return next();
   };
 };
