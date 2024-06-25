@@ -27,9 +27,11 @@ import { Button } from '@components/ui/button';
 import { EyeNoneIcon, EyeClosedIcon } from '@radix-ui/react-icons';
 
 import httpClient from '@utils/http';
-import { auth, schemas } from '@lib/api-types';
+import { auth } from '@lib/api-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { setAuthCookie } from '@utils/jwt';
+import { AuthContext } from '@service/auth';
+import { Navigate, useLocation } from 'react-router-dom';
+import { loginFormSchema } from '@lib/api-types/schemas/auth';
 
 // Page
 const RegisterPage: PageComponent = ({
@@ -37,10 +39,11 @@ const RegisterPage: PageComponent = ({
   ...props
 }): React.JSX.Element => {
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const { isLoggedIn, isAdmin, login } = React.useContext(AuthContext)!;
 
   const [hidePassword, setHidePassword] = useState<boolean>(true);
 
-  const loginFormSchema = schemas.loginFormSchema;
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -59,15 +62,22 @@ const RegisterPage: PageComponent = ({
             uri: '/auth/login',
             payload: data,
           })
-          .then((res: auth.LoginSuccAPI) => {
-            setAuthCookie(res.data.access_token, 'access');
-            setAuthCookie(res.data.refresh_token, 'refresh');
-          })
+          .then((r) => login(r.data))
           .catch((e) => console.log(e));
       },
     },
     queryClient,
   );
+
+  // Redirect if already logged in
+  if (isLoggedIn) {
+    return (
+      <Navigate
+        to={location.state?.from || (isAdmin ? '/admin' : '/home')}
+        replace
+      />
+    );
+  }
 
   return (
     <div {...props} className={cn(className, 'flex-col pt-10 items-center')}>

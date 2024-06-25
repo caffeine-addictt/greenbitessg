@@ -8,7 +8,13 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import ReactDOM from 'react-dom/client';
-import { useLocation, Route, Routes, BrowserRouter } from 'react-router-dom';
+import {
+  useLocation,
+  Route,
+  Routes,
+  BrowserRouter,
+  Navigate,
+} from 'react-router-dom';
 import '@styles/globals.css';
 
 import { Helmet } from 'react-helmet';
@@ -17,33 +23,57 @@ import routes, { type RouteDetails } from '@pages/route-map';
 // Components
 import Navbar from '@components/navbar';
 import Footer from '@components/footer';
+import { AuthContext, AuthProvider } from '@service/auth';
+import Unauthorized from '@pages/401';
 
 export const WrappedComponent = ({
   component: Component,
   path,
   title,
   description,
-}: RouteDetails & { path: string }): JSX.Element => (
-  <>
-    <Helmet titleTemplate={path !== '/' ? '%s | GreenBitesSG' : '%s'}>
-      <title>{title}</title>
-      <meta
-        name="description"
-        content={
-          description ??
-          'GreenBitesSG is a community of Singaporeans who are passionate about sustainable and healthy food.'
-        }
-      />
-    </Helmet>
-    <Component className="flex w-full max-w-full grow" />
-  </>
-);
+  accessLevel,
+}: RouteDetails & { path: string }): JSX.Element | null => {
+  const { isAdmin, isLoggedIn } = React.useContext(AuthContext)!;
+
+  if (accessLevel === 'public-only' && isLoggedIn) {
+    return <Navigate to={'/'} replace />;
+  }
+
+  if (
+    (accessLevel === 'authenticated' || accessLevel === 'admin') &&
+    !isLoggedIn
+  ) {
+    return <Navigate to={'/login'} state={{ from: path }} replace />;
+  }
+
+  if (accessLevel === 'admin' && !isAdmin) {
+    title = 'Unauthorized';
+    description = 'You do not have permission to access this page.';
+    Component = Unauthorized;
+  }
+
+  return (
+    <>
+      <Helmet titleTemplate={path !== '/' ? '%s | GreenBitesSG' : '%s'}>
+        <title>{title}</title>
+        <meta
+          name="description"
+          content={
+            description ??
+            'GreenBitesSG is a community of Singaporeans who are passionate about sustainable and healthy food.'
+          }
+        />
+      </Helmet>
+      <Component className="flex w-full max-w-full grow" />
+    </>
+  );
+};
 
 export const Layout = (): JSX.Element => {
   const location = useLocation();
 
   return (
-    <main className="flex min-h-screen min-w-full max-w-full flex-col">
+    <main className="flex min-h-screen min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
       <Navbar location={location} isAdmin />
 
       <QueryClientProvider client={new QueryClient()}>
@@ -68,7 +98,9 @@ export const Layout = (): JSX.Element => {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Layout />
+      <AuthProvider>
+        <Layout />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

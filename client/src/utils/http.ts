@@ -4,9 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import axios, { type AxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosError,
+  isAxiosError,
+  type AxiosRequestConfig,
+} from 'axios';
 import { isSuccessResponse } from '@lib/api-types';
-import { isOkStatusCode } from '@lib/api-types/http-codes';
+import { getAuthCookie } from './jwt';
 
 // Config
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -29,7 +33,7 @@ export type JSONserializable =
 export interface APIRequestParams {
   uri: `/${string}`;
   queryParams?: string;
-  withCredentials?: boolean;
+  withCredentials?: 'access' | 'refresh';
   options?: AxiosRequestConfig;
 }
 
@@ -48,8 +52,11 @@ export interface APIHttpClient {
 }
 
 // Implementation
-const addCredentials = (options: AxiosRequestConfig): AxiosRequestConfig => {
-  const token = sessionStorage.getItem('token');
+const addCredentials = (
+  tokenType: 'access' | 'refresh',
+  options: AxiosRequestConfig,
+): AxiosRequestConfig => {
+  const token = getAuthCookie(tokenType);
   if (!token) {
     throw new Error('No token found');
   }
@@ -69,24 +76,30 @@ class HTTPClient implements APIHttpClient {
     queryParams,
     withCredentials,
     options,
-  }: APIGetRequestParams): Promise<T> =>
-    new Promise<T>((resolve, reject) => {
-      const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
-      const opts: AxiosRequestConfig = withCredentials
-        ? addCredentials(options ?? DEFAULT_OPTS)
-        : options ?? DEFAULT_OPTS;
+  }: APIGetRequestParams): Promise<T> => {
+    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
+    const opts: AxiosRequestConfig = withCredentials
+      ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
+      : options ?? DEFAULT_OPTS;
 
-      axios
-        .get<T>(url, opts)
-        .then((response) => {
-          if (isOkStatusCode(response.status))
-            return resolve(response.data as T);
-          if (isSuccessResponse(response.data))
-            return resolve(response.data as T);
-          return reject(response);
-        })
-        .catch((err) => reject(err));
-    });
+    const resp = await axios.get<T>(url, opts).catch((err: AxiosError) => err);
+    const isErr = isAxiosError(resp);
+
+    if (!isErr && isSuccessResponse(resp.data)) {
+      return resp.data;
+    } else if (!isErr) {
+      throw resp;
+    }
+
+    // See if cached
+    const data = resp.response?.data as T;
+    if (!data) throw resp;
+
+    // Resolve if cached is OK
+    if (isSuccessResponse(data)) return data;
+
+    throw resp;
+  };
 
   post = async <T, D extends APIPayload>({
     uri,
@@ -94,24 +107,32 @@ class HTTPClient implements APIHttpClient {
     payload,
     withCredentials,
     options,
-  }: APIPostRequestParams<D>): Promise<T> =>
-    new Promise<T>((resolve, reject) => {
-      const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
-      const opts: AxiosRequestConfig = withCredentials
-        ? addCredentials(options ?? DEFAULT_OPTS)
-        : options ?? DEFAULT_OPTS;
+  }: APIPostRequestParams<D>): Promise<T> => {
+    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
+    const opts: AxiosRequestConfig = withCredentials
+      ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
+      : options ?? DEFAULT_OPTS;
 
-      axios
-        .post(url, payload, opts)
-        .then((response) => {
-          if (isOkStatusCode(response.status))
-            return resolve(response.data as T);
-          if (isSuccessResponse(response.data))
-            return resolve(response.data as T);
-          return reject(response);
-        })
-        .catch((err) => reject(err));
-    });
+    const resp = await axios
+      .post<T>(url, payload, opts)
+      .catch((err: AxiosError) => err);
+    const isErr = isAxiosError(resp);
+
+    if (!isErr && isSuccessResponse(resp.data)) {
+      return resp.data;
+    } else if (!isErr) {
+      throw resp;
+    }
+
+    // See if cached
+    const data = resp.response?.data as T;
+    if (!data) throw resp;
+
+    // Resolve if cached is OK
+    if (isSuccessResponse(data)) return data;
+
+    throw resp;
+  };
 }
 
 const httpClient = new HTTPClient();

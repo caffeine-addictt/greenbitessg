@@ -22,6 +22,7 @@ export type RouteDetails = {
   component: PageComponent;
   title: string;
   description?: string;
+  accessLevel?: 'public' | 'public-only' | 'authenticated' | 'admin';
 };
 export type RouteMap = Record<PathStr, RouteDetails>;
 export type RootRouteMap = Record<RootPathStr, RouteDetails>;

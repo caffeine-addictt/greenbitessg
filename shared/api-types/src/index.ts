@@ -25,6 +25,16 @@ export type ErrorResponse<T = string & {}> =
           errors.CustomErrorContext<string & {}>[];
     }
   | {
+      status: 401;
+      errors: errors.CustomErrorContext<
+        | 'No token provided!'
+        | 'Invalid token!'
+        | 'Token is expired!'
+        | 'User does not exist!'
+        | 'Unauthorized!'
+      >[];
+    }
+  | {
       status: 429;
       errors: [
         errors.CustomErrorContext<'Too many requests, please try again later'>,

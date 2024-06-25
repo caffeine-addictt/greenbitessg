@@ -37,3 +37,11 @@ export const unsetAuthCookie = (tokenType: TokenType): void => {
       : REFRESH_TOKEN_COOKIE_NAME,
   );
 };
+
+export const getAuthCookie = (tokenType: TokenType): string | undefined => {
+  return Cookies.get(
+    tokenType === 'access'
+      ? ACCESS_TOKEN_COOKIE_NAME
+      : REFRESH_TOKEN_COOKIE_NAME,
+  );
+};
