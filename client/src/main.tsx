@@ -66,6 +66,9 @@ export const WrappedComponent = ({
     }
   }
 
+  // Protect auth-only
+  if (isAuth(accessLevel) && state !== 'done') {
+    return <></>;
   }
 
   return (
