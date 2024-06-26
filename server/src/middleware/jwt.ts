@@ -112,7 +112,7 @@ const authenticateJWTMiddlewareGenerator = (
       } satisfies ErrorResponse);
     }
 
-    const isActivated = !!queried[0].tokens;
+    const isActivated = !queried[0].tokens;
     if (
       accessLevel === 'authenticated' &&
       !authOptions?.allowNonActivated &&
