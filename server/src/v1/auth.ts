@@ -67,6 +67,18 @@ export const activate: IAuthedRouteHandler = async (req, res) => {
     } satisfies auth.RefreshFailAPI);
   }
 
+  // Validate uuid syntax
+  if (
+    !validated.data.token.match(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+    )
+  ) {
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: [{ message: 'Token not found!' }],
+    } satisfies auth.ActivateFailAPI);
+  }
+
   if (req.user.activated) {
     return res.status(Http4XX.FORBIDDEN).json({
       status: Http4XX.FORBIDDEN,
