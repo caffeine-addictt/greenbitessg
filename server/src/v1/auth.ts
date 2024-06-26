@@ -87,22 +87,18 @@ export const activate: IAuthedRouteHandler = async (req, res) => {
   }
 
   // See if token exists
-  const foundToken = await db.query.tokens.findFirst({
-    where: and(
-      eq(usersTable.id, req.user.id),
-      eq(tokens.token, validated.data.token),
-    ),
-    with: {
-      user: {
-        columns: { id: true },
-      },
-    },
-    columns: {
-      token: true,
-    },
-  });
+  const foundToken = await db
+    .select({ token: tokens.token })
+    .from(tokens)
+    .where(
+      and(
+        eq(tokens.userId, req.user.id),
+        eq(tokens.token, validated.data.token),
+      ),
+    )
+    .limit(1);
 
-  if (!foundToken) {
+  if (!foundToken.length) {
     return res.status(Http4XX.NOT_FOUND).json({
       status: Http4XX.NOT_FOUND,
       errors: [{ message: 'Token not found!' }],
