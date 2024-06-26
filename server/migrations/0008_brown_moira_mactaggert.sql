@@ -1,0 +1,1 @@
+DROP TABLE "jwt_token_blocklist";
