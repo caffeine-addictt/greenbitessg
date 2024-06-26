@@ -13,6 +13,14 @@ export interface AvailabilityAPI
   extends SuccessResponse<{ available: boolean }> {}
 
 /**
+ * Successful response for /v1/auth/activate endpoint
+ */
+export interface ActivateSuccAPI extends SuccessResponse<{ activated: true }> {}
+export type ActivateFailAPI = ErrorResponse<
+  'Already activated!' | 'Token not found!' | 'Please provide a token!'
+>;
+
+/**
  * Successful response for /v1/auth/refresh endpoint
  */
 export interface RefreshSuccAPI

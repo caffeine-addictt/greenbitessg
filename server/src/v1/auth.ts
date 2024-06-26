@@ -11,7 +11,7 @@ import { Http4XX } from '../lib/api-types/http-codes';
 import { ErrorResponse } from '../lib/api-types/errors';
 
 import { db } from '../db';
-import { eq, or } from 'drizzle-orm';
+import { eq, or, and } from 'drizzle-orm';
 import { jwtTokenBlocklist, tokens, usersTable } from '../db/schemas';
 
 import { decodeJwt, signJwt } from '../utils/service/auth/jwt';
@@ -44,6 +44,68 @@ export const availability: IBareRouteHandler = async (req, res) => {
       available: user.length === 0,
     },
   } satisfies auth.AvailabilityAPI);
+};
+
+// Activate account
+export const activate: IAuthedRouteHandler = async (req, res) => {
+  const validated = schemas.auth.activateFormSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.RefreshFailAPI);
+  }
+
+  if (req.user.activated) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'Already activated' }],
+    } satisfies auth.ActivateFailAPI);
+  }
+
+  // See if token exists
+  const foundToken = await db.query.tokens.findFirst({
+    where: and(
+      eq(usersTable.id, req.user.id),
+      eq(tokens.token, validated.data.token),
+    ),
+    with: {
+      user: {
+        columns: {},
+      },
+    },
+    columns: {
+      token: true,
+    },
+  });
+
+  if (!foundToken) {
+    return res.status(Http4XX.NOT_FOUND).json({
+      status: Http4XX.NOT_FOUND,
+      errors: [{ message: 'Token not found!' }],
+    } satisfies auth.ActivateFailAPI);
+  }
+
+  // Delete token
+  await db.delete(tokens).where(eq(tokens.token, validated.data.token));
+
+  return res.status(200).json({
+    status: 200,
+    data: {
+      activated: true,
+    },
+  } satisfies auth.ActivateSuccAPI);
 };
 
 // Invalidate tokens
