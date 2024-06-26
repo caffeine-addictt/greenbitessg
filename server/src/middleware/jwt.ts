@@ -19,7 +19,9 @@ import { ErrorResponse } from '../lib/api-types';
 import { DEFAULT_TOKEN_OPTIONS, verifyJwt } from '../utils/service/auth/jwt';
 import type { AuthenticationOptions } from '../route-map';
 
-export type AuthenticatedRequest = express.Request & { user: SelectUser };
+export type AuthenticatedRequest = express.Request & {
+  user: SelectUser & { activated: boolean };
+};
 const authenticateJWTMiddlewareGenerator = (
   tokenType: AuthenticationOptions['tokenType'] = 'access',
   accessLevel: AuthenticationOptions['accessLevel'],
@@ -110,14 +112,22 @@ const authenticateJWTMiddlewareGenerator = (
       } satisfies ErrorResponse);
     }
 
-    if (queried[0].tokens) {
+    const isActivated = !!queried[0].tokens;
+    if (
+      accessLevel === 'authenticated' &&
+      !authOptions?.allowNonActivated &&
+      !isActivated
+    ) {
       return res.status(401).json({
         status: 401,
         errors: [{ message: 'Account not activated!' }],
       } satisfies ErrorResponse);
     }
 
-    (req as AuthenticatedRequest).user = queried[0].users_table;
+    (req as AuthenticatedRequest).user = {
+      ...queried[0].users_table,
+      activated: isActivated,
+    };
     return next();
   };
 };

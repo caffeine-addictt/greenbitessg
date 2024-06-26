@@ -25,6 +25,7 @@ const routeMap: RoutingMap = {
       handler: refresh,
       tokenType: 'refresh',
       accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
     },
   },
   '/v1/auth/register': {
@@ -35,13 +36,18 @@ const routeMap: RoutingMap = {
       handler: invalidate,
       tokenType: 'refresh',
       accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
     },
   },
   '/v1/availability': {
     GET: { handler: availability },
   },
   '/v1/user': {
-    GET: { handler: getUser, accessLevel: 'authenticated' },
+    GET: {
+      handler: getUser,
+      accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
+    },
   },
 } as const;
 

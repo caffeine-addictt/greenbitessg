@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .then((res) => {
         console.log('Authenticated');
         setUser(res.data);
+        setIsActivated(res.data.activated);
         setIsActivated(true);
         setIsLoggedIn(true);
         setIsAdmin(res.data.permission === 0);
