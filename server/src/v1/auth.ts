@@ -82,7 +82,7 @@ export const activate: IAuthedRouteHandler = async (req, res) => {
     ),
     with: {
       user: {
-        columns: {},
+        columns: { id: true },
       },
     },
     columns: {
