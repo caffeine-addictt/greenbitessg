@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isActivated, setIsActivated] = useState<boolean>(true);
+  const [isActivated, setIsActivated] = useState<boolean>(false);
 
   const validateUser = () =>
     getUserInfo()
@@ -49,7 +49,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('Authenticated');
         setUser(res.data);
         setIsActivated(res.data.activated);
-        setIsActivated(true);
         setIsLoggedIn(true);
         setIsAdmin(res.data.permission === 0);
         return null;
@@ -91,10 +90,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // See if fail reason is expired access token
       const castedErr = validate.response?.data as RefreshFailAPI | undefined;
       if (!castedErr || castedErr.errors[0].message !== 'Token is expired!') {
-        // Handle account not activated
-        if (castedErr?.errors[0].message === 'Account not activated!') {
-          setIsActivated(false);
-        }
         setState('done');
         return;
       }
