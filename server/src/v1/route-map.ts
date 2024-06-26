@@ -14,7 +14,7 @@ interface RoutingMap extends IndexRoutingMap {
 
 // Import endpoints
 import { login, refresh, register, availability, invalidate } from './auth';
-import { getUser } from './user';
+import { getUser, deleteUser } from './user';
 
 const routeMap: RoutingMap = {
   '/v1/auth/login': {
@@ -42,6 +42,9 @@ const routeMap: RoutingMap = {
   },
   '/v1/user': {
     GET: { handler: getUser, accessLevel: 'authenticated' },
+  },
+  '/v1/user/deleteUser': {
+    POST: { handler: deleteUser, accessLevel: 'authenticated' },
   },
 } as const;
 

@@ -5,7 +5,10 @@
  */
 
 import { IAuthedRouteHandler } from '../route-map';
-import { GetUserSuccAPI } from '../lib/api-types/user';
+import { GetUserSuccAPI, DeleteUserSuccessAPI } from '../lib/api-types/user';
+import { db } from '../db';
+import { usersTable } from '../db/schemas';
+import { eq } from 'drizzle-orm';
 
 export const getUser: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json({
@@ -19,4 +22,14 @@ export const getUser: IAuthedRouteHandler = async (req, res) => {
       updatedAt: req.user.updatedAt,
     },
   } satisfies GetUserSuccAPI);
+};
+
+// delete user account
+export const deleteUser: IAuthedRouteHandler = async (req, res) => {
+  await db.delete(usersTable).where(eq(usersTable.id, req.user.id));
+
+  return res.status(200).json({
+    status: 200,
+    data: null,
+  } satisfies DeleteUserSuccessAPI);
 };

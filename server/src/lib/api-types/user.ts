@@ -14,3 +14,5 @@ import type { SuccessResponse } from './index';
  */
 export interface GetUserSuccAPI
   extends SuccessResponse<z.infer<typeof user.userType>> {}
+
+export interface DeleteUserSuccessAPI extends SuccessResponse<null> {}
