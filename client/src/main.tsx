@@ -26,8 +26,6 @@ import Footer from '@components/footer';
 import { AuthContext, AuthProvider } from '@service/auth';
 import Unauthorized from '@pages/401';
 
-const nonAuth = (level: RouteDetails['accessLevel']): boolean =>
-  level === 'public' || level === 'public-only';
 const isAuth = (level: RouteDetails['accessLevel']): boolean =>
   level === 'authenticated' || level === 'admin';
 
@@ -44,8 +42,8 @@ export const WrappedComponent = ({
   // Check only if done and needs auth
   if (accessLevel !== 'public' && state === 'done') {
     // Check activation
-    if (!nonAuth(accessLevel) && !isActivated && path !== '/verify') {
-      return <Navigate to={'/verify'} state={{ from: path }} replace />;
+    if (isAuth(accessLevel) && !isActivated && !path.startsWith('/activate')) {
+      return <Navigate to={'/activate'} state={{ from: path }} replace />;
     }
 
     // Check public-only
