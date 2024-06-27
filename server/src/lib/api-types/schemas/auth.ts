@@ -6,6 +6,15 @@
 
 import * as z from 'zod';
 
+export const activateFormSchema = z.object({
+  token: z
+    .string({
+      invalid_type_error: 'Please provide a token!',
+      required_error: 'Please provide a token!',
+    })
+    .min(1, { message: 'Please provide a token!' }),
+});
+
 export const invalidateTokenSchema = z.object({
   access_token: z
     .string({

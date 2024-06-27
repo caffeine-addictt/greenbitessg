@@ -11,12 +11,15 @@ import { Http4XX } from '../lib/api-types/http-codes';
 import { ErrorResponse } from '../lib/api-types/errors';
 
 import { db } from '../db';
-import { eq, or } from 'drizzle-orm';
-import { jwtTokenBlocklist, usersTable } from '../db/schemas';
+import { eq, or, and } from 'drizzle-orm';
+import { jwtTokenBlocklist, tokens, usersTable } from '../db/schemas';
 
 import { decodeJwt, signJwt } from '../utils/service/auth/jwt';
 import { hashPassword, matchPassword } from '../utils/password';
 import { AuthenticatedRequest } from '../middleware/jwt';
+
+import { sendEmail } from '../utils/service/email/email';
+import { getFullPath } from '../utils/app';
 
 // Availability
 export const availability: IBareRouteHandler = async (req, res) => {
@@ -41,6 +44,76 @@ export const availability: IBareRouteHandler = async (req, res) => {
       available: user.length === 0,
     },
   } satisfies auth.AvailabilityAPI);
+};
+
+// Activate account
+export const activate: IAuthedRouteHandler = async (req, res) => {
+  const validated = schemas.auth.activateFormSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.RefreshFailAPI);
+  }
+
+  // Validate uuid syntax
+  if (
+    !validated.data.token.match(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+    )
+  ) {
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: [{ message: 'Token not found!' }],
+    } satisfies auth.ActivateFailAPI);
+  }
+
+  if (req.user.activated) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'Already activated' }],
+    } satisfies auth.ActivateFailAPI);
+  }
+
+  // See if token exists
+  const foundToken = await db
+    .select({ token: tokens.token })
+    .from(tokens)
+    .where(
+      and(
+        eq(tokens.userId, req.user.id),
+        eq(tokens.token, validated.data.token),
+      ),
+    )
+    .limit(1);
+
+  if (!foundToken.length) {
+    return res.status(Http4XX.NOT_FOUND).json({
+      status: Http4XX.NOT_FOUND,
+      errors: [{ message: 'Token not found!' }],
+    } satisfies auth.ActivateFailAPI);
+  }
+
+  // Delete token
+  await db.delete(tokens).where(eq(tokens.token, validated.data.token));
+
+  return res.status(200).json({
+    status: 200,
+    data: {
+      activated: true,
+    },
+  } satisfies auth.ActivateSuccAPI);
 };
 
 // Invalidate tokens
@@ -256,19 +329,8 @@ export const register: IBareRouteHandler = async (req, res) => {
     } satisfies auth.RegisterFailAPI);
   }
 
-  // TODO: Generate email verification code
-  // TODO: Send email verification code
-  const emailSent = true;
-  if (!emailSent) {
-    // TODO: Delete created user object
-    return res.status(Http4XX.UNPROCESSABLE_ENTITY).json({
-      status: Http4XX.UNPROCESSABLE_ENTITY,
-      errors: [{ message: 'Email could not be reached' }],
-    } satisfies auth.RegisterFailAPI);
-  }
-
   // Create and save user
-  await db
+  const createdUser = await db
     .insert(usersTable)
     .values({
       permission: 0,
@@ -278,6 +340,40 @@ export const register: IBareRouteHandler = async (req, res) => {
       password: await hashPassword(validated.data.password),
     })
     .returning({ id: usersTable.id });
+
+  // Create token
+  const createdToken = await db
+    .insert(tokens)
+    .values({
+      userId: createdUser[0].id,
+      tokenType: 'activation',
+    })
+    .returning({ token: tokens.token });
+
+  // Send activation email
+  const formattedLink = getFullPath(`/activate/${createdToken[0].token}`);
+  const sentEmail = await sendEmail({
+    from: 'GreenBites SG <onboarding@greenbitessg.ngjx.org>',
+    to: validated.data.email,
+    subject: 'Activate your GreenBites account',
+    text: `Activate your GreenBites account by going to the following link: ${formattedLink}`,
+    options: {
+      type: 'activation',
+      name: validated.data.username,
+      activationLink: formattedLink,
+    },
+  }).catch((err) =>
+    console.error(
+      `ERR Failed to send activation email for user [${createdUser[0].id}]: ${err}`,
+    ),
+  );
+
+  if (!sentEmail) {
+    return res.status(Http4XX.UNPROCESSABLE_ENTITY).json({
+      status: Http4XX.UNPROCESSABLE_ENTITY,
+      errors: [{ message: 'Email could not be reached' }],
+    } satisfies auth.RegisterFailAPI);
+  }
 
   return res.status(201).json({
     status: 201,

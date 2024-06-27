@@ -35,6 +35,9 @@ export type AuthenticationOptions = {
 
     /** Whether to allow expired token */
     allowExpired?: boolean;
+
+    /** Whether to allow non-activated accounts */
+    allowNonActivated?: boolean;
   };
 };
 export type RouteDetails = { handler: RouteHandler } & AuthenticationOptions;

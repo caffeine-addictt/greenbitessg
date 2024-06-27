@@ -13,7 +13,15 @@ export interface AvailabilityAPI
   extends SuccessResponse<{ available: boolean }> {}
 
 /**
- * Successful response for /v1/refresh endpoint
+ * Successful response for /v1/auth/activate endpoint
+ */
+export interface ActivateSuccAPI extends SuccessResponse<{ activated: true }> {}
+export type ActivateFailAPI = ErrorResponse<
+  'Already activated!' | 'Token not found!' | 'Please provide a token!'
+>;
+
+/**
+ * Successful response for /v1/auth/refresh endpoint
  */
 export interface RefreshSuccAPI
   extends SuccessResponse<
@@ -25,7 +33,7 @@ export type RefreshFailAPI = ErrorResponse<
 >;
 
 /**
- * Response for /v1/login endpoint
+ * Response for /v1/auth/login endpoint
  */
 export interface LoginSuccAPI
   extends SuccessResponse<{ access_token: string; refresh_token: string }> {}
@@ -37,7 +45,7 @@ export type LoginFailAPI = ErrorResponse<
 >;
 
 /**
- * Successful response for /v1/register endpoint
+ * Successful response for /v1/auth/register endpoint
  */
 export interface RegisterSuccAPI
   extends SuccessResponse<{ created: boolean }, 201> {}

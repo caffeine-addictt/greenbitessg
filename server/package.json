@@ -14,7 +14,8 @@
     "add-build": "git add dist",
     "db-generate": "drizzle-kit generate",
     "db-migrate": "drizzle-kit migrate",
-    "db-push": "drizzle-kit push"
+    "db-push": "drizzle-kit push",
+    "db-studio": "drizzle-kit studio"
   },
   "pre-commit": [
     "ts.check",
@@ -33,6 +34,7 @@
     "jsonwebtoken": "^9.0.2",
     "memory-cache": "^0.2.0",
     "morgan": "^1.10.0",
+    "resend": "^3.3.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

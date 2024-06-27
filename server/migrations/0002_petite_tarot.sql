@@ -1,0 +1,1 @@
+ALTER TABLE "jwt_token_blocklist" ALTER COLUMN "user_id" SET DATA TYPE integer;
