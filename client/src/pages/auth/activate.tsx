@@ -27,10 +27,14 @@ const ActivateWithTokenPage: PageComponent = ({
   className,
   ...props
 }): React.JSX.Element => {
-  const { isActivated, ...authStuff } = React.useContext(AuthContext)!;
+  const { isActivated, isAdmin } = React.useContext(AuthContext)!;
 
   const location = useLocation();
   const queryClient = useQueryClient();
+
+  const tokenOrActivate = location.pathname
+    .split('/')
+    .at(location.pathname.endsWith('/') ? -2 : -1)!;
 
   // Handle activate
   const { isFetching, isSuccess, isError } = useQuery(
@@ -43,25 +47,27 @@ const ActivateWithTokenPage: PageComponent = ({
         >({
           uri: '/auth/activate',
           payload: {
-            token: location.pathname.split('/').at(-1)!,
+            token: tokenOrActivate,
           },
           withCredentials: 'access',
         }),
       retry: 5,
       retryDelay: (failureCount) => 2 ** failureCount + 10,
+      enabled: tokenOrActivate !== 'activate',
     },
     queryClient,
   );
 
   // Redirect if already activated
   if (isActivated || isSuccess) {
-    console.log(authStuff);
-    return <Navigate to={location.state?.from ?? '/home'} />;
+    return (
+      <Navigate to={location.state?.from ?? (isAdmin ? '/admin' : '/home')} />
+    );
   }
 
   return (
     <div
-      className={cn(className, 'flex-col pt-32 mx-auto text-center')}
+      className={cn(className, 'flex-col mx-auto justify-center text-center')}
       {...props}
     >
       {/* Header */}
@@ -73,7 +79,11 @@ const ActivateWithTokenPage: PageComponent = ({
       </h3>
 
       {/* Statuses */}
-      <div className="transition-all">
+      <div
+        className={cn('transition-all', {
+          hidden: tokenOrActivate === 'activate',
+        })}
+      >
         {isFetching && (
           <div className="flex flex-row items-center justify-center gap-2">
             <SymbolIcon className="mr-2 size-6 animate-spin" />
@@ -94,6 +104,10 @@ const ActivateWithTokenPage: PageComponent = ({
             Failed to activate your account. Please try again later.
           </div>
         )}
+      </div>
+
+      <div className="h-16 w-4">
+        <span className="hidden">Dummy to force main content up a bit</span>
       </div>
     </div>
   );
