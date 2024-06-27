@@ -7,8 +7,8 @@
 import * as z from 'zod';
 
 export const eventType = z.object({
-  event_id: z.number().int(),
-  event_name: z.string().min(1),
-  event_location: z.string().min(1),
-  event_description: z.string().min(1),
+  id: z.number().int(),
+  name: z.string().min(1),
+  location: z.string().min(1),
+  description: z.string().min(1),
 });
