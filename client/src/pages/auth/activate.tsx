@@ -12,8 +12,11 @@ import * as z from 'zod';
 import httpClient from '@utils/http';
 import { auth } from '@lib/api-types';
 import { AuthContext } from '@service/auth';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { activateFormSchema } from '@lib/api-types/schemas/auth';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  activateFormSchema,
+  recreateTokenSchema,
+} from '@lib/api-types/schemas/auth';
 
 import { cn } from '@utils/tailwind';
 import {
@@ -21,6 +24,8 @@ import {
   CheckCircledIcon,
   CrossCircledIcon,
 } from '@radix-ui/react-icons';
+import { AxiosError } from 'axios';
+import { Button } from '@components/ui/button';
 
 // Page
 const ActivateWithTokenPage: PageComponent = ({
@@ -41,19 +46,41 @@ const ActivateWithTokenPage: PageComponent = ({
     {
       queryKey: ['activate'],
       queryFn: () =>
-        httpClient.post<
-          auth.ActivateSuccAPI,
-          z.infer<typeof activateFormSchema>
-        >({
-          uri: '/auth/activate',
-          payload: {
-            token: tokenOrActivate,
-          },
-          withCredentials: 'access',
-        }),
+        httpClient
+          .post<auth.ActivateSuccAPI, z.infer<typeof activateFormSchema>>({
+            uri: '/auth/activate',
+            payload: {
+              token: tokenOrActivate,
+            },
+            withCredentials: 'access',
+          })
+          .then(() => window.location.reload())
+          .catch((err: AxiosError) => console.log(err)),
       retry: 5,
       retryDelay: (failureCount) => 2 ** failureCount + 10,
       enabled: tokenOrActivate !== 'activate',
+    },
+    queryClient,
+  );
+
+  // Handle resend token
+  const { mutate, isPending } = useMutation(
+    {
+      mutationKey: ['resend-activate'],
+      mutationFn: () =>
+        httpClient.post<
+          auth.RecreateTokenSuccAPI,
+          z.infer<typeof recreateTokenSchema>
+        >({
+          uri: '/auth/recreate-token',
+          withCredentials: 'access',
+          payload: {
+            token_type: 'activation',
+          },
+        }),
+      onSuccess: () =>
+        queryClient.invalidateQueries({ queryKey: ['activate'] }),
+      onError: (err: AxiosError) => console.log(err),
     },
     queryClient,
   );
@@ -105,6 +132,16 @@ const ActivateWithTokenPage: PageComponent = ({
           </div>
         )}
       </div>
+
+      {/* Resend token */}
+      <Button
+        type="button"
+        onClick={() => mutate()}
+        disabled={isFetching || isPending}
+        className="mx-auto w-fit"
+      >
+        {isPending ? 'Resending...' : 'Resend activation token'}
+      </Button>
 
       <div className="h-16 w-4">
         <span className="hidden">Dummy to force main content up a bit</span>

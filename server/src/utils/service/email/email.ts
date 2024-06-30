@@ -9,6 +9,7 @@ import { Resend } from 'resend';
 import generateActivationEmail, {
   ActivationEmailProps,
 } from './templates/account-activation';
+import { NestedOmit } from '@src/utils/types';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -52,3 +53,20 @@ export const sendEmail = (
     html: generated,
   });
 };
+
+export const sendActivationEmail = (
+  details: NestedOmit<
+    Omit<IEmailDetails, 'from' | 'subject' | 'text'>,
+    'options.type'
+  >,
+): ReturnType<typeof sendEmail> =>
+  sendEmail({
+    from: 'GreenBites SG <onboarding@greenbitessg.ngjx.org>',
+    to: details.to,
+    subject: 'Activate your GreenBites account',
+    text: `Activate your GreenBites account by going to the following link: ${details.options.activationLink}`,
+    options: {
+      ...details.options,
+      type: 'activation',
+    },
+  });

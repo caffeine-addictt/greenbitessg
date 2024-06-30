@@ -20,6 +20,7 @@ import {
   availability,
   invalidate,
   activate,
+  recreateToken,
 } from './auth';
 import { getUser } from './user';
 
@@ -31,6 +32,13 @@ const routeMap: RoutingMap = {
     POST: {
       handler: activate,
       tokenType: 'access',
+      accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
+    },
+  },
+  '/v1/auth/recreate-token': {
+    POST: {
+      handler: recreateToken,
       accessLevel: 'authenticated',
       authOptions: { allowNonActivated: true },
     },
