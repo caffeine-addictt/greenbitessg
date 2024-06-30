@@ -54,6 +54,8 @@ const ActivateWithTokenPage: PageComponent = ({
             },
             withCredentials: 'access',
           })
+          .then(() => window.location.reload())
+          .catch((err: AxiosError) => console.log(err)),
       retry: 5,
       retryDelay: (failureCount) => 2 ** failureCount + 10,
       enabled: tokenOrActivate !== 'activate',
