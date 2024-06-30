@@ -18,7 +18,7 @@ import { decodeJwt, signJwt } from '../utils/service/auth/jwt';
 import { hashPassword, matchPassword } from '../utils/password';
 import { AuthenticatedRequest } from '../middleware/jwt';
 
-import { sendEmail } from '../utils/service/email/email';
+import { sendActivationEmail, sendEmail } from '../utils/service/email/email';
 import { getFullPath } from '../utils/app';
 import { TOKEN_SETTINGS } from '../utils/service/auth/tokens';
 
@@ -363,16 +363,11 @@ export const register: IBareRouteHandler = async (req, res) => {
     .returning({ token: tokens.token });
 
   // Send activation email
-  const formattedLink = getFullPath(`/activate/${createdToken[0].token}`);
-  const sentEmail = await sendEmail({
-    from: 'GreenBites SG <onboarding@greenbitessg.ngjx.org>',
+  const sentEmail = await sendActivationEmail({
     to: validated.data.email,
-    subject: 'Activate your GreenBites account',
-    text: `Activate your GreenBites account by going to the following link: ${formattedLink}`,
     options: {
-      type: 'activation',
       name: validated.data.username,
-      activationLink: formattedLink,
+      activationLink: getFullPath(`/activate/${createdToken[0].token}`),
     },
   }).catch((err) =>
     console.error(
