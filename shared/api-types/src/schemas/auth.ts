@@ -24,6 +24,15 @@ export const invalidateTokenSchema = z.object({
     .min(1, { message: 'Please provide an access token!' }),
 });
 
+export const recreateTokenSchema = z.object({
+  token_type: z
+    .string({
+      invalid_type_error: 'Please provide a token type!',
+      required_error: 'Please provide a token type!',
+    })
+    .min(1, { message: 'Please provide a token type!' }),
+});
+
 export const refreshTokenSchema = z.object({
   access_token: z
     .string({

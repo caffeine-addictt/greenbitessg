@@ -24,6 +24,18 @@ export type ActivateFailAPI = ErrorResponse<
 >;
 
 /**
+ * Successful response for /v1/auth/recreate-token endpoint
+ */
+export interface RecreateTokenSuccAPI
+  extends SuccessResponse<{ created: true }, 201> {}
+export type RecreateTokenFailAPI = ErrorResponse<
+  | 'Recreating token too quickly!'
+  | 'No such token to recreate!'
+  | 'Invalid token type!'
+  | 'Email could not be reached!'
+>;
+
+/**
  * Successful response for /v1/auth/refresh endpoint
  */
 export interface RefreshSuccAPI
