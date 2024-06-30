@@ -20,6 +20,7 @@ import { AuthenticatedRequest } from '../middleware/jwt';
 
 import { sendEmail } from '../utils/service/email/email';
 import { getFullPath } from '../utils/app';
+import { TOKEN_SETTINGS } from '../utils/service/auth/tokens';
 
 // Availability
 export const availability: IBareRouteHandler = async (req, res) => {
@@ -88,7 +89,7 @@ export const activate: IAuthedRouteHandler = async (req, res) => {
 
   // See if token exists
   const foundToken = await db
-    .select({ token: tokens.token })
+    .select({ token: tokens.token, iat: tokens.createdAt })
     .from(tokens)
     .where(
       and(
@@ -107,6 +108,17 @@ export const activate: IAuthedRouteHandler = async (req, res) => {
 
   // Delete token
   await db.delete(tokens).where(eq(tokens.token, validated.data.token));
+
+  // Check expiry
+  if (
+    foundToken[0].iat.getTime() <
+    Date.now() - 1000 * TOKEN_SETTINGS.activation.max
+  ) {
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: [{ message: 'Token is expired!' }],
+    } satisfies auth.ActivateFailAPI);
+  }
 
   return res.status(200).json({
     status: 200,

@@ -17,7 +17,10 @@ export interface AvailabilityAPI
  */
 export interface ActivateSuccAPI extends SuccessResponse<{ activated: true }> {}
 export type ActivateFailAPI = ErrorResponse<
-  'Already activated!' | 'Token not found!' | 'Please provide a token!'
+  | 'Already activated!'
+  | 'Token not found!'
+  | 'Please provide a token!'
+  | 'Token is expired!'
 >;
 
 /**
