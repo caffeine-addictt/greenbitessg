@@ -18,7 +18,7 @@ export interface GetUserSuccAPI
 export interface DeleteUserSuccessAPI extends SuccessResponse<null> {}
 
 /**
- * Successful response for /v1/user/updateUser endpoint
+ * Successful response for /v1/register endpoint
  */
 export interface UpdateSuccAPI
   extends SuccessResponse<{ created: boolean }, 201> {}
