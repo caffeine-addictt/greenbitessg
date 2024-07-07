@@ -42,5 +42,8 @@
     "client",
     "server",
     "shared/*"
-  ]
+  ],
+  "dependencies": {
+    "drizzle-orm": "^0.31.2"
+  }
 }

@@ -64,7 +64,10 @@ const AccountSettings = () => {
         setError(null); // Clear any previous errors
       })
       .catch((error) => {
-        console.error('There was an error updating the account details!', error);
+        console.error(
+          'There was an error updating the account details!',
+          error,
+        );
         setError('Error updating account details');
       });
   };
@@ -76,9 +79,12 @@ const AccountSettings = () => {
 
   return (
     <div className="mx-auto max-w-4xl p-6 bg-white shadow-md rounded-md">
-      <Typography variant="h4" className="mb-4">Account Settings</Typography>
+      <Typography variant="h4" className="mb-4">
+        Account Settings
+      </Typography>
       <form className="space-y-4">
-        {error && <Typography color="error">{error}</Typography>} {/* Display error */}
+        {error && <Typography color="error">{error}</Typography>}{' '}
+        {/* Display error */}
         <div>
           <TextField
             label="Name"
@@ -145,18 +151,10 @@ const AccountSettings = () => {
           />
         </div>
         <div className="flex space-x-4">
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleCancel}
-          >
+          <Button variant="contained" color="secondary" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-          >
+          <Button variant="contained" color="primary" onClick={handleSave}>
             Save
           </Button>
         </div>
