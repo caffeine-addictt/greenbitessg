@@ -64,10 +64,7 @@ const AccountSettings = () => {
         setError(null); // Clear any previous errors
       })
       .catch((error) => {
-        console.error(
-          'There was an error updating the account details!',
-          error,
-        );
+        console.error('There was an error updating the account details!', error);
         setError('Error updating account details');
       });
   };
@@ -78,21 +75,20 @@ const AccountSettings = () => {
   };
 
   return (
-    <div>
-      <Typography variant="h4">Account Settings</Typography>
-      <form>
-        {error && <Typography color="error">{error}</Typography>}{' '}
-        {/* Display error */}
+    <div className="mx-auto max-w-4xl p-6 bg-white shadow-md rounded-md">
+      <Typography variant="h4" className="mb-4">Account Settings</Typography>
+      <form className="space-y-4">
+        {error && <Typography color="error">{error}</Typography>} {/* Display error */}
         <div>
           <TextField
             label="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            margin="normal"
+            className="w-full"
           />
         </div>
         <div>
-          <FormControl margin="normal">
+          <FormControl className="w-full">
             <InputLabel>Department</InputLabel>
             <Select
               value={department}
@@ -112,7 +108,7 @@ const AccountSettings = () => {
             label="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            margin="normal"
+            className="w-full"
           />
         </div>
         <div>
@@ -121,7 +117,7 @@ const AccountSettings = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            margin="normal"
+            className="w-full"
           />
         </div>
         <div>
@@ -129,7 +125,7 @@ const AccountSettings = () => {
             label="Birthday"
             value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
-            margin="normal"
+            className="w-full"
           />
         </div>
         <div>
@@ -137,7 +133,7 @@ const AccountSettings = () => {
             label="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            margin="normal"
+            className="w-full"
           />
         </div>
         <div>
@@ -145,14 +141,22 @@ const AccountSettings = () => {
             label="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            margin="normal"
+            className="w-full"
           />
         </div>
-        <div>
-          <Button variant="contained" color="secondary" onClick={handleCancel}>
+        <div className="flex space-x-4">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCancel}
+          >
             Cancel
           </Button>
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+          >
             Save
           </Button>
         </div>
