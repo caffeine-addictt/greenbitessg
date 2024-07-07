@@ -8,7 +8,6 @@ import { ZodIssue } from 'zod';
 import { IAuthedRouteHandler, IBareRouteHandler } from '../route-map';
 import { auth, errors, schemas } from '../lib/api-types';
 import { Http4XX } from '../lib/api-types/http-codes';
-import { ErrorResponse } from '../lib/api-types/errors';
 
 import { db } from '../db';
 import { eq, or, and } from 'drizzle-orm';
@@ -26,31 +25,6 @@ import { AuthenticatedRequest } from '../middleware/jwt';
 import { sendActivationEmail, sendEmail } from '../utils/service/email/email';
 import { getFullPath } from '../utils/app';
 import { TOKEN_SETTINGS } from '../utils/service/auth/tokens';
-
-// Availability
-export const availability: IBareRouteHandler = async (req, res) => {
-  const username = req.query.username;
-
-  if (typeof username !== 'string') {
-    return res.status(Http4XX.BAD_REQUEST).json({
-      status: Http4XX.BAD_REQUEST,
-      errors: [{ message: 'Missing username' }],
-    } satisfies ErrorResponse);
-  }
-
-  const user = await db
-    .select({})
-    .from(usersTable)
-    .where(eq(usersTable.username, username))
-    .limit(1);
-
-  return res.status(200).json({
-    status: 200,
-    data: {
-      available: user.length === 0,
-    },
-  } satisfies auth.AvailabilityAPI);
-};
 
 // Activate account
 export const activate: IAuthedRouteHandler = async (req, res) => {

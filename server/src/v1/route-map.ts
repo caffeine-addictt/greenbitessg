@@ -17,11 +17,11 @@ import {
   login,
   refresh,
   register,
-  availability,
   invalidate,
   activate,
   recreateToken,
 } from './auth';
+import { availability } from './availability';
 import { getUser } from './user';
 
 const routeMap: RoutingMap = {
