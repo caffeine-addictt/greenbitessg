@@ -31,6 +31,7 @@ app.use(rateLimitMiddleware);
 // Server Config
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Logging
 app.use(morgan('tiny'));

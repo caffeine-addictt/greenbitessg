@@ -44,8 +44,8 @@ export type RouteDetails = { handler: RouteHandler } & AuthenticationOptions;
 export type RouteHandlers = {
   [M in httpMethods]?: RouteDetails;
 } & AuthenticationOptions;
-export type RoutingMap = {
-  [uri: `/${string}`]: RouteHandlers;
+export type RoutingMap<T extends string = `/${string}`> = {
+  [uri in T]: RouteHandlers;
 };
 
 // Mapping routes
