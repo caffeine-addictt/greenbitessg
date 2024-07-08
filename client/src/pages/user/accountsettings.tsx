@@ -19,7 +19,7 @@ const AccountSettings: React.FC = () => {
   const [birthday, setBirthday] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [error, setError] = useState<string | null>(null); // Add error state
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch account settings on component mount
@@ -83,8 +83,7 @@ const AccountSettings: React.FC = () => {
         Account Settings
       </Typography>
       <form className="space-y-4">
-        {error && <Typography color="error">{error}</Typography>}{' '}
-        {/* Display error */}
+        {error && <Typography color="error">{error}</Typography>}
         <div>
           <TextField
             className="w-full"
@@ -98,7 +97,7 @@ const AccountSettings: React.FC = () => {
           <FormControl className="w-full">
             <InputLabel>Department</InputLabel>
             <Select
-              className="mt-1"
+              className="mt-1 w-full"
               value={department}
               onChange={(e) => setDepartment(e.target.value as string)}
               variant="outlined"
