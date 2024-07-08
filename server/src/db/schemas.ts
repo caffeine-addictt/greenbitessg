@@ -47,14 +47,11 @@ export const usersTable = pgTable('users_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-export const usersRelations = relations(usersTable, ({ one, many }) => ({
+export const usersRelations = relations(usersTable, ({ many }) => ({
   jwtTokenBlocklist: many(jwtTokenBlocklist),
   tokens: many(tokens),
   passkeys: many(passkeysTable),
-  passkeyChallenge: one(passkeyChallengesTable, {
-    fields: [usersTable.id],
-    references: [passkeyChallengesTable.userId],
-  }),
+  passkeyChallenges: many(passkeyChallengesTable),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;

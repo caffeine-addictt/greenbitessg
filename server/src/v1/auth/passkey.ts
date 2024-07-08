@@ -25,11 +25,6 @@ const RP_NAME = 'GreenbitesSG' as const;
 
 // Start register passkey
 export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
-  // Delete active challenges
-  await db
-    .delete(passkeyChallengesTable)
-    .where(eq(passkeyChallengesTable.userId, req.user.id));
-
   // Get existing passkeys
   const passkeys = await db
     .select({ id: passkeysTable.id, transports: passkeysTable.transports })
