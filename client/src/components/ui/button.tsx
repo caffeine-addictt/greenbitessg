@@ -61,5 +61,43 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
+export interface ExternalLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    VariantProps<typeof buttonVariants> {}
+
+const ExternalLink = React.forwardRef<HTMLAnchorElement, ExternalLinkProps>(
+  ({ className, variant, size, children, ...props }, ref) => {
+    return (
+      <a
+        ref={ref}
+        {...props}
+        target="_blank"
+        rel="noopener noreferrer"
+        referrerPolicy="no-referrer-when-downgrade"
+        className={cn(buttonVariants({ variant, size, className }))}
+      >
+        {children}
+      </a>
+    );
+  },
+);
+ExternalLink.displayName = 'ExternalLink';
+
+export type InternalLinkProps = ExternalLinkProps;
+const InternalLink = React.forwardRef<HTMLAnchorElement, InternalLinkProps>(
+  ({ className, variant, size, children, ...props }, ref) => {
+    return (
+      <a
+        ref={ref}
+        {...props}
+        className={cn(buttonVariants({ variant, size, className }))}
+      >
+        {children}
+      </a>
+    );
+  },
+);
+InternalLink.displayName = 'InternalLink';
+
 // eslint-disable-next-line
-export { Button, buttonVariants };
+export { Button, ExternalLink, InternalLink, buttonVariants };
