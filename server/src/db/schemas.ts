@@ -34,12 +34,42 @@ export const usersTable = pgTable('users_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-export const usersRelations = relations(usersTable, ({ many }) => ({
+export const usersRelations = relations(usersTable, ({ one, many }) => ({
   jwtTokenBlocklist: many(jwtTokenBlocklist),
   tokens: many(tokens),
+  passkeyChallenge: one(passkeyChallengesTable, {
+    fields: [usersTable.id],
+    references: [passkeyChallengesTable.userId],
+  }),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
+
+/**
+ * Passkey Challenges
+ */
+export const passkeyChallengesTable = pgTable('passkey_challenges_table', {
+  challenge: text('challenge').notNull().primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .unique()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const passkeyChallengesRelations = relations(
+  passkeyChallengesTable,
+  ({ one }) => ({
+    user: one(usersTable, {
+      fields: [passkeyChallengesTable.userId],
+      references: [usersTable.id],
+    }),
+  }),
+);
+export type InsertPasskeyChallenge = typeof passkeyChallengesTable.$inferInsert;
+export type SelectPasskeyChallenge = typeof passkeyChallengesTable.$inferSelect;
 
 /**
  * JWT token blocklist
