@@ -19,6 +19,7 @@ const AccountSettings: React.FC = () => {
   const [birthday, setBirthday] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const AccountSettings: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-6 bg-white shadow-md rounded-md">
+    <div>
       <Typography variant="h4" className="mb-4 text-2xl font-bold">
         Account Settings
       </Typography>
@@ -97,7 +98,7 @@ const AccountSettings: React.FC = () => {
           <FormControl className="w-full">
             <InputLabel>Department</InputLabel>
             <Select
-              className="mt-1 w-full"
+              className="w-full"
               value={department}
               onChange={(e) => setDepartment(e.target.value as string)}
               variant="outlined"
@@ -158,20 +159,10 @@ const AccountSettings: React.FC = () => {
           />
         </div>
         <div className="flex space-x-4">
-          <Button
-            className="px-6 py-2"
-            variant="contained"
-            color="secondary"
-            onClick={handleCancel}
-          >
+          <Button variant="contained" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button
-            className="px-6 py-2"
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-          >
+          <Button variant="contained" onClick={handleSave}>
             Save
           </Button>
         </div>
