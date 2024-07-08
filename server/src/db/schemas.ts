@@ -64,6 +64,7 @@ export type SelectUser = typeof usersTable.$inferSelect;
  */
 export const passkeyChallengesTable = pgTable('passkey_challenges_table', {
   challenge: text('challenge').notNull().primaryKey(),
+  challengeUserId: text('challenge_user_id').notNull(),
   userId: integer('user_id')
     .notNull()
     .unique()

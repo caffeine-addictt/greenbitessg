@@ -85,6 +85,13 @@
       "when": 1720430981192,
       "tag": "0011_damp_moon_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1720437197625,
+      "tag": "0012_curly_loki",
+      "breakpoints": true
     }
   ]
 }
