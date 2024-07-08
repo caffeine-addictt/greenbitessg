@@ -10,7 +10,7 @@ import type { auth } from '../../lib/api-types/';
 import { Http4XX } from '../../lib/api-types/http-codes';
 
 import { db } from '../../db';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { passkeyChallengesTable, passkeysTable } from '../../db/schemas';
 
 import type { AuthenticatorTransportFuture } from '@simplewebauthn/server/script/deps';
@@ -49,6 +49,7 @@ export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
 
   // Save challenge after converted with convertChallenge()
   await db.insert(passkeyChallengesTable).values({
+    type: 'register',
     userId: req.user.id,
     challenge: opts.challenge,
     challengeUserId: opts.user.id,
@@ -65,7 +66,12 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
   const currentChallenges = await db
     .select()
     .from(passkeyChallengesTable)
-    .where(eq(passkeyChallengesTable.userId, req.user.id))
+    .where(
+      and(
+        eq(passkeyChallengesTable.userId, req.user.id),
+        eq(passkeyChallengesTable.type, 'register'),
+      ),
+    )
     .limit(1);
   if (!currentChallenges.length) {
     return res.status(Http4XX.FORBIDDEN).json({

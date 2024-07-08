@@ -92,6 +92,13 @@
       "when": 1720437197625,
       "tag": "0012_curly_loki",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1720442570371,
+      "tag": "0013_early_the_twelve",
+      "breakpoints": true
     }
   ]
 }

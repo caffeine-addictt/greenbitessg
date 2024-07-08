@@ -64,6 +64,7 @@ export type SelectUser = typeof usersTable.$inferSelect;
  */
 export const passkeyChallengesTable = pgTable('passkey_challenges_table', {
   challenge: text('challenge').notNull().primaryKey(),
+  type: text('type').notNull().$type<PasskeyChallengeType>(),
   challengeUserId: text('challenge_user_id').notNull(),
   userId: integer('user_id')
     .notNull()
@@ -83,6 +84,7 @@ export const passkeyChallengesRelations = relations(
     }),
   }),
 );
+export type PasskeyChallengeType = 'register' | 'authenticate';
 export type InsertPasskeyChallenge = typeof passkeyChallengesTable.$inferInsert;
 export type SelectPasskeyChallenge = typeof passkeyChallengesTable.$inferSelect;
 
