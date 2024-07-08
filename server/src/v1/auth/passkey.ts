@@ -100,6 +100,105 @@ export const loginPasskeyStart: IBareRouteHandler = async (req, res) => {
   } satisfies auth.LoginPasskeysStartSuccAPI);
 };
 
+// Finish login passkey
+export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
+  const castedBody = req.body as Partial<schemas.auth.passkeyLoginFinishSchema>;
+
+  if (!castedBody.track || !castedBody.signed) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'No passkey challenges found' }],
+    } satisfies auth.LoginPasskeysFinishFailAPI);
+  }
+
+  if (
+    !castedBody.track.match(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+    )
+  ) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'No passkey challenges found' }],
+    } satisfies auth.LoginPasskeysFinishFailAPI);
+  }
+
+  const currentChallenges = await db
+    .select()
+    .from(passkeyChallengesTable)
+    .where(
+      and(
+        eq(passkeyChallengesTable.id, castedBody.track),
+        eq(passkeyChallengesTable.type, 'authenticate'),
+      ),
+    )
+    .limit(1);
+  if (!currentChallenges.length) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'No passkey challenges found' }],
+    } satisfies auth.LoginPasskeysFinishFailAPI);
+  }
+
+  const passkeys = await db
+    .select()
+    .from(passkeysTable)
+    .where(eq(passkeysTable.id, castedBody.signed.id))
+    .limit(1);
+  if (!passkeys.length) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'No passkey challenges found' }],
+    } satisfies auth.LoginPasskeysFinishFailAPI);
+  }
+
+  // Parse body
+  let verification;
+  try {
+    verification = await verifyAuthenticationResponse({
+      response: castedBody.signed,
+      expectedChallenge: currentChallenges[0].challenge,
+      expectedOrigin: `https://${RP_ID}`,
+      expectedRPID: RP_ID,
+      authenticator: {
+        credentialID: passkeys[0].id,
+        credentialPublicKey: passkeys[0].publicKey,
+        counter: passkeys[0].counter,
+        transports: passkeys[0].transports,
+      },
+    });
+  } catch (err) {
+    console.log(`ERR ${err}`);
+    return res.status(500).json({
+      status: 500,
+      errors: [{ message: 'Failed to authenticate passkey' }],
+    } satisfies auth.LoginPasskeysFinishFailAPI);
+  }
+
+  if (!verification.verified || !verification.authenticationInfo) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Failed to authenticate passkey' }],
+    } satisfies auth.LoginPasskeysFinishFailAPI);
+  }
+
+  // Update counter
+  await db
+    .update(passkeysTable)
+    .set({ counter: verification.authenticationInfo.newCounter })
+    .where(eq(passkeysTable.id, passkeys[0].id));
+
+  const accessToken = signJwt({ sub: passkeys[0].userId }, 'access');
+  const refreshToken = signJwt({ sub: passkeys[0].userId }, 'refresh');
+
+  return res.status(201).json({
+    status: 201,
+    data: {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    },
+  } satisfies auth.LoginPasskeysFinishSuccAPI);
+};
+
 // Start register passkey
 export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
   // Get existing passkeys
