@@ -29,7 +29,10 @@ export type ActivateFailAPI = ErrorResponse<
  */
 export interface RegisterPasskeysStartSuccAPI
   extends SuccessResponse<
-    Awaited<ReturnType<typeof generateRegistrationOptions>>,
+    {
+      track: string;
+      challenge: Awaited<ReturnType<typeof generateRegistrationOptions>>;
+    },
     201
   > {}
 

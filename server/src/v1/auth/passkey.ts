@@ -43,26 +43,54 @@ export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
   });
 
   // Save challenge after converted with convertChallenge()
-  await db.insert(passkeyChallengesTable).values({
-    type: 'register',
-    userId: req.user.id,
-    challenge: opts.challenge,
-    challengeUserId: opts.user.id,
-  });
+  const created = await db
+    .insert(passkeyChallengesTable)
+    .values({
+      type: 'register',
+      userId: req.user.id,
+      challenge: opts.challenge,
+      challengeUserId: opts.user.id,
+    })
+    .returning({ id: passkeyChallengesTable.id });
 
   return res.status(201).json({
     status: 201,
-    data: opts,
+    data: {
+      track: created[0].id,
+      challenge: opts,
+    },
   } satisfies auth.RegisterPasskeysStartSuccAPI);
 };
 
 // Finish register passkey
 export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
+  const castedBody =
+    req.body as Partial<schemas.auth.passkeyRegisterFinishSchema>;
+
+  if (!castedBody.track || !castedBody.signed) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'No passkey challenges found' }],
+    } satisfies auth.RegisterPasskeysFinishFailAPI);
+  }
+
+  if (
+    !castedBody.track.match(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+    )
+  ) {
+    return res.status(Http4XX.FORBIDDEN).json({
+      status: Http4XX.FORBIDDEN,
+      errors: [{ message: 'No passkey challenges found' }],
+    } satisfies auth.RegisterPasskeysFinishFailAPI);
+  }
+
   const currentChallenges = await db
     .select()
     .from(passkeyChallengesTable)
     .where(
       and(
+        eq(passkeyChallengesTable.id, castedBody.track),
         eq(passkeyChallengesTable.userId, req.user.id),
         eq(passkeyChallengesTable.type, 'register'),
       ),

@@ -42,6 +42,12 @@ export const refreshTokenSchema = z.object({
     .min(1, { message: 'Please provide an access token!' }),
 });
 
+export type passkeyRegisterFinishSchema = {
+  /** UUID */
+  track: string;
+  signed: VerifyRegistrationResponseOpts['response'];
+};
+
 export const loginFormSchema = z.object({
   email: z
     .string({
