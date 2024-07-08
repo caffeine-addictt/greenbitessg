@@ -5,6 +5,7 @@
  */
 
 import type { SuccessResponse, ErrorResponse } from './index';
+import { generateRegistrationOptions } from '@simplewebauthn/server';
 
 /**
  * Successful response for /v1/availability endpoint
@@ -21,6 +22,24 @@ export type ActivateFailAPI = ErrorResponse<
   | 'Token not found!'
   | 'Please provide a token!'
   | 'Token is expired!'
+>;
+
+/**
+ * Successful response for /v1/auth/register/passkeys/start endpoint
+ */
+export interface RegisterPasskeysStartSuccAPI
+  extends SuccessResponse<
+    Awaited<ReturnType<typeof generateRegistrationOptions>>,
+    201
+  > {}
+
+/**
+ * Successful response for /v1/auth/register/passkeys/finish endpoint
+ */
+export interface RegisterPasskeysFinishSuccAPI
+  extends SuccessResponse<{ created: true }, 201> {}
+export type RegisterPasskeysFinishFailAPI = ErrorResponse<
+  'No passkey challenges found' | 'Failed to register passkey'
 >;
 
 /**

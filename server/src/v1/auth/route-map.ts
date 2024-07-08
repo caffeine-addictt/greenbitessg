@@ -7,6 +7,7 @@
 import type { RoutingMap } from '../../route-map';
 
 import { login, register } from './legacy';
+import { registerPasskeyFinish, registerPasskeyStart } from './passkey';
 import { activate, recreateToken, refresh, invalidate } from './tokens';
 
 const routeMap: RoutingMap<`/v1/auth/${string}`> = {
@@ -15,6 +16,20 @@ const routeMap: RoutingMap<`/v1/auth/${string}`> = {
   },
   '/v1/auth/register': {
     POST: { handler: register },
+  },
+  '/v1/auth/register/passkeys/start': {
+    POST: {
+      handler: registerPasskeyStart,
+      tokenType: 'access',
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/auth/register/passkeys/finish': {
+    POST: {
+      handler: registerPasskeyFinish,
+      tokenType: 'access',
+      accessLevel: 'authenticated',
+    },
   },
   '/v1/auth/activate': {
     POST: {
