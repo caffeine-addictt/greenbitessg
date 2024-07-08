@@ -13,6 +13,9 @@ const routeMap: RoutingMap<`/v1/auth/${string}`> = {
   '/v1/auth/login': {
     POST: { handler: login },
   },
+  '/v1/auth/register': {
+    POST: { handler: register },
+  },
   '/v1/auth/activate': {
     POST: {
       handler: activate,
@@ -35,9 +38,6 @@ const routeMap: RoutingMap<`/v1/auth/${string}`> = {
       accessLevel: 'authenticated',
       authOptions: { allowNonActivated: true },
     },
-  },
-  '/v1/auth/register': {
-    POST: { handler: register },
   },
   '/v1/auth/invalidate-tokens': {
     POST: {
