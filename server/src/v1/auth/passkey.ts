@@ -4,24 +4,101 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import type { IAuthedRouteHandler } from '../../route-map';
+import type { IAuthedRouteHandler, IBareRouteHandler } from '../../route-map';
 
-import type { auth } from '../../lib/api-types/';
+import type { ZodIssue } from 'zod';
+import { errors, schemas, type auth } from '../../lib/api-types/';
 import { Http4XX } from '../../lib/api-types/http-codes';
 
 import { db } from '../../db';
 import { eq, and } from 'drizzle-orm';
-import { passkeyChallengesTable, passkeysTable } from '../../db/schemas';
+import {
+  passkeyChallengesTable,
+  passkeysTable,
+  usersTable,
+} from '../../db/schemas';
 
 import type { AuthenticatorTransportFuture } from '@simplewebauthn/server/script/deps';
 import {
+  generateAuthenticationOptions,
   generateRegistrationOptions,
+  verifyAuthenticationResponse,
   verifyRegistrationResponse,
 } from '@simplewebauthn/server';
+import { signJwt } from '../../utils/service/auth/jwt';
 
 // Constants
 const RP_ID = 'greenbitessg.ngjx.org' as const;
 const RP_NAME = 'GreenbitesSG' as const;
+
+// Start login passkey
+export const loginPasskeyStart: IBareRouteHandler = async (req, res) => {
+  // Validate request body
+  const validated = schemas.auth.passkeyLoginSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies auth.LoginPasskeysStartFailAPI);
+  }
+
+  // Get user
+  const foundUsers = await db
+    .select({
+      userId: usersTable.id,
+      passkey: {
+        id: passkeysTable.id,
+        transports: passkeysTable.transports,
+      },
+    })
+    .from(usersTable)
+    .where(eq(usersTable.email, validated.data.email))
+    .limit(1)
+    .innerJoin(passkeysTable, eq(passkeysTable.userId, usersTable.id));
+
+  if (!foundUsers.length) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Account does not exist!' }],
+    } satisfies auth.LoginPasskeysStartFailAPI);
+  }
+
+  // Gen opts
+  const opts = await generateAuthenticationOptions({
+    rpID: RP_ID,
+    allowCredentials: foundUsers.map((p) => p.passkey),
+  });
+
+  // Save challenge
+  const created = await db
+    .insert(passkeyChallengesTable)
+    .values({
+      userId: foundUsers[0].userId,
+      type: 'authenticate',
+      challenge: opts.challenge,
+      challengeUserId: foundUsers[0].passkey.id,
+    })
+    .returning({ id: passkeyChallengesTable.id });
+
+  return res.status(201).json({
+    status: 201,
+    data: {
+      track: created[0].id,
+      challenge: opts,
+    },
+  } satisfies auth.LoginPasskeysStartSuccAPI);
+};
 
 // Start register passkey
 export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
