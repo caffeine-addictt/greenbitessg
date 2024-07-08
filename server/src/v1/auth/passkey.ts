@@ -99,6 +99,13 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     } satisfies auth.RegisterPasskeysFinishFailAPI);
   }
 
+  // Cleanup challenge
+  await db
+    .delete(passkeyChallengesTable)
+    .where(
+      eq(passkeyChallengesTable.challenge, currentChallenges[0].challenge),
+    );
+
   // Register passkey
   await db.insert(passkeysTable).values({
     counter: 0,
