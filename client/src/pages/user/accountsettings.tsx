@@ -4,12 +4,11 @@ import http from '@http';
 
 const AccountSettings: React.FC = () => {
   const [id, setId] = useState<string>('');
-  const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [birthday, setBirthday] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [permission, setPermission] = useState<string>('');
+  const [createdAt, setCreatedAt] = useState<string>('');
+  const [updatedAt, setUpdatedAt] = useState<string>('');
 
   const [error, setError] = useState<string | null>(null);
 
@@ -18,15 +17,14 @@ const AccountSettings: React.FC = () => {
     http
       .get('/accountsettings')
       .then((res) => {
-        if (res.data.length > 0) {
-          const account = res.data[0];
+        if (res.data) {
+          const account = res.data;
           setId(account.id);
-          setName(account.Name);
-          setUsername(account.UserName);
-          setPassword(account.Password);
-          setBirthday(account.Birthday);
-          setPhoneNumber(account.PhoneNumber);
-          setEmail(account.Email);
+          setUsername(account.username);
+          setEmail(account.email);
+          setPermission(account.permission);
+          setCreatedAt(account.createdAt);
+          setUpdatedAt(account.updatedAt);
         }
       })
       .catch((err) => {
@@ -37,12 +35,9 @@ const AccountSettings: React.FC = () => {
 
   const handleSave = () => {
     const updatedDetails = {
-      Name: name,
-      UserName: username,
-      Password: password,
-      Birthday: birthday,
-      PhoneNumber: phoneNumber,
-      Email: email,
+      username,
+      email,
+      permission,
     };
 
     // Update account settings using http.put
@@ -77,47 +72,9 @@ const AccountSettings: React.FC = () => {
         <div>
           <TextField
             className="w-full"
-            label="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            variant="outlined"
-          />
-        </div>
-
-        <div>
-          <TextField
-            className="w-full"
             label="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            variant="outlined"
-          />
-        </div>
-        <div>
-          <TextField
-            className="w-full"
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            variant="outlined"
-          />
-        </div>
-        <div>
-          <TextField
-            className="w-full"
-            label="Birthday"
-            value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
-            variant="outlined"
-          />
-        </div>
-        <div>
-          <TextField
-            className="w-full"
-            label="Phone Number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
             variant="outlined"
           />
         </div>
@@ -128,6 +85,35 @@ const AccountSettings: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             variant="outlined"
+          />
+        </div>
+        <div>
+          <TextField
+            className="w-full"
+            label="Permission"
+            value={permission}
+            onChange={(e) => setPermission(e.target.value)}
+            variant="outlined"
+          />
+        </div>
+        <div>
+          <TextField
+            className="w-full"
+            label="Created At"
+            value={createdAt}
+            onChange={(e) => setCreatedAt(e.target.value)}
+            variant="outlined"
+            disabled
+          />
+        </div>
+        <div>
+          <TextField
+            className="w-full"
+            label="Updated At"
+            value={updatedAt}
+            onChange={(e) => setUpdatedAt(e.target.value)}
+            variant="outlined"
+            disabled
           />
         </div>
         <div className="flex space-x-4">
