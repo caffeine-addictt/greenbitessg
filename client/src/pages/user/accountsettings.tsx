@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  TextField,
-  Button,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from '@mui/material';
+import { TextField, Button, Typography } from '@mui/material';
 import http from '@http';
 
 const AccountSettings: React.FC = () => {
   const [id, setId] = useState<string>('');
   const [name, setName] = useState<string>('');
-  const [department, setDepartment] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [birthday, setBirthday] = useState<string>('');
@@ -31,7 +22,6 @@ const AccountSettings: React.FC = () => {
           const account = res.data[0];
           setId(account.id);
           setName(account.Name);
-          setDepartment(account.Department);
           setUsername(account.UserName);
           setPassword(account.Password);
           setBirthday(account.Birthday);
@@ -48,7 +38,6 @@ const AccountSettings: React.FC = () => {
   const handleSave = () => {
     const updatedDetails = {
       Name: name,
-      Department: department,
       UserName: username,
       Password: password,
       Birthday: birthday,
@@ -94,24 +83,7 @@ const AccountSettings: React.FC = () => {
             variant="outlined"
           />
         </div>
-        <div>
-          <FormControl className="w-full">
-            <InputLabel>Department</InputLabel>
-            <Select
-              className="w-full"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value as string)}
-              variant="outlined"
-            >
-              <MenuItem value="Sales">Sales</MenuItem>
-              <MenuItem value="Marketing">Marketing</MenuItem>
-              <MenuItem value="Finance">Finance</MenuItem>
-              <MenuItem value="HR">HR</MenuItem>
-              <MenuItem value="IT">IT</MenuItem>
-              <MenuItem value="Operations">Operations</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
+
         <div>
           <TextField
             className="w-full"
