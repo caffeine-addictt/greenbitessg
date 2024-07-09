@@ -4,7 +4,20 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
+import {
+  VerifyAuthenticationResponseOpts,
+  VerifyRegistrationResponseOpts,
+} from '@simplewebauthn/server';
 import * as z from 'zod';
+
+export const activateFormSchema = z.object({
+  token: z
+    .string({
+      invalid_type_error: 'Please provide a token!',
+      required_error: 'Please provide a token!',
+    })
+    .min(1, { message: 'Please provide a token!' }),
+});
 
 export const invalidateTokenSchema = z.object({
   access_token: z
@@ -15,6 +28,15 @@ export const invalidateTokenSchema = z.object({
     .min(1, { message: 'Please provide an access token!' }),
 });
 
+export const recreateTokenSchema = z.object({
+  token_type: z
+    .string({
+      invalid_type_error: 'Please provide a token type!',
+      required_error: 'Please provide a token type!',
+    })
+    .min(1, { message: 'Please provide a token type!' }),
+});
+
 export const refreshTokenSchema = z.object({
   access_token: z
     .string({
@@ -23,6 +45,30 @@ export const refreshTokenSchema = z.object({
     })
     .min(1, { message: 'Please provide an access token!' }),
 });
+
+export const passkeyLoginSchema = z.object({
+  email: z
+    .string({
+      invalid_type_error: 'Please provide an email!',
+      required_error: 'Please provide an email!',
+    })
+    .min(1, { message: 'Please provide an email!' })
+    .email({
+      message: 'Email is not valid!',
+    }),
+});
+
+export type passkeyLoginFinishSchema = {
+  /** UUID */
+  track: string;
+  signed: VerifyAuthenticationResponseOpts['response'];
+};
+
+export type passkeyRegisterFinishSchema = {
+  /** UUID */
+  track: string;
+  signed: VerifyRegistrationResponseOpts['response'];
+};
 
 export const loginFormSchema = z.object({
   email: z

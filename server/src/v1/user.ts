@@ -18,6 +18,7 @@ export const getUser: IAuthedRouteHandler = async (req, res) => {
       permission: req.user.permission,
       username: req.user.username,
       email: req.user.email,
+      activated: req.user.activated,
       createdAt: req.user.createdAt,
       updatedAt: req.user.updatedAt,
     },

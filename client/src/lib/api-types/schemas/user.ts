@@ -11,6 +11,7 @@ export const userType = z.object({
   permission: z.number().int(),
   username: z.string().min(1),
   email: z.string().email(),
+  activated: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
