@@ -29,10 +29,10 @@ const Footer = (): React.ReactNode => {
               </h2>
               <ul className="text-sm font-thin underline md:text-base xl:text-lg">
                 <li className="mb-1">
-                  <a href="#">Privacy Policy</a>
+                  <a href="/privacy">Privacy Policy</a>
                 </li>
                 <li>
-                  <a href="#">Terms &amp; Conditions</a>
+                  <a href="/tos">Terms &amp; Conditions</a>
                 </li>
               </ul>
             </div>
@@ -42,7 +42,7 @@ const Footer = (): React.ReactNode => {
               </h2>
               <ul className="text-sm font-thin underline md:text-base xl:text-lg">
                 <li className="mb-1">
-                  <a href="#">Email</a>
+                  <a href="mailto:contact@greenbitessg@ngjx.org">Email</a>
                 </li>
                 <li>
                   <a href="https://github.com/caffeine-addictt/greenbitessg">
@@ -53,7 +53,7 @@ const Footer = (): React.ReactNode => {
             </div>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-3">
           <p className="text-center text-xs md:text-left xl:text-sm">
             © Copyright 2024 GreenBitesSG. All Rights Reserved.
           </p>
