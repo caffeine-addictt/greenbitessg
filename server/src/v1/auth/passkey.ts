@@ -18,7 +18,6 @@ import {
   usersTable,
 } from '../../db/schemas';
 
-import type { AuthenticatorTransportFuture } from '@simplewebauthn/server/script/deps';
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
@@ -321,7 +320,7 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     backedUp: verification.registrationInfo.credentialBackedUp,
     publicKey: verification.registrationInfo.credentialPublicKey,
     deviceType: verification.registrationInfo.credentialDeviceType,
-    transports: req.body.response.transports as AuthenticatorTransportFuture[],
+    transports: castedBody.signed.response.transports ?? [],
   });
 
   return res.status(201).json({
