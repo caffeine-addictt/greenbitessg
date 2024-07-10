@@ -53,7 +53,7 @@ const Footer = (): React.ReactNode => {
             </div>
           </div>
         </div>
-        <div className="">
+        <div>
           <p className="text-center text-xs md:text-left xl:text-sm">
             © Copyright 2024 GreenBitesSG. All Rights Reserved.
           </p>
