@@ -284,7 +284,7 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
   let verification;
   try {
     verification = await verifyRegistrationResponse({
-      response: req.body,
+      response: castedBody.signed,
       expectedChallenge: currentChallenges[0].challenge,
       expectedOrigin: getURL(),
       expectedRPID:
