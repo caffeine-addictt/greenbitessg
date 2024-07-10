@@ -66,7 +66,6 @@ export const passkeyChallengesTable = pgTable('passkey_challenges_table', {
   challengeUserId: text('challenge_user_id').notNull(),
   userId: integer('user_id')
     .notNull()
-    .unique()
     .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
