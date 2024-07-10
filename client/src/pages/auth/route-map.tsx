@@ -10,6 +10,7 @@ import type { RouteMap } from '@pages/route-map';
 import LoginPage from './login';
 import RegisterPage from './register';
 import ActivatePage from './activate';
+import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
 
 const routeMap: RouteMap = {
   '/register': {
@@ -21,6 +22,18 @@ const routeMap: RouteMap = {
     title: 'Login',
     description: 'Login to your account',
     component: LoginPage,
+  },
+  '/auth0/login': {
+    title: 'Passkey',
+    description: 'Passkey',
+    component: PasskeyLoginPage,
+    accessLevel: 'public-only',
+  },
+  '/auth0/register': {
+    title: 'Passkey',
+    description: 'Passkey',
+    component: PasskeyRegisterPage,
+    accessLevel: 'authenticated',
   },
   '/activate': {
     title: 'Activate Account',

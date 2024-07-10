@@ -26,9 +26,10 @@ import {
   verifyRegistrationResponse,
 } from '@simplewebauthn/server';
 import { signJwt } from '../../utils/service/auth/jwt';
+import { getHostDomain } from '../../utils/app';
 
 // Constants
-const RP_ID = 'greenbitessg.ngjx.org' as const;
+const RP_ID = getHostDomain();
 const RP_NAME = 'GreenbitesSG' as const;
 
 // Start login passkey
