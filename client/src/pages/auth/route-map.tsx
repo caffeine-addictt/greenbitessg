@@ -7,7 +7,7 @@
 import type { RouteMap } from '@pages/route-map';
 
 // Import pages
-import LoginPage from './login';
+import AuthLayout from './authLayout';
 import RegisterPage from './register';
 import ActivatePage from './activate';
 
@@ -20,7 +20,7 @@ const routeMap: RouteMap = {
   '/login': {
     title: 'Login',
     description: 'Login to your account',
-    component: LoginPage,
+    component: AuthLayout,
   },
   '/activate': {
     title: 'Activate Account',
