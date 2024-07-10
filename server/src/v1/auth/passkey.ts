@@ -26,7 +26,7 @@ import {
   verifyRegistrationResponse,
 } from '@simplewebauthn/server';
 import { signJwt } from '../../utils/service/auth/jwt';
-import { getHostDomain } from '../../utils/app';
+import { getHostDomain, getURL } from '../../utils/app';
 
 // Constants
 const RP_ID = getHostDomain();
@@ -77,7 +77,7 @@ export const loginPasskeyStart: IBareRouteHandler = async (req, res) => {
 
   // Gen opts
   const opts = await generateAuthenticationOptions({
-    rpID: RP_ID,
+    rpID: process.env.NODE_ENV === 'development' ? 'localhost' : RP_ID,
     allowCredentials: foundUsers.map((p) => p.passkey),
   });
 
@@ -209,7 +209,7 @@ export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
     .where(eq(passkeysTable.userId, req.user.id));
   const opts = await generateRegistrationOptions({
     rpName: RP_NAME,
-    rpID: RP_ID,
+    rpID: process.env.NODE_ENV === 'development' ? 'localhost' : RP_ID,
     userName: req.user.username,
     timeout: 60000,
     attestationType: 'none',
@@ -286,8 +286,9 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     verification = await verifyRegistrationResponse({
       response: req.body,
       expectedChallenge: currentChallenges[0].challenge,
-      expectedOrigin: `https://${RP_ID}`,
-      expectedRPID: RP_ID,
+      expectedOrigin: getURL(),
+      expectedRPID:
+        process.env.NODE_ENV === 'development' ? 'localhost' : RP_ID,
     });
   } catch (err) {
     console.log(`ERR ${err}`);
