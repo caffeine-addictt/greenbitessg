@@ -8,6 +8,7 @@ import type { RouteMap } from '@pages/route-map';
 
 // Import pages
 import LoginPage from './login';
+import LogoutPage from './logout';
 import RegisterPage from './register';
 import ActivatePage from './activate';
 import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
@@ -22,6 +23,11 @@ const routeMap: RouteMap = {
     title: 'Login',
     description: 'Login to your account',
     component: LoginPage,
+  },
+  '/logout': {
+    title: 'Logout',
+    description: 'Logout from your account',
+    component: LogoutPage,
   },
   '/auth0/login': {
     title: 'Passkey',
