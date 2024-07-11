@@ -161,7 +161,7 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
       expectedRPID: RP_ID,
       authenticator: {
         credentialID: passkeys[0].id,
-        credentialPublicKey: passkeys[0].publicKey,
+        credentialPublicKey: Uint8Array.from(passkeys[0].publicKey),
         counter: passkeys[0].counter,
         transports: passkeys[0].transports,
       },
