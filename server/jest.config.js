@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-const config = {
+// eslint-disable-next-line no-undef
+module.exports = {
   verbose: true,
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
 };
-export default config;
