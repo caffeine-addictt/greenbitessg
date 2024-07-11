@@ -160,6 +160,7 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
       expectedChallenge: currentChallenges[0].challenge,
       expectedOrigin: `https://${RP_ID}`,
       expectedRPID: RP_ID,
+      requireUserVerification: false,
       authenticator: {
         credentialID: passkeys[0].id,
         credentialPublicKey: new Uint8Array(passkeys[0].publicKey.buffer),
