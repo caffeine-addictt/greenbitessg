@@ -26,6 +26,7 @@ import {
 } from '@simplewebauthn/server';
 import { signJwt } from '../../utils/service/auth/jwt';
 import { getHostDomain, getURL } from '../../utils/app';
+import { bytesToBase64, base64ToBytes } from '../../utils/bytearry-encoding';
 
 // Constants
 const RP_ID = getHostDomain();
@@ -163,7 +164,7 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
       requireUserVerification: false,
       authenticator: {
         credentialID: passkeys[0].id,
-        credentialPublicKey: passkeys[0].publicKey,
+        credentialPublicKey: base64ToBytes(passkeys[0].publicKey),
         counter: passkeys[0].counter,
         transports: passkeys[0].transports,
       },
@@ -314,16 +315,21 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     );
 
   // Register passkey
-  const saved = await db.insert(passkeysTable).values({
-    counter: 0,
-    userId: req.user.id,
-    id: verification.registrationInfo.credentialID,
-    webAuthnUserId: currentChallenges[0].challengeUserId,
-    backedUp: verification.registrationInfo.credentialBackedUp,
-    publicKey: Buffer.from(verification.registrationInfo.credentialPublicKey),
-    deviceType: verification.registrationInfo.credentialDeviceType,
-    transports: castedBody.signed.response.transports ?? [],
-  }).returning();
+  const saved = await db
+    .insert(passkeysTable)
+    .values({
+      counter: 0,
+      userId: req.user.id,
+      id: verification.registrationInfo.credentialID,
+      webAuthnUserId: currentChallenges[0].challengeUserId,
+      backedUp: verification.registrationInfo.credentialBackedUp,
+      publicKey: bytesToBase64(
+        verification.registrationInfo.credentialPublicKey,
+      ),
+      deviceType: verification.registrationInfo.credentialDeviceType,
+      transports: castedBody.signed.response.transports ?? [],
+    })
+    .returning();
   console.log('Saved', saved);
   console.log('Body:', castedBody.signed);
 
