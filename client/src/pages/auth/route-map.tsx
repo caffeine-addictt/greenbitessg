@@ -8,8 +8,10 @@ import type { RouteMap } from '@pages/route-map';
 
 // Import pages
 import AuthLayout from './authLayout';
+import LogoutPage from './logout';
 import RegisterPage from './register';
 import ActivatePage from './activate';
+import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
 
 const routeMap: RouteMap = {
   '/register': {
@@ -21,6 +23,23 @@ const routeMap: RouteMap = {
     title: 'Login',
     description: 'Login to your account',
     component: AuthLayout,
+  },
+  '/logout': {
+    title: 'Logout',
+    description: 'Logout from your account',
+    component: LogoutPage,
+  },
+  '/auth0/login': {
+    title: 'Passkey',
+    description: 'Passkey',
+    component: PasskeyLoginPage,
+    accessLevel: 'public-only',
+  },
+  '/auth0/register': {
+    title: 'Passkey',
+    description: 'Passkey',
+    component: PasskeyRegisterPage,
+    accessLevel: 'authenticated',
   },
   '/activate': {
     title: 'Activate Account',

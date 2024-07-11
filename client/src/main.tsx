@@ -107,7 +107,7 @@ export const Layout = (): JSX.Element => {
         </Routes>
       </QueryClientProvider>
 
-      <Footer location={location} isAdmin />
+      <Footer />
     </main>
   );
 };

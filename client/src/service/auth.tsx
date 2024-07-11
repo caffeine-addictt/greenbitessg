@@ -24,7 +24,7 @@ export type AuthContextType = {
   isAdmin: boolean;
   isActivated: boolean;
   login: (tokens: auth.LoginSuccAPI['data']) => void;
-  logout: () => void;
+  logout: () => Promise<unknown>;
 };
 export const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -136,25 +136,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isLoggedIn: isLoggedIn,
         isAdmin: isAdmin,
         isActivated: isActivated,
-        logout: () => {
+        logout: async () => {
           if (!isLoggedIn) navigate('/', { replace: true });
 
           // Invalidate tokens HTTP
-          (async () => {
-            await httpClient
-              .post({
-                uri: '/auth/invalidate-tokens',
-                withCredentials: 'refresh',
-              })
-              .catch((res) =>
-                console.log('Failed to invalidate tokens:', res.message),
-              );
-          })();
+          return await httpClient
+            .post({
+              uri: '/auth/invalidate-tokens',
+              withCredentials: 'refresh',
+              payload: { access_token: getAuthCookie('access')! },
+            })
+            .catch((res) =>
+              console.log('Failed to invalidate tokens:', res.message),
+            )
+            .finally(() => {
+              unsetAuthCookie('access');
+              unsetAuthCookie('refresh');
 
-          unsetAuthCookie('access');
-          unsetAuthCookie('refresh');
-
-          navigate('/', { replace: true });
+              navigate('/', { replace: true });
+            });
         },
         login: (tokens: auth.LoginSuccAPI['data']) => {
           setAuthCookie(tokens.access_token, 'access');
