@@ -26,7 +26,11 @@ import type {
 
 // Custom types
 /** For binary data - Currently for storing Unit8Array publicKey */
-const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
+export const bytea = customType<{
+  data: Buffer;
+  notNull: false;
+  default: false;
+}>({
   dataType: () => 'bytea',
 });
 
@@ -93,7 +97,7 @@ export const passkeysTable = pgTable('passkeys_table', {
   id: text('id').notNull().primaryKey(),
 
   /** Public key bytes */
-  publicKey: bytea('public_key').notNull(),
+  publicKey: text('public_key').notNull(),
 
   /** From generateRegistrationOptions() */
   webAuthnUserId: text('webauthn_user_id').notNull(),
