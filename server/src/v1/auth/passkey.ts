@@ -169,7 +169,6 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
     });
   } catch (err) {
     console.log(`ERR ${err}`);
-    console.error(err);
     return res.status(500).json({
       status: 500,
       errors: [{ message: 'Failed to authenticate passkey' }],
