@@ -152,6 +152,9 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
   }
 
   // Parse body
+  console.log('Passkey:', JSON.stringify(passkeys[0], null, 2));
+  console.log('Challenge:', JSON.stringify(currentChallenges[0], null, 2));
+  console.log('Body:', JSON.stringify(castedBody, null, 2));
   let verification;
   try {
     verification = await verifyAuthenticationResponse({
@@ -161,13 +164,14 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
       expectedRPID: RP_ID,
       authenticator: {
         credentialID: passkeys[0].id,
-        credentialPublicKey: passkeys[0].publicKey,
+        credentialPublicKey: Uint8Array.from(passkeys[0].publicKey),
         counter: passkeys[0].counter,
         transports: passkeys[0].transports,
       },
     });
   } catch (err) {
     console.log(`ERR ${err}`);
+    console.error(err);
     return res.status(500).json({
       status: 500,
       errors: [{ message: 'Failed to authenticate passkey' }],
