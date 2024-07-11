@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import * as z from 'zod';
 
@@ -21,6 +21,7 @@ import { auth, schemas } from '@lib/api-types';
 import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import type { PageComponent } from '@pages/route-map';
+import { AuthContext } from '@service/auth';
 
 export const PasskeyRegisterPage: PageComponent = ({ className, ...props }) => {
   const queryClient = useQueryClient();
@@ -81,6 +82,7 @@ export const PasskeyRegisterPage: PageComponent = ({ className, ...props }) => {
 
 export const PasskeyLoginPage: PageComponent = ({ className, ...props }) => {
   const queryClient = useQueryClient();
+  const { login } = useContext(AuthContext)!;
   const [email, setEmail] = useState('');
 
   const { refetch } = useQuery(
@@ -126,8 +128,10 @@ export const PasskeyLoginPage: PageComponent = ({ className, ...props }) => {
           .catch((err: AxiosError) => console.error(err));
 
         if (!verifyResp) return false;
-        console.log('Successfully registered passkey:', verifyResp);
-        return true;
+        console.log('Successfully registered passkey:');
+
+        login(verifyResp);
+        window.location.reload();
       },
       enabled: false,
     },
