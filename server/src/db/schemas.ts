@@ -93,7 +93,7 @@ export const passkeysTable = pgTable('passkeys_table', {
   id: text('id').notNull().primaryKey(),
 
   /** Public key bytes */
-  publicKey: bytea('public_key').notNull().$type<Uint8Array>(),
+  publicKey: bytea('public_key').notNull(),
 
   /** From generateRegistrationOptions() */
   webAuthnUserId: text('webauthn_user_id').notNull(),

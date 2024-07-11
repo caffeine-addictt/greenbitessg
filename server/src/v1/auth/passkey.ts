@@ -322,7 +322,7 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     id: verification.registrationInfo.credentialID,
     webAuthnUserId: currentChallenges[0].challengeUserId,
     backedUp: verification.registrationInfo.credentialBackedUp,
-    publicKey: verification.registrationInfo.credentialPublicKey,
+    publicKey: Buffer.from(verification.registrationInfo.credentialPublicKey),
     deviceType: verification.registrationInfo.credentialDeviceType,
     transports: castedBody.signed.response.transports ?? [],
   });
