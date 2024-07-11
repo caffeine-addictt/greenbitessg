@@ -152,8 +152,6 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
   }
 
   // Parse body
-  console.log('Passkey:', JSON.stringify(passkeys[0], null, 2));
-  console.log('Challenge:', JSON.stringify(currentChallenges[0], null, 2));
   console.log('Body:', JSON.stringify(castedBody, null, 2));
   let verification;
   try {
