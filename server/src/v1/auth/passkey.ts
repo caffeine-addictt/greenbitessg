@@ -190,6 +190,13 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
     .set({ counter: verification.authenticationInfo.newCounter })
     .where(eq(passkeysTable.id, passkeys[0].id));
 
+  // Delete challenge
+  await db
+    .delete(passkeyChallengesTable)
+    .where(
+      eq(passkeyChallengesTable.challenge, currentChallenges[0].challenge),
+    );
+
   const accessToken = signJwt({ sub: passkeys[0].userId }, 'access');
   const refreshToken = signJwt({ sub: passkeys[0].userId }, 'refresh');
 
