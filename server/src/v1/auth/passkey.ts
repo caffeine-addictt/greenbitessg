@@ -163,7 +163,7 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
       requireUserVerification: false,
       authenticator: {
         credentialID: passkeys[0].id,
-        credentialPublicKey: passkeys[0].publicKey.buffer as Buffer,
+        credentialPublicKey: passkeys[0].publicKey,
         counter: passkeys[0].counter,
         transports: passkeys[0].transports,
       },
