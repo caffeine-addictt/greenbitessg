@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import { base64ToBytes, bytesToBase64 } from './bytearry-encoding';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { base64ToBytes, bytesToBase64 } = require('./bytearry-encoding');
 
 describe('encoding', () => {
   it('base64ToBytes', () => {
