@@ -314,7 +314,7 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     );
 
   // Register passkey
-  await db.insert(passkeysTable).values({
+  const saved = await db.insert(passkeysTable).values({
     counter: 0,
     userId: req.user.id,
     id: verification.registrationInfo.credentialID,
@@ -323,7 +323,9 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     publicKey: Buffer.from(verification.registrationInfo.credentialPublicKey),
     deviceType: verification.registrationInfo.credentialDeviceType,
     transports: castedBody.signed.response.transports ?? [],
-  });
+  }).returning();
+  console.log('Saved', saved);
+  console.log('Body:', castedBody.signed);
 
   return res.status(201).json({
     status: 201,
