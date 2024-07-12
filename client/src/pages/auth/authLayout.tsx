@@ -24,7 +24,11 @@ export const HeaderSliderLocation = ({
   </InternalLink>
 );
 
-export const AuthLayout: PageComponent = ({ className, ...props }) => {
+export const AuthLayout: PageComponent = ({
+  className,
+  children,
+  ...props
+}) => {
   const location = useLocation();
   const isLogin = !!location.pathname.match('/login');
 
@@ -55,7 +59,7 @@ export const AuthLayout: PageComponent = ({ className, ...props }) => {
           </div>
 
           {/* Body content */}
-          <div className="grow"></div>
+          <div className="grow">{children}</div>
 
           {/* Footer */}
           <div className="flex flex-col text-sm">
