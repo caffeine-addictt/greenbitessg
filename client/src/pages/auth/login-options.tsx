@@ -5,7 +5,7 @@
  */
 
 import { PageComponent } from '@pages/route-map';
-import AuthLayout from './authLayout';
+import AuthLayout from './auth-layout';
 import { InternalLink } from '@components/ui/button';
 import { EnvelopeClosedIcon } from '@radix-ui/react-icons';
 import { KeyRoundIcon } from 'lucide-react';
