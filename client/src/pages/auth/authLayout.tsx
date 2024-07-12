@@ -123,7 +123,7 @@ export const AuthLayout: PageComponent = ({
           </div>
 
           {/* Body content */}
-          <div className="grow">{children}</div>
+          <div className="flex grow flex-col items-center">{children}</div>
 
           {/* Footer */}
           <div className="flex flex-col text-sm">
