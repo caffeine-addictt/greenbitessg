@@ -78,7 +78,7 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
 
   return (
     <AuthLayout {...props}>
-      <h1 className="mb-10 text-3xl font-bold">Login</h1>
+      <h1 className="mb-32 mt-20 text-4xl font-bold">Email login</h1>
       <Form {...loginForm}>
         <form
           onSubmit={loginForm.handleSubmit((data) => passwordLogin(data))}
