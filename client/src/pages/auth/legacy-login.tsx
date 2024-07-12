@@ -33,6 +33,8 @@ import { AuthContext } from '@service/auth';
 import { Navigate, useLocation } from 'react-router-dom';
 import { loginFormSchema } from '@lib/api-types/schemas/auth';
 import AuthLayout from './auth-layout';
+import { useToast } from '@components/ui/use-toast';
+import { AxiosError, isAxiosError } from 'axios';
 
 // Page
 const LoginPage: PageComponent = (props): React.JSX.Element => {
@@ -40,6 +42,7 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
   const location = useLocation();
   const { isLoggedIn, isAdmin, login } = React.useContext(AuthContext)!;
 
+  const { toast } = useToast();
   const [hidePassword, setHidePassword] = useState<boolean>(true);
 
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
@@ -61,7 +64,16 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
             payload: data,
           })
           .then((r) => login(r.data))
-          .catch((e) => console.log(e));
+          .catch((e: AxiosError | Error) => {
+            console.log(e);
+            toast({
+              title: 'Failed to login',
+              description: isAxiosError(e)
+                ? (e.response?.data as auth.LoginFailAPI).errors[0].message
+                : e.message,
+              variant: 'destructive',
+            });
+          });
       },
     },
     queryClient,
