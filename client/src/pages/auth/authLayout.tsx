@@ -16,7 +16,10 @@ export const HeaderSliderLocation = ({
   label: string;
   atPage: boolean;
 }) => (
-  <InternalLink variant={atPage ? 'default' : 'secondary'} about={label}>
+  <InternalLink
+    href={atPage ? '/login' : '/register'}
+    variant={atPage ? 'secondary' : 'default'}
+  >
     {label}
   </InternalLink>
 );
