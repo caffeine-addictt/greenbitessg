@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { useState } from 'react';
-import { cn } from '@utils/tailwind';
 import type { PageComponent } from '@pages/route-map';
 
 import * as z from 'zod';
@@ -32,12 +31,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AuthContext } from '@service/auth';
 import { Navigate, useLocation } from 'react-router-dom';
 import { loginFormSchema } from '@lib/api-types/schemas/auth';
+import AuthLayout from './auth-layout';
 
 // Page
-const RegisterPage: PageComponent = ({
-  className,
-  ...props
-}): React.JSX.Element => {
+const LoginPage: PageComponent = (props): React.JSX.Element => {
   const queryClient = useQueryClient();
   const location = useLocation();
   const { isLoggedIn, isAdmin, login } = React.useContext(AuthContext)!;
@@ -80,8 +77,8 @@ const RegisterPage: PageComponent = ({
   }
 
   return (
-    <div {...props} className={cn(className, 'flex-col pt-10 items-center')}>
-      <h1 className="text-3xl font-bold">Login</h1>
+    <AuthLayout {...props}>
+      <h1 className="mb-10 text-3xl font-bold">Login</h1>
       <Form {...loginForm}>
         <form
           onSubmit={loginForm.handleSubmit((data) => passwordLogin(data))}
@@ -158,7 +155,7 @@ const RegisterPage: PageComponent = ({
           </div>
         </form>
       </Form>
-    </div>
+    </AuthLayout>
   );
 };
-export default RegisterPage;
+export default LoginPage;
