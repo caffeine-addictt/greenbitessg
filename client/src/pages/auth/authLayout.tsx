@@ -11,6 +11,36 @@ import { InternalLink } from '@components/ui/button';
 
 import { useMediaQuery } from '@components/hooks';
 
+// Constants
+type ImageType = {
+  name: string;
+  ext: 'png' | 'jpg';
+  sizes: `${number}x${number}`[];
+  default: number;
+  className?: string;
+};
+const images: ImageType[] = [
+  {
+    name: 'cooking-class',
+    ext: 'png',
+    sizes: ['354x500', '707x1000', '1414x2000'],
+    default: 2,
+    className: 'max-w-[99.9%]',
+  },
+  {
+    name: 'food-drive',
+    ext: 'png',
+    sizes: ['354x500', '707x1000', '1414x2000'],
+    default: 2,
+  },
+  {
+    name: 'menu-item',
+    ext: 'png',
+    sizes: ['354x500', '707x1000', '1414x2000'],
+    default: 2,
+  },
+] as const;
+
 // Components
 export const HeaderSliderLocation = ({
   label,
