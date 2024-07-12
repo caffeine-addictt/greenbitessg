@@ -88,7 +88,7 @@ export const AuthLayout: PageComponent = ({
             {/* Slider */}
             <div className="flex size-fit flex-row items-center gap-2 rounded-lg bg-background-light p-1 dark:bg-background-dark">
               <HeaderSliderLocation label="Login" atPage={isLogin} />
-              <HeaderSliderLocation label="Sign up" atPage={!isLogin} />
+              <HeaderSliderLocation label="Register" atPage={!isLogin} />
             </div>
           </div>
 
