@@ -125,6 +125,7 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
                   </FormControl>
                   <Button
                     type="button"
+                    variant="ghost"
                     className="absolute right-1 top-1/2 z-10 size-fit -translate-y-1/2 p-2"
                     onClick={() => setHidePassword(!hidePassword)}
                   >
