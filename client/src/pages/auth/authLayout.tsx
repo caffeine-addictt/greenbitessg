@@ -9,6 +9,9 @@ import { useLocation } from 'react-router-dom';
 import type { PageComponent } from '@pages/route-map';
 import { InternalLink } from '@components/ui/button';
 
+import { useMediaQuery } from '@components/hooks';
+
+// Components
 export const HeaderSliderLocation = ({
   label,
   atPage,
@@ -31,14 +34,15 @@ export const AuthLayout: PageComponent = ({
 }) => {
   const location = useLocation();
   const isLogin = !!location.pathname.match('/login');
+  const isLgScreen = useMediaQuery('(min-width: 1024px)');
 
   return (
     <div {...props} className={className}>
-      <div className="mx-auto my-4 flex w-full grow-0 flex-col rounded bg-surface-light p-2 sm:w-[95%] sm:flex-row dark:bg-surface-dark">
+      <div className="mx-auto my-4 flex w-full grow-0 flex-col rounded bg-surface-light p-2 sm:w-[95%] lg:flex-row dark:bg-surface-dark">
         {/* Login side (desktop:left, mobile:top) */}
-        <div className="flex size-full flex-col sm:w-1/2">
+        <div className="flex size-full flex-col lg:w-1/2">
           {/* Header */}
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-row justify-between max-sm:flex-col max-sm:items-center max-sm:gap-2">
             {/* Logo */}
             <div className="flex flex-row items-center gap-4">
               <img
@@ -52,7 +56,7 @@ export const AuthLayout: PageComponent = ({
             </div>
 
             {/* Slider */}
-            <div className="flex flex-row items-center gap-4 rounded-lg bg-background-light px-2 dark:bg-background-dark">
+            <div className="flex size-fit flex-row items-center gap-2 rounded-lg bg-background-light p-1 dark:bg-background-dark">
               <HeaderSliderLocation label="Login" atPage={isLogin} />
               <HeaderSliderLocation label="Sign up" atPage={!isLogin} />
             </div>
@@ -111,7 +115,10 @@ export const AuthLayout: PageComponent = ({
         </div>
 
         {/* Images side (desktop:right, mobile:hidden) */}
-        <div className="h-full w-1/2 max-sm:hidden">images</div>
+        {isLgScreen && (
+          <div className="my-auto flex h-full w-1/2 justify-center">
+          </div>
+        )}
       </div>
     </div>
   );
