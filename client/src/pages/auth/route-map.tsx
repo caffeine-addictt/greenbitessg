@@ -7,7 +7,6 @@
 import type { RouteMap } from '@pages/route-map';
 
 // Import pages
-import AuthLayout from './auth-layout';
 import LogoutPage from './logout';
 import RegisterPage from './register';
 import LoginOptionsPage from './login-options';
