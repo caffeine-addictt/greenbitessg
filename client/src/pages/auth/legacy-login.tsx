@@ -24,6 +24,7 @@ import {
 import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { EyeNoneIcon, EyeClosedIcon } from '@radix-ui/react-icons';
+import { LoaderIcon } from 'lucide-react';
 
 import httpClient from '@utils/http';
 import { auth } from '@lib/api-types';
@@ -150,7 +151,14 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
               className="w-96 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Logging in...' : 'Log in'}
+              {!isSubmitting ? (
+                'Log in'
+              ) : (
+                <>
+                  <LoaderIcon className="mr-2 size-4 animate-spin" />
+                  Logging in...
+                </>
+              )}
             </Button>
           </div>
         </form>
