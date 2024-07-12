@@ -26,7 +26,7 @@ export const HeaderSliderLocation = ({
 
 export const AuthLayout: PageComponent = ({ className, ...props }) => {
   const location = useLocation();
-  const isLogin = location.pathname.startsWith('/login');
+  const isLogin = !!location.pathname.match('/login');
 
   return (
     <div {...props} className={className}>
