@@ -1,14 +1,21 @@
-/**
- * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
- *
- * SPDX-License-Identifier: GPL-3.0-only
- */
-
 import type { Config } from 'tailwindcss';
 
-export default {
-  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+const config = {
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
+  prefix: '',
   theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: {
+        '2xl': '1400px',
+      },
+    },
     extend: {
       colors: {
         transparent: 'transparent',
@@ -20,6 +27,10 @@ export default {
           light: '#3CC360',
           dark: '#CDBCB1',
         },
+        text: {
+          light: '#010E04',
+          dark: '#EBE5E0',
+        },
         secondary: {
           light: '#7EAAF7',
           dark: '#5ACA41',
@@ -28,12 +39,24 @@ export default {
           light: '#5552F4',
           dark: '#73A586',
         },
-        text: {
-          light: '#010E04',
-          dark: '#EBE5E0',
+      },
+      keyframes: {
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-animate')],
 } satisfies Config;
+
+export default config;
