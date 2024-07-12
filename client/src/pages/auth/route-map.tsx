@@ -8,9 +8,9 @@ import type { RouteMap } from '@pages/route-map';
 
 // Import pages
 import LogoutPage from './logout';
-import RegisterPage from './register';
 import LoginOptionsPage from './login-options';
 import LoginPage from './legacy-login';
+import RegisterPage from './legacy-register';
 import ActivatePage from './activate';
 import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
 
@@ -18,7 +18,7 @@ const routeMap: RouteMap = {
   '/register': {
     title: 'Register',
     description: 'Register a new account with us!',
-    component: RegisterPage,
+    component: () => <></>,
   },
   '/login': {
     title: 'Login',
@@ -29,6 +29,11 @@ const routeMap: RouteMap = {
     title: 'Login',
     description: 'Login to your account with email and password',
     component: LoginPage,
+  },
+  '/auth/register': {
+    title: 'Register',
+    description: 'Register a new account with us!',
+    component: RegisterPage,
   },
   '/logout': {
     title: 'Logout',
