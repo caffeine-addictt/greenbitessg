@@ -91,25 +91,27 @@ export const Layout = (): JSX.Element => {
   const location = useLocation();
 
   return (
-    <main className="flex min-h-screen min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
-      <Navbar location={location} isAdmin />
+    <div className="flex min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
+      <main className="flex min-h-screen flex-col">
+        <Navbar location={location} isAdmin />
 
-      <QueryClientProvider client={new QueryClient()}>
-        <Routes location={location}>
-          {Object.entries(routes).map(([path, details], i) => (
-            <Route
-              key={i}
-              path={path}
-              element={
-                <WrappedComponent {...details} path={location.pathname} />
-              }
-            />
-          ))}
-        </Routes>
-      </QueryClientProvider>
+        <QueryClientProvider client={new QueryClient()}>
+          <Routes location={location}>
+            {Object.entries(routes).map(([path, details], i) => (
+              <Route
+                key={i}
+                path={path}
+                element={
+                  <WrappedComponent {...details} path={location.pathname} />
+                }
+              />
+            ))}
+          </Routes>
+        </QueryClientProvider>
+      </main>
 
       <Footer />
-    </main>
+    </div>
   );
 };
 
