@@ -82,7 +82,7 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
       <Form {...loginForm}>
         <form
           onSubmit={loginForm.handleSubmit((data) => passwordLogin(data))}
-          className="w-[26.5rem] space-y-4"
+          className="w-96 space-y-4 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96"
         >
           <FormField
             control={loginForm.control}
@@ -147,7 +147,7 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
             <Button
               type="submit"
               variant="secondary"
-              className="w-40"
+              className="w-96 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Logging in...' : 'Log in'}
