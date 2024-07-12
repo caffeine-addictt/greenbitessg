@@ -11,6 +11,7 @@ import AuthLayout from './auth-layout';
 import LogoutPage from './logout';
 import RegisterPage from './register';
 import LoginOptionsPage from './login-options';
+import LoginPage from './legacy-login';
 import ActivatePage from './activate';
 import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
 
@@ -24,6 +25,11 @@ const routeMap: RouteMap = {
     title: 'Login',
     description: 'Login to your account',
     component: LoginOptionsPage,
+  },
+  '/auth/login': {
+    title: 'Login',
+    description: 'Login to your account with email and password',
+    component: LoginPage,
   },
   '/logout': {
     title: 'Logout',
