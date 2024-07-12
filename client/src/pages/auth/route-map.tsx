@@ -22,21 +22,25 @@ const routeMap: RouteMap = {
     title: 'Register',
     description: 'Register a new account with us!',
     component: RegisterOptionsPage,
+    accessLevel: 'public-only',
   },
   '/login': {
     title: 'Login',
     description: 'Login to your account',
     component: LoginOptionsPage,
+    accessLevel: 'public-only',
   },
   '/auth/login': {
     title: 'Login',
     description: 'Login to your account with email and password',
     component: LoginPage,
+    accessLevel: 'public-only',
   },
   '/auth/register': {
     title: 'Register',
     description: 'Register a new account with us!',
     component: RegisterPage,
+    accessLevel: 'public-only',
   },
   '/logout': {
     title: 'Logout',
