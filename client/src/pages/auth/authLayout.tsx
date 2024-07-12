@@ -98,9 +98,9 @@ export const AuthLayout: PageComponent = ({
 
   return (
     <div {...props} className={className}>
-      <div className="mx-auto my-4 flex w-full grow-0 flex-col rounded bg-surface-light p-2 sm:w-[95%] lg:flex-row dark:bg-surface-dark">
+      <div className="mx-auto my-4 flex w-[95%] grow-0 flex-col rounded bg-surface-light p-2 lg:flex-row dark:bg-surface-dark">
         {/* Login side (desktop:left, mobile:top) */}
-        <div className="flex size-full flex-col lg:w-1/2">
+        <div className="flex size-full flex-col lg:w-3/5">
           {/* Header */}
           <div className="flex flex-row justify-between max-sm:flex-col max-sm:items-center max-sm:gap-2">
             {/* Logo */}
@@ -176,8 +176,8 @@ export const AuthLayout: PageComponent = ({
 
         {/* Images side (desktop:right, mobile:hidden) */}
         {isLgScreen && (
-          <div className="my-auto flex h-full w-1/2 justify-center">
-            <div className="relative m-2 flex h-fit w-[90%] items-center justify-center rounded-lg bg-surface-light/5">
+          <div className="my-auto flex h-full w-2/5 justify-center">
+            <div className="relative m-2 flex h-fit w-[90%] items-center justify-center self-center rounded-lg bg-surface-light/5">
               <Carousel
                 setApi={setApi}
                 className="my-4 mr-4 size-fit"
