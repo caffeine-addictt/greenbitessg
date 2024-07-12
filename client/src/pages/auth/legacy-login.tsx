@@ -147,7 +147,6 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
           <div className="flex justify-center">
             <Button
               type="submit"
-              variant="secondary"
               className="w-96 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96"
               disabled={isSubmitting}
             >
