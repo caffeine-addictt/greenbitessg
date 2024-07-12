@@ -33,21 +33,21 @@ const images: ImageType[] = [
   {
     name: 'cooking-class',
     ext: 'png',
-    sizes: ['354x500', '707x1000', '1414x2000'],
-    default: 2,
+    sizes: ['1414x2000', '707x1000', '354x500'],
+    default: 0,
     className: 'max-w-[99.9%]',
   },
   {
     name: 'food-drive',
     ext: 'png',
-    sizes: ['354x500', '707x1000', '1414x2000'],
-    default: 2,
+    sizes: ['1414x2000', '707x1000', '354x500'],
+    default: 0,
   },
   {
     name: 'menu-item',
     ext: 'png',
-    sizes: ['354x500', '707x1000', '1414x2000'],
-    default: 2,
+    sizes: ['1414x2000', '707x1000', '354x500'],
+    default: 0,
   },
 ] as const;
 
