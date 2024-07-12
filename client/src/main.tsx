@@ -23,6 +23,7 @@ import routes, { type RouteDetails } from '@pages/route-map';
 // Components
 import Navbar from '@components/navbar';
 import Footer from '@components/footer';
+import { Toaster } from '@components/ui/toaster';
 import { AuthContext, AuthProvider } from '@service/auth';
 import Unauthorized from '@pages/401';
 
@@ -119,5 +120,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Layout />
       </AuthProvider>
     </BrowserRouter>
+    <Toaster />
   </React.StrictMode>,
 );
