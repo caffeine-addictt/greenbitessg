@@ -4,11 +4,21 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
-
 import type { PageComponent } from '@pages/route-map';
-import { InternalLink } from '@components/ui/button';
 
+import Autoplay from 'embla-carousel-autoplay';
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from '@components/ui/carousel';
+
+import { cn } from '@utils/tailwind';
+import { Image } from '@components/ui/image';
+import { Button, InternalLink } from '@components/ui/button';
 import { useMediaQuery } from '@components/hooks';
 
 // Constants
@@ -65,6 +75,26 @@ export const AuthLayout: PageComponent = ({
   const location = useLocation();
   const isLogin = !!location.pathname.match('/login');
   const isLgScreen = useMediaQuery('(min-width: 1024px)');
+
+  // For start/stop autoplay
+  const plugin = React.useRef(
+    Autoplay({ delay: 10000, stopOnInteraction: false }),
+  );
+
+  // For disabling/enabling dots
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const onSelect = React.useCallback(
+    (event: CarouselApi) => setCurrentIndex(event!.selectedScrollSnap()),
+    [],
+  );
+
+  React.useEffect(() => {
+    if (!api) return;
+
+    onSelect(api);
+    api.on('select', onSelect);
+  }, [api, onSelect]);
 
   return (
     <div {...props} className={className}>
@@ -147,6 +177,56 @@ export const AuthLayout: PageComponent = ({
         {/* Images side (desktop:right, mobile:hidden) */}
         {isLgScreen && (
           <div className="my-auto flex h-full w-1/2 justify-center">
+            <div className="relative m-2 flex h-fit w-[90%] items-center justify-center rounded-lg bg-surface-light/5">
+              <Carousel
+                setApi={setApi}
+                className="my-4 mr-4 size-fit"
+                opts={{
+                  align: 'start',
+                  loop: true,
+                }}
+                plugins={[plugin.current]}
+              >
+                <CarouselContent className="mx-0 size-full">
+                  {images.map((imgType, index) => (
+                    <CarouselItem
+                      className="basis-full"
+                      key={`carousel-item-${index}`}
+                    >
+                      <Image
+                        src={`${imgType.name}-${imgType.sizes[imgType.default]}.${imgType.ext}`}
+                        srcSet={imgType.sizes
+                          .map(
+                            (size, i) =>
+                              `${imgType.name}-${size}.${imgType.ext} ${1 + 1.5 * i}x`,
+                          )
+                          .join(', ')}
+                        alt=""
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        className={cn('size-full rounded', imgType.className)}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
+
+              {/* Dots navigation */}
+              <div className="absolute bottom-6 left-6 flex flex-row gap-1">
+                {images.map((_, index) => (
+                  <Button
+                    key={`carousel-dot-${index}`}
+                    className={cn(
+                      'm-0 size-4 rounded-full bg-surface-light/30 p-0',
+                      { 'bg-surface-light/5': index === currentIndex },
+                    )}
+                    disabled={index === currentIndex}
+                    onClick={() =>
+                      api?.scrollTo(index) && plugin.current.reset()
+                    }
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
