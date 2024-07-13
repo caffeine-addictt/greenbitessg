@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
-import type { PageComponent } from '@pages/route-map';
 
 import Autoplay from 'embla-carousel-autoplay';
 import {
@@ -52,11 +51,17 @@ const images: ImageType[] = [
 ] as const;
 
 // Components
-export const AuthLayout: PageComponent = ({
+export interface AuthLayoutProps extends React.HTMLProps<HTMLDivElement> {
+  title?: string;
+  subTitle?: string | React.ReactNode;
+}
+export const AuthLayout = ({
+  title = 'Green Bites SG',
+  subTitle = 'Welcome to Green Bites',
   className,
   children,
   ...props
-}) => {
+}: AuthLayoutProps) => {
   const location = useLocation();
   const isLogin = !!location.pathname.match('/login');
   const isLgScreen = useMediaQuery('(min-width: 1024px)');
@@ -87,21 +92,27 @@ export const AuthLayout: PageComponent = ({
         {/* Login side (desktop:left, mobile:top) */}
         <div className="flex size-full flex-col lg:w-3/5">
           {/* Header */}
-          <div className="flex flex-row justify-between max-sm:flex-col max-sm:items-center max-sm:gap-2">
-            {/* Logo */}
-            <div className="flex flex-row items-center gap-4">
-              <img
-                src=""
-                alt=""
-                width={32}
-                height={32}
-                className="size-12 rounded-full"
-              />
-              <h1 className="text-3xl font-bold">Green Bites SG</h1>
+          <div className="mb-10 flex flex-row justify-between max-sm:flex-col max-sm:items-center max-sm:gap-6">
+            {/* Left */}
+            <div className="flex flex-col gap-2">
+              {/* Logo */}
+              <div className="flex flex-row items-center gap-4">
+                <img
+                  src=""
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="size-12 rounded-full"
+                />
+                <h1 className="text-3xl font-bold">{title}</h1>
+              </div>
+
+              {/* Sub title */}
+              <p className="ml-2 text-sm max-sm:text-center">{subTitle}</p>
             </div>
 
             {/* Slider */}
-            <div className="flex size-fit flex-row items-center gap-2 rounded-lg bg-background-light p-1 dark:bg-background-dark">
+            <div className="flex size-fit flex-row items-center gap-2 rounded-lg bg-background-light p-1 max-sm:hidden dark:bg-background-dark">
               <InternalLink
                 href="/login"
                 disabled={isLogin}
@@ -123,7 +134,7 @@ export const AuthLayout: PageComponent = ({
           <div className="flex grow flex-col items-center">{children}</div>
 
           {/* Footer */}
-          <div className="flex flex-col text-sm">
+          <div className="mt-10 flex flex-col text-sm max-sm:items-center max-sm:text-center">
             {isLogin ? (
               <span>
                 Or{' '}
