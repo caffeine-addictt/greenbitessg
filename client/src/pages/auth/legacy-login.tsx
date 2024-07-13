@@ -30,7 +30,7 @@ import httpClient from '@utils/http';
 import { auth } from '@lib/api-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AuthContext } from '@service/auth';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import { loginFormSchema } from '@lib/api-types/schemas/auth';
 import AuthLayout from './auth-layout';
 import { useToast } from '@components/ui/use-toast';
@@ -39,7 +39,7 @@ import { AxiosError, isAxiosError } from 'axios';
 // Page
 const LoginPage: PageComponent = (props): React.JSX.Element => {
   const queryClient = useQueryClient();
-  const location = useLocation();
+  const [params] = useSearchParams();
   const { isLoggedIn, isAdmin, login } = React.useContext(AuthContext)!;
 
   const { toast } = useToast();
@@ -63,7 +63,15 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
             uri: '/auth/login',
             payload: data,
           })
-          .then((r) => login(r.data))
+          .then((r) => {
+            login(r.data);
+            toast({
+              title: 'Logged in',
+              description: 'Welcome back.',
+            });
+
+            window.location.reload();
+          })
           .catch((e: AxiosError | Error) => {
             console.log(e);
             toast({
@@ -83,7 +91,7 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
   if (isLoggedIn) {
     return (
       <Navigate
-        to={location.state?.from || (isAdmin ? '/admin' : '/home')}
+        to={params.get('callbackURI') || (isAdmin ? '/admin' : '/home')}
         replace
       />
     );

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import type { PageComponent } from '@pages/route-map';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
 
 import * as z from 'zod';
 import httpClient from '@utils/http';
@@ -34,6 +34,7 @@ const ActivateWithTokenPage: PageComponent = ({
 }): React.JSX.Element => {
   const { isActivated, isAdmin } = React.useContext(AuthContext)!;
 
+  const [params] = useSearchParams();
   const location = useLocation();
   const queryClient = useQueryClient();
 
@@ -88,7 +89,9 @@ const ActivateWithTokenPage: PageComponent = ({
   // Redirect if already activated
   if (isActivated || isSuccess) {
     return (
-      <Navigate to={location.state?.from ?? (isAdmin ? '/admin' : '/home')} />
+      <Navigate
+        to={params.get('callbackURI') ?? (isAdmin ? '/admin' : '/home')}
+      />
     );
   }
 

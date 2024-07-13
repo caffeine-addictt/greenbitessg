@@ -90,6 +90,7 @@ const RegisterPage: PageComponent = ({
             typeof data
           >({ uri: '/auth/register', payload: data })
           .catch((err) => console.log(err));
+
         if (res) {
           // TODO: Render toast
           // TODO: Redirect to login
