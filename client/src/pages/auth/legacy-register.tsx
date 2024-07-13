@@ -37,10 +37,26 @@ const RegisterPage: PageComponent = ({
 }): React.JSX.Element => {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
 
-  const registerFormSchema = schemas.auth.registerFormSchema.refine(
-    () => usernameAvailable,
-    { message: 'Username already taken!', path: ['username'] },
-  );
+  const registerFormSchema = schemas.auth.registerFormSchema
+    .extend({
+      confirm: z
+        .string({
+          invalid_type_error: 'Please retype your password!',
+          required_error: 'Please retype your password!',
+        })
+        .min(1, { message: 'Please retype your password!' }),
+      agreePolicy: z.boolean().refine((val) => val === true, {
+        message: 'Please agree to our Terms of Service!',
+      }),
+    })
+    .refine(() => usernameAvailable, {
+      message: 'Username already taken!',
+      path: ['username'],
+    })
+    .refine((data) => data.password === data.confirm, {
+      message: 'Passwords do not match!',
+      path: ['confirm'],
+    });
 
   const registerForm = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -49,7 +65,6 @@ const RegisterPage: PageComponent = ({
       email: '',
       password: '',
       confirm: '',
-      agreeMarketting: false,
       agreePolicy: false,
     },
   });
@@ -199,26 +214,6 @@ const RegisterPage: PageComponent = ({
             )}
           />
           <div className="space-y-2 pt-4">
-            <FormField
-              control={registerForm.control}
-              name="agreeMarketting"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Marketing emails</FormLabel>
-                    <FormDescription>
-                      Receive emails about new products, features, and more.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
             <FormField
               control={registerForm.control}
               name="agreePolicy"
