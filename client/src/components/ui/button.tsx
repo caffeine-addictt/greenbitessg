@@ -64,11 +64,23 @@ Button.displayName = 'Button';
 export interface ExternalLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
     VariantProps<typeof buttonVariants> {
+  disabled?: boolean;
   href: `http://${string}` | `https://${string}`;
 }
 
 const ExternalLink = React.forwardRef<HTMLAnchorElement, ExternalLinkProps>(
-  ({ className, variant, size, children, ...props }, ref) => {
+  ({ className, variant, size, disabled = false, children, ...props }, ref) => {
+    if (disabled) {
+      return (
+        <Button
+          className={cn(buttonVariants({ variant, size, className }))}
+          disabled={true}
+        >
+          {children}
+        </Button>
+      );
+    }
+
     return (
       <a
         ref={ref}
@@ -96,6 +108,7 @@ const InternalLink = React.forwardRef<HTMLAnchorElement, InternalLinkProps>(
       variant,
       size,
       href,
+      disabled = false,
       preserveCallback = false,
       children,
       ...props
@@ -109,6 +122,17 @@ const InternalLink = React.forwardRef<HTMLAnchorElement, InternalLinkProps>(
 
     if (preserveCallback && callback) {
       targetURI.searchParams.set('callbackURI', callback);
+    }
+
+    if (disabled) {
+      return (
+        <Button
+          className={cn(buttonVariants({ variant, size, className }))}
+          disabled={true}
+        >
+          {children}
+        </Button>
+      );
     }
 
     return (
