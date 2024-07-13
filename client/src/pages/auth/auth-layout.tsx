@@ -62,6 +62,7 @@ export const HeaderSliderLocation = ({
   <InternalLink
     href={atPage ? '/login' : '/register'}
     variant={atPage ? 'secondary' : 'default'}
+    preserveCallback
   >
     {label}
   </InternalLink>
@@ -134,6 +135,7 @@ export const AuthLayout: PageComponent = ({
                   className="h-fit p-0"
                   variant="link"
                   href="/register"
+                  preserveCallback
                 >
                   create an account here!
                 </InternalLink>

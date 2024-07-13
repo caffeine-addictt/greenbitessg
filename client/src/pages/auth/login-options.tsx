@@ -25,11 +25,11 @@ const LoginOptionsPage: PageComponent = (props) => {
 
       {/* Options */}
       <div className="mt-32 flex w-96 flex-col gap-2 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96">
-        <InternalLink href="/auth/login" variant="default">
+        <InternalLink href="/auth/login" variant="default" preserveCallback>
           <EnvelopeClosedIcon className="mr-2 size-6" />
           Log in with email
         </InternalLink>
-        <InternalLink href="/auth0/login" variant="default">
+        <InternalLink href="/auth0/login" variant="default" preserveCallback>
           <KeyRoundIcon className="mr-2 size-6" />
           Log in with passkeys
         </InternalLink>
@@ -41,6 +41,7 @@ const LoginOptionsPage: PageComponent = (props) => {
             href="/register"
             variant="link"
             className="m-0 size-fit p-0"
+            preserveCallback
           >
             here
           </InternalLink>

@@ -36,6 +36,7 @@ const RegisterOptionsPage: PageComponent = (props) => {
             href="/login"
             variant="link"
             className="m-0 size-fit p-0"
+            preserveCallback
           >
             Login -&gt;
           </InternalLink>
