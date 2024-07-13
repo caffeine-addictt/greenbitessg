@@ -90,11 +90,32 @@ export interface InternalLinkProps extends Omit<ExternalLinkProps, 'href'> {
   preserveCallback?: boolean;
 }
 const InternalLink = React.forwardRef<HTMLAnchorElement, InternalLinkProps>(
-  ({ className, variant, size, children, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      href,
+      preserveCallback = false,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    const targetURI = new URL(href, location.origin);
+    const callback = new URLSearchParams(window.location.search).get(
+      'callbackURI',
+    );
+
+    if (preserveCallback && callback) {
+      targetURI.searchParams.set('callbackURI', callback);
+    }
+
     return (
       <a
         ref={ref}
         {...props}
+        href={targetURI.toString()}
         className={cn(buttonVariants({ variant, size, className }))}
       >
         {children}
