@@ -1,0 +1,1 @@
+ALTER TABLE "users_table" DROP COLUMN IF EXISTS "date_of_birth";

@@ -120,6 +120,13 @@
       "when": 1720708384046,
       "tag": "0016_uneven_blue_shield",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1720863982193,
+      "tag": "0017_graceful_arclight",
+      "breakpoints": true
     }
   ]
 }

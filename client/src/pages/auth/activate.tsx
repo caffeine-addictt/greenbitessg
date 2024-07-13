@@ -5,8 +5,14 @@
  */
 
 import * as React from 'react';
+import AuthLayout from './auth-layout';
 import type { PageComponent } from '@pages/route-map';
-import { Navigate, useLocation } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 import * as z from 'zod';
 import httpClient from '@utils/http';
@@ -24,17 +30,18 @@ import {
   CheckCircledIcon,
   CrossCircledIcon,
 } from '@radix-ui/react-icons';
-import { AxiosError } from 'axios';
+import { AxiosError, isAxiosError } from 'axios';
 import { Button } from '@components/ui/button';
+import { useToast } from '@components/ui/use-toast';
 
 // Page
-const ActivateWithTokenPage: PageComponent = ({
-  className,
-  ...props
-}): React.JSX.Element => {
+const ActivateWithTokenPage: PageComponent = (props): React.JSX.Element => {
+  const { toast } = useToast();
   const { isActivated, isAdmin } = React.useContext(AuthContext)!;
 
+  const [params] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const tokenOrActivate = location.pathname
@@ -54,7 +61,15 @@ const ActivateWithTokenPage: PageComponent = ({
             },
             withCredentials: 'access',
           })
-          .then(() => window.location.reload())
+          .then(() => {
+            toast({
+              title: 'Account activated',
+              description: 'Your account has been activated.',
+            });
+            navigate(
+              params.get('callbackURI') ?? (isAdmin ? '/admin' : '/home'),
+            );
+          })
           .catch((err: AxiosError) => console.log(err)),
       retry: 5,
       retryDelay: (failureCount) => 2 ** failureCount + 10,
@@ -78,9 +93,23 @@ const ActivateWithTokenPage: PageComponent = ({
             token_type: 'activation',
           },
         }),
-      onSuccess: () =>
-        queryClient.invalidateQueries({ queryKey: ['activate'] }),
-      onError: (err: AxiosError) => console.log(err),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['activate'] });
+        toast({
+          title: 'Activation token sent',
+          description: 'Please check your email for the activation link.',
+        });
+      },
+      onError: (e: AxiosError | Error) => {
+        console.log(e);
+        toast({
+          title: 'Failed to resend token',
+          description: isAxiosError(e)
+            ? (e.response?.data as auth.RecreateTokenFailAPI).errors[0].message
+            : e.message,
+          variant: 'destructive',
+        });
+      },
     },
     queryClient,
   );
@@ -88,65 +117,76 @@ const ActivateWithTokenPage: PageComponent = ({
   // Redirect if already activated
   if (isActivated || isSuccess) {
     return (
-      <Navigate to={location.state?.from ?? (isAdmin ? '/admin' : '/home')} />
+      <Navigate
+        to={params.get('callbackURI') ?? (isAdmin ? '/admin' : '/home')}
+      />
     );
   }
 
   return (
-    <div
-      className={cn(className, 'flex-col mx-auto justify-center text-center')}
+    <AuthLayout
       {...props}
+      title="Activate your account"
+      subTitle={
+        <>
+          Please check your email for the activation link.
+          <br />
+          メールを確認してください
+        </>
+      }
     >
-      {/* Header */}
-      <h1 className="mb-4 text-3xl font-bold">Activate your account</h1>
+      <div className="my-auto text-center">
+        {/* Header */}
+        <h1 className="mb-4 text-3xl font-bold">Activate your account</h1>
 
-      {/* Sub header */}
-      <h3 className="mb-32 text-lg">
-        Please check your email for the activation link.
-      </h3>
+        {/* Sub header */}
+        <h3 className="mb-32 text-lg">
+          Please check your email for the activation link.
+        </h3>
 
-      {/* Statuses */}
-      <div
-        className={cn('transition-all', {
-          hidden: tokenOrActivate === 'activate',
-        })}
-      >
-        {isFetching && (
-          <div className="flex flex-row items-center justify-center gap-2">
-            <SymbolIcon className="mr-2 size-6 animate-spin" />
-            Activating your account... Please wait.
-          </div>
-        )}
+        {/* Statuses */}
+        <div
+          className={cn('transition-all', {
+            hidden: tokenOrActivate === 'activate',
+          })}
+        >
+          {isFetching && (
+            <div className="flex flex-row items-center justify-center gap-2">
+              <SymbolIcon className="mr-2 size-6 animate-spin" />
+              Activating your account... Please wait.
+            </div>
+          )}
 
-        {isSuccess && (
-          <div className="flex flex-row items-center justify-center gap-2">
-            <CheckCircledIcon className="mr-2 size-6 animate-none text-green-500" />
-            Your account has been activated. Please login.
-          </div>
-        )}
+          {isSuccess && (
+            <div className="flex flex-row items-center justify-center gap-2">
+              <CheckCircledIcon className="mr-2 size-6 animate-none text-green-500" />
+              Your account has been activated. Please login.
+            </div>
+          )}
 
-        {isError && (
-          <div className="flex flex-row items-center justify-center gap-2">
-            <CrossCircledIcon className="mr-2 size-6 text-red-500" />
-            Failed to activate your account. Please try again later.
-          </div>
-        )}
+          {isError && (
+            <div className="flex flex-row items-center justify-center gap-2">
+              <CrossCircledIcon className="mr-2 size-6 text-red-500" />
+              Failed to activate your account. Please try again later.
+            </div>
+          )}
+        </div>
+
+        {/* Resend token */}
+        <Button
+          type="button"
+          onClick={() => mutate()}
+          disabled={isFetching || isPending}
+          className="mx-auto w-fit"
+        >
+          {isPending ? 'Resending...' : 'Resend activation token'}
+        </Button>
+
+        <div className="h-16 w-4">
+          <span className="hidden">Dummy to force main content up a bit</span>
+        </div>
       </div>
-
-      {/* Resend token */}
-      <Button
-        type="button"
-        onClick={() => mutate()}
-        disabled={isFetching || isPending}
-        className="mx-auto w-fit"
-      >
-        {isPending ? 'Resending...' : 'Resend activation token'}
-      </Button>
-
-      <div className="h-16 w-4">
-        <span className="hidden">Dummy to force main content up a bit</span>
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 export default ActivateWithTokenPage;

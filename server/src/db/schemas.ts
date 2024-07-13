@@ -9,7 +9,6 @@ import {
   serial,
   text,
   timestamp,
-  date,
   smallint,
   integer,
   AnyPgColumn,
@@ -44,7 +43,6 @@ export const usersTable = pgTable('users_table', {
   permission: smallint('permission').default(0).notNull(),
   username: text('username').notNull(),
   email: text('email').notNull().unique(),
-  dateOfBirth: date('date_of_birth').notNull(),
   password: text('password').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')

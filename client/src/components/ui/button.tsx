@@ -61,5 +61,93 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
+export interface ExternalLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    VariantProps<typeof buttonVariants> {
+  disabled?: boolean;
+  href: `http://${string}` | `https://${string}`;
+}
+
+const ExternalLink = React.forwardRef<HTMLAnchorElement, ExternalLinkProps>(
+  ({ className, variant, size, disabled = false, children, ...props }, ref) => {
+    if (disabled) {
+      return (
+        <Button
+          className={cn(buttonVariants({ variant, size, className }))}
+          disabled={true}
+        >
+          {children}
+        </Button>
+      );
+    }
+
+    return (
+      <a
+        ref={ref}
+        {...props}
+        target="_blank"
+        rel="noopener noreferrer"
+        referrerPolicy="no-referrer-when-downgrade"
+        className={cn(buttonVariants({ variant, size, className }))}
+      >
+        {children}
+      </a>
+    );
+  },
+);
+ExternalLink.displayName = 'ExternalLink';
+
+export interface InternalLinkProps extends Omit<ExternalLinkProps, 'href'> {
+  href: `/${string}`;
+  preserveCallback?: boolean;
+}
+const InternalLink = React.forwardRef<HTMLAnchorElement, InternalLinkProps>(
+  (
+    {
+      className,
+      variant,
+      size,
+      href,
+      disabled = false,
+      preserveCallback = false,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    const targetURI = new URL(href, location.origin);
+    const callback = new URLSearchParams(window.location.search).get(
+      'callbackURI',
+    );
+
+    if (preserveCallback && callback) {
+      targetURI.searchParams.set('callbackURI', callback);
+    }
+
+    if (disabled) {
+      return (
+        <Button
+          className={cn(buttonVariants({ variant, size, className }))}
+          disabled={true}
+        >
+          {children}
+        </Button>
+      );
+    }
+
+    return (
+      <a
+        ref={ref}
+        {...props}
+        href={targetURI.toString()}
+        className={cn(buttonVariants({ variant, size, className }))}
+      >
+        {children}
+      </a>
+    );
+  },
+);
+InternalLink.displayName = 'InternalLink';
+
 // eslint-disable-next-line
-export { Button, buttonVariants };
+export { Button, ExternalLink, InternalLink, buttonVariants };

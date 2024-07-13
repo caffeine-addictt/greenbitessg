@@ -23,6 +23,10 @@ const config = {
           light: '#F1FEF4',
           dark: '#2A2928',
         },
+        surface: {
+          light: '#F8F8F8',
+          dark: '#202020',
+        },
         primary: {
           light: '#3CC360',
           dark: '#CDBCB1',
