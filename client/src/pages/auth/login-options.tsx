@@ -12,19 +12,18 @@ import { KeyRoundIcon } from 'lucide-react';
 
 const LoginOptionsPage: PageComponent = (props) => {
   return (
-    <AuthLayout {...props}>
-      {/* Header */}
-      <div className="mt-20 text-center">
-        <h1 className="mb-1 text-4xl font-bold">Welcome back!</h1>
-        <p className="text-sm">
+    <AuthLayout
+      {...props}
+      title="Welcome back!"
+      subTitle={
+        <>
           Welcome back! Please sign in to your account.
           <br />
           おかえりなさい〜
-        </p>
-      </div>
-
-      {/* Options */}
-      <div className="mt-32 flex w-96 flex-col gap-2 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96">
+        </>
+      }
+    >
+      <div className="my-auto flex w-96 flex-col gap-2 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96">
         <InternalLink href="/auth/login" variant="default" preserveCallback>
           <EnvelopeClosedIcon className="mr-2 size-6" />
           Log in with email

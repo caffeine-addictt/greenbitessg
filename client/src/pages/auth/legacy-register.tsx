@@ -29,6 +29,7 @@ import { Button } from '@components/ui/button';
 import httpClient from '@utils/http';
 import { auth, schemas } from '@lib/api-types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import AuthLayout from './auth-layout';
 
 // Page
 const RegisterPage: PageComponent = ({
@@ -120,12 +121,15 @@ const RegisterPage: PageComponent = ({
   );
 
   return (
-    <div {...props} className={cn(className, 'flex-col pt-10 items-center')}>
-      <h1 className="text-2xl font-bold">Register</h1>
+    <AuthLayout
+      {...props}
+      title="Register with email"
+      subTitle="Create a new account with us!"
+    >
       <Form {...registerForm}>
         <form
           onSubmit={registerForm.handleSubmit((data) => createAccount(data))}
-          className="w-[26.5rem] space-y-4"
+          className="my-auto w-96 space-y-4 max-sm:w-[90%] max-sm:min-w-56 max-sm:max-w-96"
         >
           <FormField
             control={registerForm.control}
@@ -258,7 +262,7 @@ const RegisterPage: PageComponent = ({
           </div>
         </form>
       </Form>
-    </div>
+    </AuthLayout>
   );
 };
 export default RegisterPage;
