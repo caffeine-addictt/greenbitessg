@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import * as z from 'zod';
 
@@ -14,7 +14,7 @@ import {
 } from '@simplewebauthn/browser';
 
 import { AxiosError } from 'axios';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient, { APIPayload } from '@utils/http';
 import { auth, schemas } from '@lib/api-types';
 
@@ -83,12 +83,12 @@ export const PasskeyRegisterPage: PageComponent = ({ className, ...props }) => {
 export const PasskeyLoginPage: PageComponent = ({ className, ...props }) => {
   const queryClient = useQueryClient();
   const { login } = useContext(AuthContext)!;
-  const [email, setEmail] = useState('');
 
-  const { refetch } = useQuery(
+  const { mutate: loginPasskey } = useMutation(
     {
-      queryKey: ['login-passkey'],
-      queryFn: async () => {
+      mutationFn: async (
+        data: z.infer<typeof schemas.auth.passkeyLoginSchema>,
+      ) => {
         const resp = await httpClient
           .post<
             auth.LoginPasskeysStartSuccAPI,
