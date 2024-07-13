@@ -25,13 +25,16 @@ import {
 import { Input } from '@components/ui/input';
 import { Switch } from '@components/ui/switch';
 import { Button } from '@components/ui/button';
+import { LoaderIcon } from 'lucide-react';
+import { EnvelopeClosedIcon } from '@radix-ui/react-icons';
 
 import httpClient from '@utils/http';
 import { auth, schemas } from '@lib/api-types';
+import { AxiosError, isAxiosError } from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import AuthLayout from './auth-layout';
 import { useToast } from '@components/ui/use-toast';
-import { AxiosError, isAxiosError } from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // Page
@@ -270,7 +273,17 @@ const RegisterPage: PageComponent = (props): React.JSX.Element => {
               Clear
             </Button>
             <Button type="submit" variant="default" disabled={isSubmitting}>
-              {isSubmitting ? 'Registering...' : 'Register'}
+              {!isSubmitting ? (
+                <>
+                  <EnvelopeClosedIcon className="mr-2 size-6" />
+                  Register
+                </>
+              ) : (
+                <>
+                  <LoaderIcon className="mr-2 size-4 animate-spin" />
+                  Registering...
+                </>
+              )}
             </Button>
           </div>
         </form>

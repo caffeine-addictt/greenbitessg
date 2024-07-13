@@ -32,10 +32,10 @@ import {
   FormControl,
   FormMessage,
 } from '@components/ui/form';
-import { LoaderIcon } from 'lucide-react';
 import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { useToast } from '@components/ui/use-toast';
+import { KeyRoundIcon, LoaderIcon } from 'lucide-react';
 
 export const PasskeyRegisterPage: PageComponent = ({ className, ...props }) => {
   const queryClient = useQueryClient();
@@ -223,7 +223,10 @@ export const PasskeyLoginPage: PageComponent = (props) => {
               disabled={isSubmitting}
             >
               {!isSubmitting ? (
-                'Log in'
+                <>
+                  <KeyRoundIcon className="mr-2 size-6" />
+                  Log in with passkeys
+                </>
               ) : (
                 <>
                   <LoaderIcon className="mr-2 size-4 animate-spin" />

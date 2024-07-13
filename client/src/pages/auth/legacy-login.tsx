@@ -6,6 +6,8 @@
 
 import * as React from 'react';
 import { useState } from 'react';
+import { AxiosError, isAxiosError } from 'axios';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import type { PageComponent } from '@pages/route-map';
 
 import * as z from 'zod';
@@ -21,20 +23,23 @@ import {
   FormControl,
   FormMessage,
 } from '@components/ui/form';
+import { LoaderIcon } from 'lucide-react';
 import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
-import { EyeNoneIcon, EyeClosedIcon } from '@radix-ui/react-icons';
-import { LoaderIcon } from 'lucide-react';
+import {
+  EyeNoneIcon,
+  EyeClosedIcon,
+  EnvelopeClosedIcon,
+} from '@radix-ui/react-icons';
 
 import httpClient from '@utils/http';
 import { auth } from '@lib/api-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AuthContext } from '@service/auth';
-import { Navigate, useSearchParams } from 'react-router-dom';
-import { loginFormSchema } from '@lib/api-types/schemas/auth';
+
 import AuthLayout from './auth-layout';
+import { AuthContext } from '@service/auth';
+import { loginFormSchema } from '@lib/api-types/schemas/auth';
 import { useToast } from '@components/ui/use-toast';
-import { AxiosError, isAxiosError } from 'axios';
 
 // Page
 const LoginPage: PageComponent = (props): React.JSX.Element => {
@@ -175,7 +180,10 @@ const LoginPage: PageComponent = (props): React.JSX.Element => {
               disabled={isSubmitting}
             >
               {!isSubmitting ? (
-                'Log in'
+                <>
+                  <EnvelopeClosedIcon className="mr-2 size-6" />
+                  Log in with email
+                </>
               ) : (
                 <>
                   <LoaderIcon className="mr-2 size-4 animate-spin" />
