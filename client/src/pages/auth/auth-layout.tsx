@@ -63,7 +63,9 @@ export const AuthLayout = ({
   ...props
 }: AuthLayoutProps) => {
   const location = useLocation();
-  const isLogin = !!location.pathname.match('/login');
+  location.pathname = location.pathname.replace(/\/+$/, '');
+
+  const isLogin = location.pathname.endsWith('/login');
   const isLgScreen = useMediaQuery('(min-width: 1024px)');
 
   // For start/stop autoplay
