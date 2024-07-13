@@ -52,22 +52,6 @@ const images: ImageType[] = [
 ] as const;
 
 // Components
-export const HeaderSliderLocation = ({
-  label,
-  atPage,
-}: {
-  label: string;
-  atPage: boolean;
-}) => (
-  <InternalLink
-    href={atPage ? '/login' : '/register'}
-    variant={atPage ? 'secondary' : 'default'}
-    preserveCallback
-  >
-    {label}
-  </InternalLink>
-);
-
 export const AuthLayout: PageComponent = ({
   className,
   children,
@@ -118,8 +102,20 @@ export const AuthLayout: PageComponent = ({
 
             {/* Slider */}
             <div className="flex size-fit flex-row items-center gap-2 rounded-lg bg-background-light p-1 dark:bg-background-dark">
-              <HeaderSliderLocation label="Login" atPage={isLogin} />
-              <HeaderSliderLocation label="Register" atPage={!isLogin} />
+              <InternalLink
+                href="/login"
+                disabled={isLogin}
+                variant={isLogin ? 'secondary' : 'default'}
+              >
+                Login
+              </InternalLink>
+              <InternalLink
+                href="/register"
+                disabled={!isLogin}
+                variant={isLogin ? 'default' : 'secondary'}
+              >
+                Register
+              </InternalLink>
             </div>
           </div>
 
