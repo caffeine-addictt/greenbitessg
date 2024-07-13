@@ -7,7 +7,12 @@
 import * as React from 'react';
 import AuthLayout from './auth-layout';
 import type { PageComponent } from '@pages/route-map';
-import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 import * as z from 'zod';
 import httpClient from '@utils/http';
@@ -25,15 +30,18 @@ import {
   CheckCircledIcon,
   CrossCircledIcon,
 } from '@radix-ui/react-icons';
-import { AxiosError } from 'axios';
+import { AxiosError, isAxiosError } from 'axios';
 import { Button } from '@components/ui/button';
+import { useToast } from '@components/ui/use-toast';
 
 // Page
 const ActivateWithTokenPage: PageComponent = (props): React.JSX.Element => {
+  const { toast } = useToast();
   const { isActivated, isAdmin } = React.useContext(AuthContext)!;
 
   const [params] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const tokenOrActivate = location.pathname
@@ -53,7 +61,15 @@ const ActivateWithTokenPage: PageComponent = (props): React.JSX.Element => {
             },
             withCredentials: 'access',
           })
-          .then(() => window.location.reload())
+          .then(() => {
+            toast({
+              title: 'Account activated',
+              description: 'Your account has been activated.',
+            });
+            navigate(
+              params.get('callbackURI') ?? (isAdmin ? '/admin' : '/home'),
+            );
+          })
           .catch((err: AxiosError) => console.log(err)),
       retry: 5,
       retryDelay: (failureCount) => 2 ** failureCount + 10,
@@ -77,9 +93,23 @@ const ActivateWithTokenPage: PageComponent = (props): React.JSX.Element => {
             token_type: 'activation',
           },
         }),
-      onSuccess: () =>
-        queryClient.invalidateQueries({ queryKey: ['activate'] }),
-      onError: (err: AxiosError) => console.log(err),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['activate'] });
+        toast({
+          title: 'Activation token sent',
+          description: 'Please check your email for the activation link.',
+        });
+      },
+      onError: (e: AxiosError | Error) => {
+        console.log(e);
+        toast({
+          title: 'Failed to resend token',
+          description: isAxiosError(e)
+            ? (e.response?.data as auth.RecreateTokenFailAPI).errors[0].message
+            : e.message,
+          variant: 'destructive',
+        });
+      },
     },
     queryClient,
   );
