@@ -30,12 +30,17 @@ import httpClient from '@utils/http';
 import { auth, schemas } from '@lib/api-types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import AuthLayout from './auth-layout';
+import { useToast } from '@components/ui/use-toast';
+import { AxiosError, isAxiosError } from 'axios';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // Page
-const RegisterPage: PageComponent = ({
-  className,
-  ...props
-}): React.JSX.Element => {
+const RegisterPage: PageComponent = (props): React.JSX.Element => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { toast } = useToast();
+  const [url] = useSearchParams();
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
 
   const registerFormSchema = schemas.auth.registerFormSchema
@@ -71,8 +76,6 @@ const RegisterPage: PageComponent = ({
   });
   const { isSubmitting } = useFormState({ control: registerForm.control });
 
-  const queryClient = useQueryClient();
-
   // Validating username
   const username = registerForm.watch('username');
   useQuery(
@@ -100,21 +103,31 @@ const RegisterPage: PageComponent = ({
   const { mutate: createAccount } = useMutation(
     {
       mutationFn: async (data: z.infer<typeof registerFormSchema>) => {
-        const res = await httpClient
-          .post<
-            auth.RegisterSuccAPI,
-            typeof data
-          >({ uri: '/auth/register', payload: data })
-          .catch((err) => console.log(err));
+        await httpClient
+          .post<auth.RegisterSuccAPI, typeof data>({
+            uri: '/auth/register',
+            payload: data,
+          })
+          .then(() => {
+            toast({
+              title: 'Registered account successfully',
+              description: 'Check your email for the account activation link',
+            });
 
-        if (res) {
-          // TODO: Render toast
-          // TODO: Redirect to login
-          return res.data.created;
-        }
-
-        // TODO: Handle error
-        return false;
+            navigate(
+              `/activate?callbackURI=${url.get('callbackURI') || '/home'}`,
+            );
+          })
+          .catch((e: AxiosError | Error) => {
+            console.log(e);
+            toast({
+              title: 'Failed to register account',
+              description: isAxiosError(e)
+                ? (e.response?.data as auth.RegisterFailAPI).errors[0].message
+                : e.message,
+              variant: 'destructive',
+            });
+          });
       },
     },
     queryClient,
