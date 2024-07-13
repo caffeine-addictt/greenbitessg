@@ -7,7 +7,6 @@
 import * as z from 'zod';
 import { AxiosError, isAxiosError } from 'axios';
 import { createContext, useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import httpClient from '@utils/http';
 import { auth } from '@lib/api-types';
@@ -34,9 +33,6 @@ const getUserInfo = () =>
 
 export type AuthProviderState = 'pending' | 'done';
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const [state, setState] = useState<AuthProviderState>('pending');
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -137,8 +133,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAdmin: isAdmin,
         isActivated: isActivated,
         logout: async () => {
-          if (!isLoggedIn) navigate('/', { replace: true });
-
           // Invalidate tokens HTTP
           return await httpClient
             .post({
@@ -152,14 +146,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .finally(() => {
               unsetAuthCookie('access');
               unsetAuthCookie('refresh');
-
-              navigate('/', { replace: true });
             });
         },
         login: (tokens: auth.LoginSuccAPI['data']) => {
           setAuthCookie(tokens.access_token, 'access');
           setAuthCookie(tokens.refresh_token, 'refresh');
-          navigate(location.state?.from || '/', { replace: true });
         },
       }}
     />
