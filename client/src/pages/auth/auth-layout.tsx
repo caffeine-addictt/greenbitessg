@@ -66,6 +66,8 @@ export const AuthLayout = ({
   location.pathname = location.pathname.replace(/\/+$/, '');
 
   const isLogin = location.pathname.endsWith('/login');
+  const isLoginOpts = location.pathname === '/login';
+  const isRegisterOpts = location.pathname === '/register';
   const isLgScreen = useMediaQuery('(min-width: 1024px)');
 
   // For start/stop autoplay
@@ -117,14 +119,14 @@ export const AuthLayout = ({
             <div className="flex size-fit flex-row items-center gap-2 rounded-lg bg-background-light p-1 max-sm:hidden dark:bg-background-dark">
               <InternalLink
                 href="/login"
-                disabled={isLogin}
+                disabled={isLoginOpts}
                 variant={isLogin ? 'secondary' : 'default'}
               >
                 Login
               </InternalLink>
               <InternalLink
                 href="/register"
-                disabled={!isLogin}
+                disabled={isRegisterOpts}
                 variant={isLogin ? 'default' : 'secondary'}
               >
                 Register
