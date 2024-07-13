@@ -256,7 +256,7 @@ const RegisterPage: PageComponent = ({
             >
               Clear
             </Button>
-            <Button type="submit" variant="secondary" disabled={isSubmitting}>
+            <Button type="submit" variant="default" disabled={isSubmitting}>
               {isSubmitting ? 'Registering...' : 'Register'}
             </Button>
           </div>
