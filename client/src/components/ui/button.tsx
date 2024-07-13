@@ -63,7 +63,9 @@ Button.displayName = 'Button';
 
 export interface ExternalLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    VariantProps<typeof buttonVariants> {}
+    VariantProps<typeof buttonVariants> {
+  href: `http://${string}` | `https://${string}`;
+}
 
 const ExternalLink = React.forwardRef<HTMLAnchorElement, ExternalLinkProps>(
   ({ className, variant, size, children, ...props }, ref) => {
@@ -83,7 +85,10 @@ const ExternalLink = React.forwardRef<HTMLAnchorElement, ExternalLinkProps>(
 );
 ExternalLink.displayName = 'ExternalLink';
 
-export type InternalLinkProps = ExternalLinkProps;
+export interface InternalLinkProps extends Omit<ExternalLinkProps, 'href'> {
+  href: `/${string}`;
+  preserveCallback?: boolean;
+}
 const InternalLink = React.forwardRef<HTMLAnchorElement, InternalLinkProps>(
   ({ className, variant, size, children, ...props }, ref) => {
     return (
