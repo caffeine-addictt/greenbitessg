@@ -1,0 +1,1 @@
+ALTER TABLE "passkey_challenges_table" DROP CONSTRAINT "passkey_challenges_table_user_id_unique";

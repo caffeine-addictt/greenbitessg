@@ -14,6 +14,7 @@ import {
   Routes,
   BrowserRouter,
   Navigate,
+  useSearchParams,
 } from 'react-router-dom';
 import '@styles/globals.css';
 
@@ -23,6 +24,7 @@ import routes, { type RouteDetails } from '@pages/route-map';
 // Components
 import Navbar from '@components/navbar';
 import Footer from '@components/footer';
+import { Toaster } from '@components/ui/toaster';
 import { AuthContext, AuthProvider } from '@service/auth';
 import Unauthorized from '@pages/401';
 
@@ -36,24 +38,20 @@ export const WrappedComponent = ({
   description,
   accessLevel,
 }: RouteDetails & { path: string }): JSX.Element | null => {
+  const [params] = useSearchParams();
   const { isAdmin, isLoggedIn, isActivated, state } =
     React.useContext(AuthContext)!;
 
   // Check only if done and needs auth
   if (accessLevel !== 'public' && state === 'done') {
-    // Check activation
-    if (isAuth(accessLevel) && !isActivated && !path.startsWith('/activate')) {
-      return <Navigate to={'/activate'} state={{ from: path }} replace />;
-    }
-
     // Check public-only
     if (accessLevel === 'public-only' && isLoggedIn && path !== '/') {
-      return <Navigate to={'/'} />;
+      return <Navigate to={params.get('callbackURI') ?? '/'} />;
     }
 
     // Check auth
     if (isAuth(accessLevel) && !isLoggedIn && path !== '/login') {
-      return <Navigate to={'/login'} state={{ from: path }} replace />;
+      return <Navigate to={`/login?callbackURI=${path}`} replace />;
     }
 
     // Check admin
@@ -61,6 +59,11 @@ export const WrappedComponent = ({
       title = 'Unauthorized';
       description = 'You do not have permission to access this page.';
       Component = Unauthorized;
+    }
+
+    // Check activation
+    if (isAuth(accessLevel) && !isActivated && !path.startsWith('/activate')) {
+      return <Navigate to={`/activate?callbackURI=${path}`} replace />;
     }
   }
 
@@ -90,25 +93,27 @@ export const Layout = (): JSX.Element => {
   const location = useLocation();
 
   return (
-    <main className="flex min-h-screen min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
-      <Navbar location={location} isAdmin />
+    <div className="flex min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
+      <main className="flex min-h-screen flex-col">
+        <Navbar location={location} isAdmin />
 
-      <QueryClientProvider client={new QueryClient()}>
-        <Routes location={location}>
-          {Object.entries(routes).map(([path, details], i) => (
-            <Route
-              key={i}
-              path={path}
-              element={
-                <WrappedComponent {...details} path={location.pathname} />
-              }
-            />
-          ))}
-        </Routes>
-      </QueryClientProvider>
+        <QueryClientProvider client={new QueryClient()}>
+          <Routes location={location}>
+            {Object.entries(routes).map(([path, details], i) => (
+              <Route
+                key={i}
+                path={path}
+                element={
+                  <WrappedComponent {...details} path={location.pathname} />
+                }
+              />
+            ))}
+          </Routes>
+        </QueryClientProvider>
+      </main>
 
-      <Footer location={location} isAdmin />
-    </main>
+      <Footer />
+    </div>
   );
 };
 
@@ -119,5 +124,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Layout />
       </AuthProvider>
     </BrowserRouter>
+    <Toaster />
   </React.StrictMode>,
 );
