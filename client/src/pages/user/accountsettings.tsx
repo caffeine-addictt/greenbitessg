@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography } from '@mui/material';
-import http from '@http';
+import { Button } from '@components/ui/button';
 
 const AccountSettings: React.FC = () => {
   const [id, setId] = useState<string>('');
@@ -14,18 +13,16 @@ const AccountSettings: React.FC = () => {
 
   useEffect(() => {
     // Fetch account settings on component mount
-    http
-      .get('/accountsettings')
-      .then((res) => {
-        if (res.data) {
-          const account = res.data;
-          setId(account.id);
-          setUsername(account.username);
-          setEmail(account.email);
-          setPermission(account.permission);
-          setCreatedAt(account.createdAt);
-          setUpdatedAt(account.updatedAt);
-        }
+    fetch('/accountsettings')
+      .then((res) => res.json())
+      .then((data) => {
+        const account = data;
+        setId(account.id);
+        setUsername(account.username);
+        setEmail(account.email);
+        setPermission(account.permission);
+        setCreatedAt(account.createdAt);
+        setUpdatedAt(account.updatedAt);
       })
       .catch((err) => {
         console.error('Error fetching account settings:', err);
@@ -40,19 +37,22 @@ const AccountSettings: React.FC = () => {
       permission,
     };
 
-    // Update account settings using http.put
-    http
-      .put(`/accountsettings/${id}`, updatedDetails)
-      .then((response) => {
-        console.log('Account details updated successfully:', response.data);
+    // Update account settings using fetch
+    fetch(`/accountsettings/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedDetails),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Account details updated successfully:', data);
         alert('Account details updated successfully');
         setError(null); // Clear any previous errors
       })
       .catch((error) => {
-        console.error(
-          'There was an error updating the account details!',
-          error,
-        );
+        console.error('There was an error updating the account details!', error);
         setError('Error updating account details');
       });
   };
@@ -63,64 +63,60 @@ const AccountSettings: React.FC = () => {
   };
 
   return (
-    <div>
-      <Typography variant="h4" className="mb-4 text-2xl font-bold">
-        Account Settings
-      </Typography>
-      <form className="space-y-4">
-        {error && <Typography color="error">{error}</Typography>}
+    <div className="container mx-auto mt-16">
+      <h1 className="text-center text-2xl font-bold">Account Settings</h1>
+      <form className="space-y-4 mt-8">
+        {error && <p className="text-red-500">{error}</p>}
         <div>
-          <TextField
-            className="w-full"
-            label="Username"
+          <label className="block text-sm font-medium">Username</label>
+          <input
+            type="text"
+            className="mt-1 block w-full border rounded px-3 py-2"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            variant="outlined"
           />
         </div>
         <div>
-          <TextField
-            className="w-full"
-            label="Email"
+          <label className="block text-sm font-medium">Email</label>
+          <input
+            type="email"
+            className="mt-1 block w-full border rounded px-3 py-2"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            variant="outlined"
           />
         </div>
         <div>
-          <TextField
-            className="w-full"
-            label="Permission"
+          <label className="block text-sm font-medium">Permission</label>
+          <input
+            type="text"
+            className="mt-1 block w-full border rounded px-3 py-2"
             value={permission}
             onChange={(e) => setPermission(e.target.value)}
-            variant="outlined"
           />
         </div>
         <div>
-          <TextField
-            className="w-full"
-            label="Created At"
+          <label className="block text-sm font-medium">Created At</label>
+          <input
+            type="text"
+            className="mt-1 block w-full border rounded px-3 py-2"
             value={createdAt}
-            onChange={(e) => setCreatedAt(e.target.value)}
-            variant="outlined"
             disabled
           />
         </div>
         <div>
-          <TextField
-            className="w-full"
-            label="Updated At"
+          <label className="block text-sm font-medium">Updated At</label>
+          <input
+            type="text"
+            className="mt-1 block w-full border rounded px-3 py-2"
             value={updatedAt}
-            onChange={(e) => setUpdatedAt(e.target.value)}
-            variant="outlined"
             disabled
           />
         </div>
-        <div className="flex space-x-4">
-          <Button variant="contained" onClick={handleCancel}>
+        <div className="flex space-x-4 mt-4">
+          <Button variant="secondary" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleSave}>
+          <Button variant="secondary" onClick={handleSave}>
             Save
           </Button>
         </div>
