@@ -1,10 +1,7 @@
 import type { RouteMap } from '@pages/route-map';
+import AccountSettings from './accountsettings'; // Ensure this path is correct
 
-// Import pages
-
-import AccountSettings from './accountsettings'; // Adjust the path if necessary
-
-const routeMap: RouteMap = {
+const routeMap1: RouteMap = {
   '/accountsettings': {
     title: 'Account Settings',
     description: 'Manage your account settings',
@@ -12,4 +9,4 @@ const routeMap: RouteMap = {
   },
 } as const;
 
-export default routeMap;
+export default routeMap1;

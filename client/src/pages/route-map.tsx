@@ -10,6 +10,7 @@ import * as React from 'react';
 import NotFound from '@pages/404';
 import RootPage from '@pages/root';
 import routeMap from '@pages/auth/route-map';
+import routeMap1 from '@pages/user/route-map';
 
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
@@ -30,5 +31,6 @@ const routes: RootRouteMap = {
   '*': { component: NotFound, title: 'Page Not Found' },
   '/': { component: RootPage, title: 'Home' },
   ...routeMap,
+  ...routeMap1
 } as const;
 export default routes;

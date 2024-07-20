@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { PageComponent } from '@pages/route-map';
 import * as z from 'zod';
+import type { PageComponent } from '@pages/route-map';
+import { accountSettingsSchema } from '@lib/api-types/schemas/user'; // Update the path as needed
 import httpClient from '@utils/http';
 
 import {
@@ -18,18 +19,9 @@ import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { cn } from '@utils/tailwind';
 
-// Define the schema for account settings
-const accountSettingsSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
-  email: z.string().email('Invalid email address'),
-  permission: z.string().min(1, 'Permission is required'),
-});
-
 // Define the AccountSettings component
 const AccountSettings: PageComponent = ({ className, ...props }) => {
   const [id, setId] = useState<string>('');
-  const [createdAt, setCreatedAt] = useState<string>('');
-  const [updatedAt, setUpdatedAt] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
@@ -53,8 +45,6 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
       accountSettingsForm.setValue('username', data.username);
       accountSettingsForm.setValue('email', data.email);
       accountSettingsForm.setValue('permission', data.permission);
-      setCreatedAt(data.createdAt);
-      setUpdatedAt(data.updatedAt);
     })
     .catch((err) => {
       console.error('Error fetching account settings:', err);
@@ -156,24 +146,6 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
               </FormItem>
             )}
           />
-          <div>
-            <label className="block text-sm font-medium">Created At</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border rounded px-3 py-2"
-              value={createdAt}
-              disabled
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Updated At</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border rounded px-3 py-2"
-              value={updatedAt}
-              disabled
-            />
-          </div>
           <div className="flex justify-end space-x-2">
             <Button
               type="button"
