@@ -9,11 +9,11 @@ import type { PageComponent, RouteMap } from '@pages/route-map';
 // Import pages
 import FeedbackForm from './feedback';
 
-const routeMap: RouteMap = {
+const routeMap1: RouteMap = {
   '/feedback': {
     title: 'Feedback Form',
     description: 'State feedback here',
     component: FeedbackForm as PageComponent,
   },
 } as const;
-export default routeMap;
+export default routeMap1;
