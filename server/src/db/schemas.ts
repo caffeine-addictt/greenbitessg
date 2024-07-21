@@ -9,7 +9,6 @@ import {
   serial,
   text,
   timestamp,
-  date,
   smallint,
   integer,
   AnyPgColumn,
@@ -26,7 +25,11 @@ import type {
 
 // Custom types
 /** For binary data - Currently for storing Unit8Array publicKey */
-const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
+export const bytea = customType<{
+  data: Buffer;
+  notNull: false;
+  default: false;
+}>({
   dataType: () => 'bytea',
 });
 
@@ -40,7 +43,6 @@ export const usersTable = pgTable('users_table', {
   permission: smallint('permission').default(0).notNull(),
   username: text('username').notNull(),
   email: text('email').notNull().unique(),
-  dateOfBirth: date('date_of_birth').notNull(),
   password: text('password').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
@@ -66,7 +68,6 @@ export const passkeyChallengesTable = pgTable('passkey_challenges_table', {
   challengeUserId: text('challenge_user_id').notNull(),
   userId: integer('user_id')
     .notNull()
-    .unique()
     .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
@@ -94,7 +95,7 @@ export const passkeysTable = pgTable('passkeys_table', {
   id: text('id').notNull().primaryKey(),
 
   /** Public key bytes */
-  publicKey: bytea('public_key').notNull().$type<Uint8Array>(),
+  publicKey: text('public_key').notNull(),
 
   /** From generateRegistrationOptions() */
   webAuthnUserId: text('webauthn_user_id').notNull(),

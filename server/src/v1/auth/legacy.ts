@@ -45,7 +45,7 @@ export const login: IBareRouteHandler = async (req, res) => {
   const users = await db
     .select({ id: usersTable.id, password: usersTable.password })
     .from(usersTable)
-    .where(eq(usersTable.email, req.body.email))
+    .where(eq(usersTable.email, validated.data.email))
     .limit(1);
   if (users.length === 0) {
     return res.status(Http4XX.BAD_REQUEST).json({
@@ -55,7 +55,7 @@ export const login: IBareRouteHandler = async (req, res) => {
   }
 
   // Compare password hashes
-  if (!matchPassword(req.body.password, users[0].password)) {
+  if (!(await matchPassword(validated.data.password, users[0].password))) {
     return res.status(Http4XX.BAD_REQUEST).json({
       status: Http4XX.BAD_REQUEST,
       errors: [{ message: 'Invalid email or password' }],
@@ -136,7 +136,6 @@ export const register: IBareRouteHandler = async (req, res) => {
     .insert(usersTable)
     .values({
       permission: 0,
-      dateOfBirth: '2024-03-25',
       username: validated.data.username,
       email: validated.data.email,
       password: await hashPassword(validated.data.password),

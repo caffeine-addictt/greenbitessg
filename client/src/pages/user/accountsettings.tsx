@@ -1,60 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useForm, useFormState } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import type { PageComponent } from '@pages/route-map';
+import { accountSettingsSchema } from '@lib/api-types/schemas/user'; // Update the path as needed
+import httpClient from '@utils/http';
+
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from '@components/ui/form';
+import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
+import { cn } from '@utils/tailwind';
 
-const AccountSettings: React.FC = () => {
+// Define the AccountSettings component
+const AccountSettings: PageComponent = ({ className, ...props }) => {
   const [id, setId] = useState<string>('');
-  const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [permission, setPermission] = useState<string>('');
-  const [createdAt, setCreatedAt] = useState<string>('');
-  const [updatedAt, setUpdatedAt] = useState<string>('');
-
   const [error, setError] = useState<string | null>(null);
+
+  const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
+    resolver: zodResolver(accountSettingsSchema),
+    defaultValues: {
+      username: '',
+      email: '',
+      permission: '',
+    },
+  });
+
+  const { isSubmitting } = useFormState({ control: accountSettingsForm.control });
 
   useEffect(() => {
     // Fetch account settings on component mount
-    fetch('/accountsettings')
-      .then((res) => res.json())
-      .then((data) => {
-        const account = data;
-        setId(account.id);
-        setUsername(account.username);
-        setEmail(account.email);
-        setPermission(account.permission);
-        setCreatedAt(account.createdAt);
-        setUpdatedAt(account.updatedAt);
-      })
-      .catch((err) => {
-        console.error('Error fetching account settings:', err);
-        setError('Error fetching account settings');
-      });
-  }, []);
-
-  const handleSave = () => {
-    const updatedDetails = {
-      username,
-      email,
-      permission,
-    };
-
-    // Update account settings using fetch
-    fetch(`/accountsettings/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedDetails),
+    httpClient.get<{ id: string; username: string; email: string; permission: string; createdAt: string; updatedAt: string }>({
+      uri: '/accountsettings',
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Account details updated successfully:', data);
-        alert('Account details updated successfully');
-        setError(null); // Clear any previous errors
-      })
-      .catch((error) => {
-        console.error('There was an error updating the account details!', error);
-        setError('Error updating account details');
-      });
+    .then((data) => {
+      setId(data.id);
+      accountSettingsForm.setValue('username', data.username);
+      accountSettingsForm.setValue('email', data.email);
+      accountSettingsForm.setValue('permission', data.permission);
+    })
+    .catch((err) => {
+      console.error('Error fetching account settings:', err);
+      setError('Error fetching account settings');
+    });
+  }, [accountSettingsForm]);
+
+  const handleSave = (data: z.infer<typeof accountSettingsSchema>) => {
+    // Update account settings using httpClient
+    httpClient.post({
+      uri: `/accountsettings/${id}`,
+      payload: data,
+    })
+    .then((response) => {
+      console.log('Account details updated successfully:', response);
+      alert('Account details updated successfully');
+      setError(null); // Clear any previous errors
+    })
+    .catch((error) => {
+      console.error('There was an error updating the account details!', error);
+      setError('Error updating account details');
+    });
   };
 
   const handleCancel = () => {
@@ -63,64 +75,92 @@ const AccountSettings: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto mt-16">
+    <div {...props} className={cn(className, "container mx-auto mt-16")}>
       <h1 className="text-center text-2xl font-bold">Account Settings</h1>
-      <form className="space-y-4 mt-8">
-        {error && <p className="text-red-500">{error}</p>}
-        <div>
-          <label className="block text-sm font-medium">Username</label>
-          <input
-            type="text"
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+      <Form {...accountSettingsForm}>
+        <form
+          onSubmit={accountSettingsForm.handleSubmit(handleSave)}
+          className="space-y-4 mt-8 w-[26.5rem]"
+        >
+          {error && <p className="text-red-500">{error}</p>}
+          <FormField
+            control={accountSettingsForm.control}
+            name="username"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Username"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field}
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>Your account username.</FormDescription>
+                )}
+              </FormItem>
+            )}
           />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+          <FormField
+            control={accountSettingsForm.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="johndoe@example.com"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field}
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>Your email address.</FormDescription>
+                )}
+              </FormItem>
+            )}
           />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Permission</label>
-          <input
-            type="text"
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={permission}
-            onChange={(e) => setPermission(e.target.value)}
+          <FormField
+            control={accountSettingsForm.control}
+            name="permission"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Permission</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Permission"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field}
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage />
+                ) : (
+                  <FormDescription>Your account permission level.</FormDescription>
+                )}
+              </FormItem>
+            )}
           />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Created At</label>
-          <input
-            type="text"
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={createdAt}
-            disabled
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Updated At</label>
-          <input
-            type="text"
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={updatedAt}
-            disabled
-          />
-        </div>
-        <div className="flex space-x-4 mt-4">
-          <Button variant="secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button variant="secondary" onClick={handleSave}>
-            Save
-          </Button>
-        </div>
-      </form>
+          <div className="flex justify-end space-x-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleCancel}
+              disabled={isSubmitting || !accountSettingsForm.formState.isDirty}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" variant="secondary" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving...' : 'Save'}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

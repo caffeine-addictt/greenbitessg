@@ -7,7 +7,6 @@
 import * as z from 'zod';
 import { AxiosError, isAxiosError } from 'axios';
 import { createContext, useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import httpClient from '@utils/http';
 import { auth } from '@lib/api-types';
@@ -24,7 +23,7 @@ export type AuthContextType = {
   isAdmin: boolean;
   isActivated: boolean;
   login: (tokens: auth.LoginSuccAPI['data']) => void;
-  logout: () => void;
+  logout: () => Promise<unknown>;
 };
 export const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -34,9 +33,6 @@ const getUserInfo = () =>
 
 export type AuthProviderState = 'pending' | 'done';
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const [state, setState] = useState<AuthProviderState>('pending');
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -50,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(res.data);
         setIsActivated(res.data.activated);
         setIsLoggedIn(true);
-        setIsAdmin(res.data.permission === 0);
+        setIsAdmin(res.data.permission === 1);
         return null;
       })
       .catch((err: AxiosError) => {
@@ -136,30 +132,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isLoggedIn: isLoggedIn,
         isAdmin: isAdmin,
         isActivated: isActivated,
-        logout: () => {
-          if (!isLoggedIn) navigate('/', { replace: true });
-
+        logout: async () => {
           // Invalidate tokens HTTP
-          (async () => {
-            await httpClient
-              .post({
-                uri: '/auth/invalidate-tokens',
-                withCredentials: 'refresh',
-              })
-              .catch((res) =>
-                console.log('Failed to invalidate tokens:', res.message),
-              );
-          })();
-
-          unsetAuthCookie('access');
-          unsetAuthCookie('refresh');
-
-          navigate('/', { replace: true });
+          return await httpClient
+            .post({
+              uri: '/auth/invalidate-tokens',
+              withCredentials: 'refresh',
+              payload: { access_token: getAuthCookie('access')! },
+            })
+            .catch((res) =>
+              console.log('Failed to invalidate tokens:', res.message),
+            )
+            .finally(() => {
+              unsetAuthCookie('access');
+              unsetAuthCookie('refresh');
+            });
         },
         login: (tokens: auth.LoginSuccAPI['data']) => {
           setAuthCookie(tokens.access_token, 'access');
           setAuthCookie(tokens.refresh_token, 'refresh');
-          navigate(location.state?.from || '/', { replace: true });
         },
       }}
     />

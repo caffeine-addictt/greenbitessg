@@ -15,3 +15,8 @@ export const userType = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
 });
+export const accountSettingsSchema = z.object({
+  username: z.string().min(1, 'Username is required'),
+  email: z.string().email('Invalid email address'),
+  permission: z.string().min(1, 'Permission is required'),
+});
