@@ -8,6 +8,7 @@ import type { RouteMap } from '@pages/route-map';
 
 // Import pages
 import AccountSettings from './accountsettings';
+import Home from './homepage';
 
 const routeMap1: RouteMap = {
   '/accountsettings': {
@@ -15,5 +16,10 @@ const routeMap1: RouteMap = {
     description: 'Login to your account',
     component: AccountSettings,
   },
+  '/home': {
+    title: 'Homepage',
+    description: 'This is the homepage',
+    component: Home,
+  }
 } as const;
 export default routeMap1;
