@@ -1,12 +1,19 @@
-import type { RouteMap } from '@pages/route-map';
-import AccountSettings from './accountsettings'; // Ensure this path is correct
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
 
-const routeMap1: RouteMap = {
+import type { RouteMap } from '@pages/route-map';
+
+// Import pages
+import AccountSettings from './accountsettings';
+
+const routeMap: RouteMap = {
   '/accountsettings': {
     title: 'Account Settings',
-    description: 'Manage your account settings',
+    description: 'Login to your account',
     component: AccountSettings,
   },
 } as const;
-
-export default routeMap1;
+export default routeMap;
