@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, TextField, Button, MenuItem } from '@mui/material';
 import { useFormik } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 import http from '@http';
@@ -79,74 +78,89 @@ function UpdateEmployee() {
   });
 
   return (
-    <Box>
-      <Typography variant="h5" sx={{ my: 2 }}>
-        Update Employee
-      </Typography>
-      <Box component="form" onSubmit={formik.handleSubmit}>
-        <TextField
-          fullWidth
-          margin="dense"
-          autoComplete="off"
-          label="Name"
-          name="name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.name && Boolean(formik.errors.name)}
-          helperText={formik.touched.name && formik.errors.name}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          autoComplete="off"
-          label="Position"
-          name="position"
-          value={formik.values.position}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.position && Boolean(formik.errors.position)}
-          helperText={formik.touched.position && formik.errors.position}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          select
-          label="Department"
-          name="department"
-          value={formik.values.department}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.department && Boolean(formik.errors.department)}
-          helperText={formik.touched.department && formik.errors.department}
-        >
-          {['Sales', 'Marketing', 'Finance', 'HR', 'IT', 'Operations'].map(
-            (dept) => (
-              <MenuItem key={dept} value={dept}>
-                {dept}
-              </MenuItem>
-            ),
+    <div className="max-w-md mx-auto mt-8 p-4 bg-white shadow-md rounded-md">
+      <h2 className="text-xl font-bold mb-4">Update Employee</h2>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2">Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`w-full p-2 border ${
+              formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
+            } rounded-md`}
+          />
+          {formik.touched.name && formik.errors.name && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
           )}
-        </TextField>
-        <TextField
-          fullWidth
-          margin="dense"
-          autoComplete="off"
-          label="Salary"
-          name="salary"
-          value={formik.values.salary}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.salary && Boolean(formik.errors.salary)}
-          helperText={formik.touched.salary && formik.errors.salary}
-        />
-        <Box sx={{ mt: 2 }}>
-          <Button variant="contained" type="submit">
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2">Position</label>
+          <input
+            type="text"
+            name="position"
+            value={formik.values.position}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`w-full p-2 border ${
+              formik.touched.position && formik.errors.position ? 'border-red-500' : 'border-gray-300'
+            } rounded-md`}
+          />
+          {formik.touched.position && formik.errors.position && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.position}</div>
+          )}
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2">Department</label>
+          <select
+            name="department"
+            value={formik.values.department}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`w-full p-2 border ${
+              formik.touched.department && formik.errors.department ? 'border-red-500' : 'border-gray-300'
+            } rounded-md`}
+          >
+            <option value="" label="Select department" />
+            {['Sales', 'Marketing', 'Finance', 'HR', 'IT', 'Operations'].map((dept) => (
+              <option key={dept} value={dept}>
+                {dept}
+              </option>
+            ))}
+          </select>
+          {formik.touched.department && formik.errors.department && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.department}</div>
+          )}
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2">Salary</label>
+          <input
+            type="number"
+            name="salary"
+            value={formik.values.salary}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`w-full p-2 border ${
+              formik.touched.salary && formik.errors.salary ? 'border-red-500' : 'border-gray-300'
+            } rounded-md`}
+          />
+          {formik.touched.salary && formik.errors.salary && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.salary}</div>
+          )}
+        </div>
+        <div className="mt-6">
+          <button
+            type="submit"
+            className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:bg-blue-600 focus:outline-none"
+          >
             Update
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 
