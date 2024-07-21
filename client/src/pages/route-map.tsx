@@ -30,6 +30,16 @@ export type RootRouteMap = Record<RootPathStr, RouteDetails>;
 const routes: RootRouteMap = {
   '*': { component: NotFound, title: 'Page Not Found' },
   '/': { component: RootPage, title: 'Home' },
+  '/home': {
+    component: () => <>Home</>,
+    accessLevel: 'authenticated',
+    title: 'Home',
+  },
+  '/admin': {
+    component: () => <>Admin</>,
+    accessLevel: 'admin',
+    title: 'Admin',
+  },
   ...routeMap,
   ...routeMap1
 

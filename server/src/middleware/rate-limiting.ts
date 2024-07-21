@@ -9,7 +9,7 @@ import type { ErrorResponse } from '../lib/api-types';
 
 export default rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests within the window
+  max: 1000, // Limit each IP to 1000 requests within the window
   standardHeaders: true,
   handler: (_, res, __) => {
     return res.status(429).json({

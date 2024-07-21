@@ -5,6 +5,10 @@
  */
 
 import type { SuccessResponse, ErrorResponse } from './index';
+import {
+  generateAuthenticationOptions,
+  generateRegistrationOptions,
+} from '@simplewebauthn/server';
 
 /**
  * Successful response for /v1/availability endpoint
@@ -13,7 +17,78 @@ export interface AvailabilityAPI
   extends SuccessResponse<{ available: boolean }> {}
 
 /**
- * Successful response for /v1/refresh endpoint
+ * Successful response for /v1/auth/activate endpoint
+ */
+export interface ActivateSuccAPI extends SuccessResponse<{ activated: true }> {}
+export type ActivateFailAPI = ErrorResponse<
+  | 'Already activated!'
+  | 'Token not found!'
+  | 'Please provide a token!'
+  | 'Token is expired!'
+>;
+
+/**
+ * Successful response for /v1/auth/login/passkeys endpoint
+ */
+export interface LoginPasskeysStartSuccAPI
+  extends SuccessResponse<
+    {
+      track: string;
+      challenge: Awaited<ReturnType<typeof generateAuthenticationOptions>>;
+    },
+    201
+  > {}
+export type LoginPasskeysStartFailAPI = ErrorResponse<
+  'Please provide an email!' | 'Email is not valid!' | 'Account does not exist!'
+>;
+
+/**
+ * Successful response for /v1/auth/login/passkeys/finish endpoint
+ */
+export interface LoginPasskeysFinishSuccAPI
+  extends SuccessResponse<
+    { access_token: string; refresh_token: string },
+    201
+  > {}
+export type LoginPasskeysFinishFailAPI = ErrorResponse<
+  'No passkey challenges found' | 'Failed to authenticate passkey'
+>;
+
+/**
+ * Successful response for /v1/auth/register/passkeys/start endpoint
+ */
+export interface RegisterPasskeysStartSuccAPI
+  extends SuccessResponse<
+    {
+      track: string;
+      challenge: Awaited<ReturnType<typeof generateRegistrationOptions>>;
+    },
+    201
+  > {}
+
+/**
+ * Successful response for /v1/auth/register/passkeys/finish endpoint
+ */
+export interface RegisterPasskeysFinishSuccAPI
+  extends SuccessResponse<{ created: true }, 201> {}
+export type RegisterPasskeysFinishFailAPI = ErrorResponse<
+  'No passkey challenges found' | 'Failed to register passkey'
+>;
+
+/**
+ * Successful response for /v1/auth/recreate-token endpoint
+ */
+export interface RecreateTokenSuccAPI
+  extends SuccessResponse<{ created: true }, 201> {}
+export type RecreateTokenFailAPI = ErrorResponse<
+  | 'Recreating token too quickly!'
+  | 'No such token to recreate!'
+  | 'Invalid token type!'
+  | 'Email could not be reached!'
+>;
+
+/**
+ * Successful response for /v1/auth/refresh endpoint
  */
 export interface RefreshSuccAPI
   extends SuccessResponse<
@@ -25,7 +100,7 @@ export type RefreshFailAPI = ErrorResponse<
 >;
 
 /**
- * Response for /v1/login endpoint
+ * Response for /v1/auth/login endpoint
  */
 export interface LoginSuccAPI
   extends SuccessResponse<{ access_token: string; refresh_token: string }> {}
@@ -37,7 +112,7 @@ export type LoginFailAPI = ErrorResponse<
 >;
 
 /**
- * Successful response for /v1/register endpoint
+ * Successful response for /v1/auth/register endpoint
  */
 export interface RegisterSuccAPI
   extends SuccessResponse<{ created: boolean }, 201> {}

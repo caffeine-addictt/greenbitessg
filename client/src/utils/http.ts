@@ -25,7 +25,7 @@ export const DEFAULT_OPTS: AxiosRequestConfig = {
 };
 
 // Wrapper
-export type IJSONSerializable = string | number | boolean | null;
+export type IJSONSerializable = string | number | boolean | unknown | null;
 export type JSONserializable =
   | IJSONSerializable
   | IJSONSerializable[]
