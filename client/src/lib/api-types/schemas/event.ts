@@ -1,4 +1,4 @@
-// src/types/Event.ts
+
 
 import * as z from 'zod';
 
