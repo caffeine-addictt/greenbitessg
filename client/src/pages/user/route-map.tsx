@@ -9,11 +9,11 @@ import type { RouteMap } from '@pages/route-map';
 // Import pages
 import AccountSettings from './accountsettings';
 
-const routeMap: RouteMap = {
+const routeMap1: RouteMap = {
   '/accountsettings': {
     title: 'Account Settings',
     description: 'Login to your account',
     component: AccountSettings,
   },
 } as const;
-export default routeMap;
+export default routeMap1;
