@@ -3,7 +3,7 @@ import { useForm, useFormState } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import type { PageComponent } from '@pages/route-map';
-import { accountSettingsSchema } from '@lib/api-types/schemas/user'; // Update the path as needed
+import { userType } from '@lib/api-types/schemas/user'; // Update the path as needed
 import httpClient from '@utils/http';
 
 import {
@@ -24,12 +24,11 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
   const [id, setId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
-    resolver: zodResolver(accountSettingsSchema),
+  const accountSettingsForm = useForm<z.infer<typeof userType>>({
+    resolver: zodResolver(userType),
     defaultValues: {
       username: '',
       email: '',
-      permission: '',
     },
   });
 
@@ -61,7 +60,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
       });
   }, [accountSettingsForm]);
 
-  const handleSave = (data: z.infer<typeof accountSettingsSchema>) => {
+  const handleSave = (data: z.infer<typeof userType>) => {
     // Update account settings using httpClient
     httpClient
       .post({

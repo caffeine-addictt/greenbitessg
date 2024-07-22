@@ -14,7 +14,7 @@ const routeMap1: RouteMap = {
     title: 'Account Settings',
     description: 'Login to your account',
     component: AccountSettings,
-    accessLevel: 'authenticated'
+    accessLevel: 'public',
   },
 } as const;
 export default routeMap1;
