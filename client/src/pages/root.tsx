@@ -65,11 +65,10 @@ const RootPage: PageComponent = (props) => {
               <Button variant="secondary" size="default">
                 Start Now
               </Button>
-            
             </a>
           </div>
         </div>
-      </div>  
+      </div>
     </div>
   );
 };

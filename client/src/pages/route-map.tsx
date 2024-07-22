@@ -41,7 +41,6 @@ const routes: RootRouteMap = {
     title: 'Admin',
   },
   ...routeMap,
-  ...routeMap1
-
+  ...routeMap1,
 } as const;
 export default routes;

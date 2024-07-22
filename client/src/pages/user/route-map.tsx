@@ -10,10 +10,11 @@ import type { RouteMap } from '@pages/route-map';
 import AccountSettings from './accountsettings';
 
 const routeMap1: RouteMap = {
-  '/accountsettings': {
+  '/settings': {
     title: 'Account Settings',
     description: 'Login to your account',
     component: AccountSettings,
+    accessLevel: 'authenticated'
   },
 } as const;
 export default routeMap1;
