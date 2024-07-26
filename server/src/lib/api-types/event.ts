@@ -6,11 +6,11 @@
 
 import * as z from 'zod';
 
-import { events } from './schemas';
+import { event } from './schemas';
 import type { SuccessResponse } from './index';
 
 /**
  * Successful response for /v1/user endpoint
  */
-export interface GetEventSuccAPI
-  extends SuccessResponse<z.infer<typeof events.eventSchema>> {}
+export interface GetUserSuccAPI
+  extends SuccessResponse<z.infer<typeof event.eventSchema>> {}
