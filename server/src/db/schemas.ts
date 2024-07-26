@@ -58,6 +58,19 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
+export const feedbackTable = pgTable('feedback_table', {
+  id: serial('id').primaryKey(),
+  userId: smallint('user_id').notNull(), // Assuming feedback is related to users
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type InsertFeedback = typeof feedbackTable.$inferInsert;
+export type SelectFeedback = typeof feedbackTable.$inferSelect;
+
 /**
  * Passkey Challenges
  */

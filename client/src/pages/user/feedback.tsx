@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FeedbackFormValues, feedbackSchema } from '@lib/api-types/schemas/feedbackSchema'; // Import the schema from a separate file
+import { FeedbackFormValues, feedbackSchema } from '@lib/api-types/schemas/feedback'; // Import the schema from a separate file
 
 const FeedbackForm: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FeedbackFormValues>({
