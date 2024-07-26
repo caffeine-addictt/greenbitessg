@@ -19,7 +19,7 @@ const routeMap1: RouteMap = {
   '/eventlist': {
     title: 'List Events',
     description: 'List Events Here',
-    component: EventList as PageComponent
-  }
+    component: EventList as PageComponent,
+  },
 } as const;
 export default routeMap1;

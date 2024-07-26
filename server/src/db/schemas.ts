@@ -76,7 +76,6 @@ export const eventsTable = pgTable('events_table', {
 export type InsertEvent = typeof eventsTable.$inferInsert;
 export type SelectEvent = typeof eventsTable.$inferSelect;
 
-
 /**
  * Passkey Challenges
  */

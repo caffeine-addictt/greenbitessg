@@ -3,7 +3,6 @@
 import React from 'react';
 import { eventSchema } from '@lib/api-types/schemas/event';
 
-
 // Mocked event data
 const events = [
   {
@@ -26,20 +25,27 @@ const events = [
 ];
 
 // Validate the events array with the eventSchema
-const validatedEvents = events.map(event => eventSchema.parse(event));
+const validatedEvents = events.map((event) => eventSchema.parse(event));
 
 const EventList: React.FC = () => {
   return (
-    <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded">
-      <h1 className="text-2xl font-bold mb-4">Event List</h1>
+    <div className="mx-auto max-w-2xl rounded bg-white p-4 shadow-md">
+      <h1 className="mb-4 text-2xl font-bold">Event List</h1>
       <ul className="space-y-4">
         {validatedEvents.map((event) => (
-          <li key={event.id} className="p-4 border border-gray-200 rounded-md shadow-sm">
+          <li
+            key={event.id}
+            className="rounded-md border border-gray-200 p-4 shadow-sm"
+          >
             <h2 className="text-xl font-semibold">{event.title}</h2>
-            <p className="text-gray-600">Date: {new Date(event.date).toLocaleDateString()}</p>
+            <p className="text-gray-600">
+              Date: {new Date(event.date).toLocaleDateString()}
+            </p>
             <p className="text-gray-600">Time: {event.time}</p>
             <p className="text-gray-600">Location: {event.location}</p>
-            {event.description && <p className="text-gray-700 mt-2">{event.description}</p>}
+            {event.description && (
+              <p className="mt-2 text-gray-700">{event.description}</p>
+            )}
           </li>
         ))}
       </ul>
