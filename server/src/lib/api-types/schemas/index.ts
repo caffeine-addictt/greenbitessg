@@ -6,5 +6,6 @@
 
 import * as auth from './auth';
 import * as user from './user';
+import * as events from './event'
 
-export { auth, user };
+export { auth, user, events };
