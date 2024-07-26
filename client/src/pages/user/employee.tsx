@@ -91,7 +91,7 @@ const EmployeeMain: React.FC = () => {
         />
         <button onClick={handleSearch} className="p-2">
           <svg
-            className="w-5 h-5"
+            className="size-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -106,7 +106,7 @@ const EmployeeMain: React.FC = () => {
         </button>
         <button onClick={handleClear} className="p-2">
           <svg
-            className="w-5 h-5"
+            className="size-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -121,7 +121,7 @@ const EmployeeMain: React.FC = () => {
         </button>
       </div>
       <h5 className="text-xl font-bold">Employee Directory</h5>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+      <div>
         {employeeList.map((employee) => (
           <div
             key={employee.id}
@@ -134,7 +134,7 @@ const EmployeeMain: React.FC = () => {
                     type="checkbox"
                     checked={isSelected(employee.id)}
                     onChange={() => toggleEmployeeSelection(employee.id)}
-                    className="form-checkbox h-4 w-4 text-blue-600"
+                    className="size-4 text-blue-600"
                   />
                   <span className="ml-2">
                     {employee.name} - {employee.position}
