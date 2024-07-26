@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import http from '@http'; // Adjust the path as needed
+import httpClient from '@utils/http'; // Adjust the path as needed
 
 interface Employee {
   id: number;
@@ -22,15 +22,17 @@ const EmployeeMain: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchEmployees = () => {
-    http
-      .get(`/employee?query=${searchQuery}`)
-      .then((res) => {
-        setEmployeeList(res.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching employees:', error);
+  const fetchEmployees = async () => {
+    try {
+      // Adjust the return type according to your API response
+      const response = await httpClient.get<Employee[]>({
+        uri: '/employee',
+        queryParams: `query=${searchQuery}`,
       });
+      setEmployeeList(response); // No need to access 'data' property if it is directly the array
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,19 +52,19 @@ const EmployeeMain: React.FC = () => {
     navigate(`/updateemployee/${id}`);
   };
 
-  const handleDelete = () => {
-    console.log('Deleting:', selectedEmployees);
-    http
-      .delete('/employees', { data: { ids: selectedEmployees } })
-      .then((response) => {
-        console.log('Deletion successful', response.data);
-        fetchEmployees();
-        setSelectedEmployees([]);
-        setDeleteMode(false);
-      })
-      .catch((error) => {
-        console.error('Error deleting employees:', error);
+  const handleDelete = async () => {
+    try {
+      await httpClient.post<void, { ids: number[] }>({
+        uri: '/employees/delete',
+        payload: { ids: selectedEmployees },
       });
+      console.log('Deletion successful');
+      fetchEmployees();
+      setSelectedEmployees([]);
+      setDeleteMode(false);
+    } catch (error) {
+      console.error('Error deleting employees:', error);
+    }
   };
 
   const isSelected = (id: number) => selectedEmployees.includes(id);
