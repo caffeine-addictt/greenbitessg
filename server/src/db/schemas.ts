@@ -58,6 +58,19 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
+export const inviteClientsTable = pgTable('invite_clients', {
+  id: serial('id').primaryKey(),
+  clientName: text('client_name').notNull(),
+  email: text('email').notNull(),
+  inviteMessage: text('invite_message').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type InsertInviteClient = typeof inviteClientsTable.$inferInsert;
+export type SelectInviteClient = typeof inviteClientsTable.$inferSelect;
 /**
  * Passkey Challenges
  */
