@@ -16,6 +16,7 @@ import {
   customType,
   boolean,
   jsonb,
+  numeric,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import type {
@@ -57,6 +58,23 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
+
+// Define the employees table schema
+export const employeesTable = pgTable('employees', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  position: text('position').notNull(),
+  department: text('department').notNull(), // You can use an ENUM type if supported
+  salary: numeric('salary', { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+// Types for inserting and selecting data
+export type InsertEmployee = typeof employeesTable.$inferInsert;
+export type SelectEmployee = typeof employeesTable.$inferSelect;
 
 /**
  * Passkey Challenges
