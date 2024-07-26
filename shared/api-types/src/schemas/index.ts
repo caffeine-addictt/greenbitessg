@@ -6,6 +6,6 @@
 
 import * as auth from './auth';
 import * as user from './user';
-import * as feedback from './feedback'
+import * as feedback from './feedback';
 
 export { auth, user, feedback };
