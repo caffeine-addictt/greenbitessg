@@ -31,6 +31,7 @@ app.use(rateLimitMiddleware);
 // Server Config
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Logging
 app.use(morgan('tiny'));
@@ -51,18 +52,17 @@ Object.entries(routeMap).forEach(([route, methods]) => {
 
     // To make only 1 jwt verify middleware
     let authLevel = 0;
-    authLevel =
-      methods.accessLevel === 'authenticated'
-        ? 1
-        : methods.accessLevel === 'admin'
-          ? 2
-          : 0;
-    authLevel =
+    if (
+      methods.accessLevel === 'authenticated' ||
       detailCasted.accessLevel === 'authenticated'
-        ? 1
-        : detailCasted.accessLevel === 'admin'
-          ? 2
-          : 0;
+    ) {
+      authLevel = 1;
+    } else if (
+      methods.accessLevel === 'admin' ||
+      detailCasted.accessLevel === 'admin'
+    ) {
+      authLevel = 2;
+    }
 
     if (authLevel !== 0) {
       console.log(
