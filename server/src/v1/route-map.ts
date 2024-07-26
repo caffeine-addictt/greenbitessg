@@ -10,6 +10,7 @@ import type { RoutingMap } from '../route-map';
 import authRoutes from './auth/route-map';
 import { availability } from './availability';
 import { getUser } from './user';
+import { getFeedback } from './feedback';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -21,6 +22,13 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       handler: getUser,
       accessLevel: 'authenticated',
       authOptions: { allowNonActivated: true },
+    },
+  },
+  '/v1/feedback': {
+    GET: {
+      handler: getFeedback,
+      accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: false }, // Adjust as needed
     },
   },
 } as const;
