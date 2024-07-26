@@ -16,6 +16,5 @@ const routeMap1: RouteMap = {
     component: EmployeeMain as PageComponent,
     accessLevel: 'authenticated',
   },
-  
 } as const;
 export default routeMap1;
