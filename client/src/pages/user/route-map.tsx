@@ -21,6 +21,6 @@ const routeMap1: RouteMap = {
     title: 'Invite Client',
     description: 'This is the Invite Client Page',
     component: InviteClient as PageComponent,
-  }
+  },
 } as const;
 export default routeMap1;
