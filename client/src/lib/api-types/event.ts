@@ -12,5 +12,5 @@ import type { SuccessResponse } from './index';
 /**
  * Successful response for /v1/user endpoint
  */
-export interface GetUserSuccAPI
+export interface GetEventSuccAPI
   extends SuccessResponse<z.infer<typeof event.eventSchema>> {}

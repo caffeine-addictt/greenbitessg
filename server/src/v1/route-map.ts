@@ -9,6 +9,7 @@ import type { RoutingMap } from '../route-map';
 // Import endpoints
 import authRoutes from './auth/route-map';
 import { availability } from './availability';
+import { getEvent } from './event';
 import { getUser } from './user';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
@@ -19,6 +20,13 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/user': {
     GET: {
       handler: getUser,
+      accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
+    },
+  },
+  '/v1/events': { 
+    GET: {
+      handler: getEvent,
       accessLevel: 'authenticated',
       authOptions: { allowNonActivated: true },
     },
