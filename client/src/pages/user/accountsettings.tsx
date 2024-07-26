@@ -3,7 +3,7 @@ import { useForm, useFormState } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import type { PageComponent } from '@pages/route-map';
-import { accountSettingsSchema } from '@lib/api-types/schemas/user'; // Update the path as needed
+import { userType } from '@lib/api-types/schemas/user'; // Update the path as needed
 import httpClient from '@utils/http';
 
 import {
@@ -24,49 +24,61 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
   const [id, setId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
-    resolver: zodResolver(accountSettingsSchema),
+  const accountSettingsForm = useForm<z.infer<typeof userType>>({
+    resolver: zodResolver(userType),
     defaultValues: {
       username: '',
       email: '',
-      permission: '',
     },
   });
 
-  const { isSubmitting } = useFormState({ control: accountSettingsForm.control });
+  const { isSubmitting } = useFormState({
+    control: accountSettingsForm.control,
+  });
 
   useEffect(() => {
     // Fetch account settings on component mount
-    httpClient.get<{ id: string; username: string; email: string; permission: string; createdAt: string; updatedAt: string }>({
-      uri: '/accountsettings',
-    })
-    .then((data) => {
-      setId(data.id);
-      accountSettingsForm.setValue('username', data.username);
-      accountSettingsForm.setValue('email', data.email);
-      accountSettingsForm.setValue('permission', data.permission);
-    })
-    .catch((err) => {
-      console.error('Error fetching account settings:', err);
-      setError('Error fetching account settings');
-    });
+    httpClient
+      .get<{
+        id: string;
+        username: string;
+        email: string;
+        permission: string;
+        createdAt: string;
+        updatedAt: string;
+      }>({
+        uri: '/accountsettings',
+      })
+      .then((data) => {
+        setId(data.id);
+        accountSettingsForm.setValue('username', data.username);
+        accountSettingsForm.setValue('email', data.email);
+      })
+      .catch((err) => {
+        console.error('Error fetching account settings:', err);
+        setError('Error fetching account settings');
+      });
   }, [accountSettingsForm]);
 
-  const handleSave = (data: z.infer<typeof accountSettingsSchema>) => {
+  const handleSave = (data: z.infer<typeof userType>) => {
     // Update account settings using httpClient
-    httpClient.post({
-      uri: `/accountsettings/${id}`,
-      payload: data,
-    })
-    .then((response) => {
-      console.log('Account details updated successfully:', response);
-      alert('Account details updated successfully');
-      setError(null); // Clear any previous errors
-    })
-    .catch((error) => {
-      console.error('There was an error updating the account details!', error);
-      setError('Error updating account details');
-    });
+    httpClient
+      .post({
+        uri: `/accountsettings/${id}`,
+        payload: data,
+      })
+      .then((response) => {
+        console.log('Account details updated successfully:', response);
+        alert('Account details updated successfully');
+        setError(null); // Clear any previous errors
+      })
+      .catch((error) => {
+        console.error(
+          'There was an error updating the account details!',
+          error,
+        );
+        setError('Error updating account details');
+      });
   };
 
   const handleCancel = () => {
@@ -75,12 +87,12 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
   };
 
   return (
-    <div {...props} className={cn(className, "container mx-auto mt-16")}>
+    <div {...props} className={cn(className, 'container mx-auto mt-16')}>
       <h1 className="text-center text-2xl font-bold">Account Settings</h1>
       <Form {...accountSettingsForm}>
         <form
           onSubmit={accountSettingsForm.handleSubmit(handleSave)}
-          className="space-y-4 mt-8 w-[26.5rem]"
+          className="mt-8 w-[26.5rem] space-y-4"
         >
           {error && <p className="text-red-500">{error}</p>}
           <FormField
@@ -121,27 +133,6 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
                   <FormMessage />
                 ) : (
                   <FormDescription>Your email address.</FormDescription>
-                )}
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={accountSettingsForm.control}
-            name="permission"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>Permission</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Permission"
-                    className={fieldState.error ? 'border-red-700' : ''}
-                    {...field}
-                  />
-                </FormControl>
-                {fieldState.error ? (
-                  <FormMessage />
-                ) : (
-                  <FormDescription>Your account permission level.</FormDescription>
                 )}
               </FormItem>
             )}

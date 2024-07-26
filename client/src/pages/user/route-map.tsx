@@ -6,10 +6,11 @@ import Home from './homepage';
 import InviteClient from './inviteclient';
 
 const routeMap1: RouteMap = {
-  '/accountsettings': {
+  '/settings': {
     title: 'Account Settings',
     description: 'Login to your account',
     component: AccountSettings,
+    accessLevel: 'authenticated',
   },
   '/home': {
     title: 'Homepage',
