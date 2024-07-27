@@ -48,7 +48,10 @@ Object.entries(routeMap).forEach(([route, methods]) => {
   Object.entries(methods).forEach(([method, detail]) => {
     if (method === 'accessLevel') return;
     const detailCasted = detail as RouteDetails;
-    const stack: RequestHandler[] = [detailCasted.handler as IBareRouteHandler];
+    let stack: RequestHandler[] = [
+      detailCasted.handler as IBareRouteHandler,
+      methods.handler as IBareRouteHandler,
+    ];
 
     // To make only 1 jwt verify middleware
     let authLevel = 0;
@@ -65,9 +68,6 @@ Object.entries(routeMap).forEach(([route, methods]) => {
     }
 
     if (authLevel !== 0) {
-      console.log(
-        `Adding ${detailCasted.tokenType} JWT middleware for level ${authLevel} route ${route}`,
-      );
       stack.push(
         authenticateJWTMiddlewareGenerator(
           detailCasted.tokenType ?? methods.tokenType,
@@ -77,10 +77,17 @@ Object.entries(routeMap).forEach(([route, methods]) => {
       );
     }
 
+    // Remove undefined
+    stack = stack.filter((v) => v !== undefined);
+
     // Reverse stack
     stack.reverse();
 
     switch (method) {
+      case 'handler':
+        app.use(route, ...stack);
+        break;
+
       case 'GET':
         app.get(route, ...stack);
         break;
@@ -122,6 +129,7 @@ Object.entries(routeMap).forEach(([route, methods]) => {
     }
   });
 });
+console.log(`Loaded ${Object.keys(routeMap).length} routes`);
 
 // Handle Errors
 app.use(methodNotFoundHandler);
