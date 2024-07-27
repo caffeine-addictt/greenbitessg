@@ -10,7 +10,6 @@ import * as React from 'react';
 import NotFound from '@pages/404';
 import RootPage from '@pages/root';
 import routeMap from '@pages/auth/route-map';
-import routeMaps from './user/route-map';
 
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
@@ -41,6 +40,5 @@ const routes: RootRouteMap = {
     title: 'Admin',
   },
   ...routeMap,
-  ...routeMaps,
 } as const;
 export default routes;
