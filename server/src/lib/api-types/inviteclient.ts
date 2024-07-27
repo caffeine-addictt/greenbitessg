@@ -1,4 +1,6 @@
 import * as z from 'zod';
+import type { SuccessResponse } from './index';
+import { inviteclient } from './schemas';
 
 // Define the schema for form validation
 export const inviteClientSchema = z.object({
@@ -7,5 +9,8 @@ export const inviteClientSchema = z.object({
   inviteMessage: z.string().min(1, 'Invite message is required'), // Invite message should be a non-empty string
 });
 
-// Type for form data based on the schema
-export type InviteClientFormData = z.infer<typeof inviteClientSchema>;
+/**
+ * Successful response for /v1/user endpoint
+ */
+export interface GetInviteClientSuccAPI
+  extends SuccessResponse<z.infer<typeof inviteclient.inviteClientSchema>> {}
