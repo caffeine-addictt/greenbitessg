@@ -43,5 +43,9 @@
     "client",
     "server",
     "shared/*"
-  ]
+  ],
+  "dependencies": {
+    "chart.js": "^4.4.3",
+    "react-chartjs-2": "^5.2.0"
+  }
 }
