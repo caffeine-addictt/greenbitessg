@@ -50,6 +50,7 @@ export const usersTable = pgTable('users_table', {
     .$onUpdate(() => new Date()),
 });
 export const usersRelations = relations(usersTable, ({ many }) => ({
+  content: many(contentTable),
   jwtTokenBlocklist: many(jwtTokenBlocklist),
   tokens: many(tokens),
   passkeys: many(passkeysTable),
@@ -57,6 +58,34 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
+
+/**
+ * Content
+ * Data for uploaded content like images, videos etc.
+ *
+ * We only store the filename.
+ * To access content, add `https://utfs.io/f/` in front of the filename.
+ */
+export const contentTable = pgTable('content_table', {
+  filename: text('filename').primaryKey(),
+  size: integer('size').notNull(),
+  type: text('type').notNull().$type<'image'>(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const contentRelations = relations(contentTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [contentTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertContent = typeof contentTable.$inferInsert;
+export type SelectContent = typeof contentTable.$inferSelect;
 
 /**
  * Passkey Challenges

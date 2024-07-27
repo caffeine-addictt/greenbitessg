@@ -10,16 +10,26 @@ import {
   type FileRouter,
 } from 'uploadthing/express';
 
+import { AuthenticatedRequest } from '../middleware/jwt';
+
+import { db } from '..//db';
+import { contentTable } from '../db/schemas';
+
 const f = createUploadthing();
 const uploadRouter = {
-  imageRouter: f({
-    image: {
-      maxFileCount: 4,
-      maxFileSize: '4MB',
-    },
-  }).onUploadComplete((data) => {
-    console.log('Upload Success', data);
-  }),
+  imageRouter: f({ image: { maxFileSize: '4MB' } })
+    .middleware(async ({ req }) => ({
+      userId: (req as AuthenticatedRequest).user.id,
+    }))
+    .onUploadComplete(async ({ metadata, file }) => {
+      // Save to DB
+      await db.insert(contentTable).values({
+        userId: metadata.userId,
+        filename: file.key,
+        size: file.size,
+        type: file.type as 'image',
+      });
+    }),
 } satisfies FileRouter;
 
 export type UploadRouter = typeof uploadRouter;

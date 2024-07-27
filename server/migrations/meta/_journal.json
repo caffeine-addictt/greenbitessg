@@ -127,6 +127,13 @@
       "when": 1720863982193,
       "tag": "0017_graceful_arclight",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1722073793600,
+      "tag": "0018_tearful_loki",
+      "breakpoints": true
     }
   ]
 }
