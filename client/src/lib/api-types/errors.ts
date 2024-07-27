@@ -6,17 +6,14 @@
 
 import httpMethods from './http-methods';
 import { HttpErrorCode } from './http-codes';
+import type { LiteralUnion } from 'type-fest';
 
 export interface ErrorContext {
   [x: string]: unknown;
 }
 
-export type HintedString<KnownTypes extends string> =
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  (string & {}) | KnownTypes;
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type CustomErrorContext<T = string & {}> = {
-  message: HintedString<T extends string ? T : string>;
+export type CustomErrorContext<T = string> = {
+  message: LiteralUnion<T, string>;
   context?: ErrorContext;
 };
 
@@ -25,14 +22,10 @@ export type SuccessResponse<T> = {
   data: T;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type ErrorResponse<T = string & {}> =
+export type ErrorResponse<T = string> =
   | {
       status: HttpErrorCode;
-      errors: T extends string
-        ? CustomErrorContext<T>[]
-        : // eslint-disable-next-line @typescript-eslint/ban-types
-          CustomErrorContext<string & {}>[];
+      errors: CustomErrorContext<LiteralUnion<T, string>>[];
     }
   | {
       status: 401;
