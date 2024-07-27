@@ -27,8 +27,6 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/events': {
     GET: {
       handler: getEvent,
-      accessLevel: 'authenticated',
-      authOptions: { allowNonActivated: true },
     },
   },
 } as const;

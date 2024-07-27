@@ -1,7 +1,8 @@
-import { IAuthedRouteHandler } from '../route-map';
+import { IBareRouteHandler } from '../route-map';
 import { GetEventSuccAPI } from '../lib/api-types/event';
+import { GetEventFailAPI } from '../lib/api-types/event';
 
-export const getEvent: IAuthedRouteHandler = async (req, res) => {
+export const getEvent: IBareRouteHandler = async (req, res) => {
   // Extract event ID from the request params or query
   const eventId = parseInt(req.params.id, 10); // Ensure eventId is a number
 
@@ -19,13 +20,13 @@ export const getEvent: IAuthedRouteHandler = async (req, res) => {
     return res.status(404).json({
       status: 404,
       message: 'Event not found',
-    });
+  } satisfies GetEventFailAPI);
   }
 
   return res.status(200).json({
     status: 200,
     data: {
-      date: new Date(eventData.date).toISOString(), // Convert Date to string if necessary
+      date: new Date(eventData.date), // Convert Date to string if necessary
       id: eventData.id,
       title: eventData.title,
       time: new Date(eventData.time).toISOString(), // Convert Date to string if necessary

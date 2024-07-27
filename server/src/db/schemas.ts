@@ -6,6 +6,7 @@
 
 import {
   pgTable,
+  time,
   serial,
   text,
   timestamp,
@@ -63,7 +64,7 @@ export const eventsTable = pgTable('events_table', {
   id: serial('id').primaryKey(),
   title: text('title').notNull(),
   date: timestamp('date').notNull(),
-  time: text('time').notNull(),
+  time: time('time').notNull(),
   location: text('location').notNull(),
   description: text('description').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),

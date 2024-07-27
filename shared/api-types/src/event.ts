@@ -9,6 +9,12 @@ import * as z from 'zod';
 import { event } from './schemas';
 import type { SuccessResponse } from './index';
 
+
+export interface GetEventFailAPI {
+  status: number;
+  message: string;
+}
+
 /**
  * Successful response for /v1/user endpoint
  */
