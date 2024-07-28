@@ -8,15 +8,12 @@ import * as z from 'zod';
 
 import { event } from './schemas';
 import type { SuccessResponse } from './index';
+import type { ErrorResponse } from 'react-router-dom';
 
 
-export interface GetEventFailAPI {
-  status: number;
-  message: string;
-}
+export type GetEventFailAPI = ErrorResponse & {
+  details: 'Please key in an event';
+};
 
-/**
- * Successful response for /v1/user endpoint
- */
 export interface GetEventSuccAPI
   extends SuccessResponse<z.infer<typeof event.eventSchema>> {}
