@@ -10,7 +10,7 @@ import * as React from 'react';
 import NotFound from '@pages/404';
 import RootPage from '@pages/root';
 import authrouteMap from '@pages/auth/route-map';
-import userrouteMap from './user/route-map';
+import userrouteMap from '@pages/user/route-map';
 
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
