@@ -88,6 +88,47 @@ export type InsertContent = typeof contentTable.$inferInsert;
 export type SelectContent = typeof contentTable.$inferSelect;
 
 /**
+ * Food table
+ *
+  food_name: string;
+  serving_unit: string;
+  tag_name: string;
+  serving_qty: number;
+  nf_calories: number;
+ */
+export const foodTable = pgTable('food_table', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  servingUnit: text('serving_unit').notNull(),
+  servingQty: integer('serving_qty').notNull(),
+  calories: integer('nf_calories').notNull(),
+  imageId: text('image_id')
+    .notNull()
+    .references((): AnyPgColumn => contentTable.filename, {
+      onDelete: 'cascade',
+    }),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const foodRelations = relations(foodTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [foodTable.userId],
+    references: [usersTable.id],
+  }),
+  image: one(contentTable, {
+    fields: [foodTable.imageId],
+    references: [contentTable.filename],
+  }),
+}));
+export type InsertFood = typeof foodTable.$inferInsert;
+export type SelectFood = typeof foodTable.$inferSelect;
+
+/**
  * Passkey Challenges
  */
 export const passkeyChallengesTable = pgTable('passkey_challenges_table', {
