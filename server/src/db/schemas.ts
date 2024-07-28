@@ -17,6 +17,7 @@ import {
   customType,
   boolean,
   jsonb,
+  date
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import type {
@@ -63,7 +64,7 @@ export type SelectUser = typeof usersTable.$inferSelect;
 export const eventsTable = pgTable('events_table', {
   id: serial('id').primaryKey(),
   title: text('title').notNull(),
-  date: timestamp('date').notNull(),
+  date: date('date').notNull(),
   time: time('time').notNull(),
   location: text('location').notNull(),
   description: text('description').notNull(),
