@@ -1,17 +1,20 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   FeedbackFormValues,
   feedbackSchema,
 } from '@lib/api-types/schemas/feedback'; // Import the schema from a separate file
+import {
+  Form,
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@components/ui/form'; // Custom form components
+import { PageComponent } from '@pages/route-map';
 
-const FeedbackForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FeedbackFormValues>({
+const FeedbackForm: PageComponent = () => {
+  const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema), // Make sure to import the schema here
   });
 
@@ -21,56 +24,44 @@ const FeedbackForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Name
-        </label>
-        <input id="name" type="text" {...register('name')} />
-        {errors.name && <p>{errors.name.message}</p>}
-      </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormItem>
+          <FormLabel htmlFor="name">Name</FormLabel>
+          <FormControl>
+            <input type="text" {...form.register('name')} />
+          </FormControl>
+          <FormMessage>{form.formState.errors.name?.message}</FormMessage>
+        </FormItem>
 
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Email
-        </label>
-        <input id="email" type="email" {...register('email')} />
-        {errors.email && <p>{errors.email.message}</p>}
-      </div>
+        <FormItem>
+          <FormLabel htmlFor="email">Email</FormLabel>
+          <FormControl>
+            <input type="email" {...form.register('email')} />
+          </FormControl>
+          <FormMessage>{form.formState.errors.email?.message}</FormMessage>
+        </FormItem>
 
-      <div>
-        <label
-          htmlFor="suggestion"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Suggestion (optional)
-        </label>
-        <input id="suggestion" type="text" {...register('suggestion')} />
-      </div>
+        <FormItem>
+          <FormLabel htmlFor="suggestion">Suggestion (optional)</FormLabel>
+          <FormControl>
+            <input type="text" {...form.register('suggestion')} />
+          </FormControl>
+        </FormItem>
 
-      <div>
-        <label
-          htmlFor="feedbackMessage"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Feedback Message
-        </label>
-        <textarea
-          id="feedbackMessage"
-          {...register('feedbackMessage')}
-          rows={4}
-        />
-        {errors.feedbackMessage && <p>{errors.feedbackMessage.message}</p>}
-      </div>
+        <FormItem>
+          <FormLabel htmlFor="feedbackMessage">Feedback Message</FormLabel>
+          <FormControl>
+            <textarea rows={4} {...form.register('feedbackMessage')} />
+          </FormControl>
+          <FormMessage>
+            {form.formState.errors.feedbackMessage?.message}
+          </FormMessage>
+        </FormItem>
 
-      <button type="submit">Submit</button>
-    </form>
+        <button type="submit">Submit</button>
+      </form>
+    </Form>
   );
 };
 

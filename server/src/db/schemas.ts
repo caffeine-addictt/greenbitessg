@@ -60,8 +60,13 @@ export type SelectUser = typeof usersTable.$inferSelect;
 
 export const feedbackTable = pgTable('feedback_table', {
   id: serial('id').primaryKey(),
-  userId: smallint('user_id').notNull(), // Assuming feedback is related to users
-  content: text('content').notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(), // Added name field
+  email: text('email').notNull(), // Added email field
+  suggestion: text('suggestion').default(''), // Optional field with default empty string
+  feedbackMessage: text('feedback_message').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()

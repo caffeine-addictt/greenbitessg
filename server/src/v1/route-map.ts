@@ -27,8 +27,6 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/feedback': {
     GET: {
       handler: getFeedback,
-      accessLevel: 'authenticated',
-      authOptions: { allowNonActivated: false }, // Adjust as needed
     },
   },
 } as const;

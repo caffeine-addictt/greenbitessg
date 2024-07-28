@@ -1,31 +1,49 @@
-import { IAuthedRouteHandler } from '../route-map';
-import { feedbackSchema } from '@src/lib/api-types/schemas/feedback'; // Adjust the path as needed
-import { FeedbackFormValues } from '@src/lib/api-types/schemas/feedback';
-import type { GetFeedbackSuccAPI } from '../lib/api-types/feedback'; // Adjust the path as needed
+import { db } from '../db';
+import { feedbackTable } from '../db/schemas';
+import {
+  feedbackSchema,
+  FeedbackFormValues,
+} from '../lib/api-types/schemas/feedback';
+import type { IBareRouteHandler } from '@src/route-map';
+import type {
+  GetFeedbackSuccAPI,
+  GetFeedbackFailAPI,
+} from '../lib/api-types/feedback';
+import { eq } from 'drizzle-orm';
 
-// Example function to fetch feedback data by ID (replace with actual implementation)
 async function fetchFeedbackById(
   id: number,
 ): Promise<FeedbackFormValues | null> {
-  // Replace with your actual implementation to fetch feedback data
-  // Simulate fetching data based on the provided id
-  if (id === 1) {
-    return {
-      id: 1,
-      name: 'Jane Doe',
-      email: 'jane.doe@example.com',
-      suggestion: 'Add more features',
-      feedbackMessage: 'Great product, but needs improvements in usability.',
-    };
-  }
+  try {
+    const feedbackData = await db
+      .select()
+      .from(feedbackTable)
+      .where(eq(feedbackTable.id, id))
+      .limit(1);
 
-  // Return null if no data is found for the given id
-  return null;
+    if (feedbackData.length === 0) {
+      return null;
+    }
+
+    const feedbackEntry = feedbackData[0];
+
+    const feedbackFormValues: FeedbackFormValues = {
+      id: feedbackEntry.id,
+      name: feedbackEntry.name,
+      email: feedbackEntry.email,
+      suggestion: feedbackEntry.suggestion ?? undefined,
+      feedbackMessage: feedbackEntry.feedbackMessage,
+    };
+
+    return feedbackFormValues;
+  } catch (error) {
+    console.error('Error fetching feedback:', error);
+    return null;
+  }
 }
 
-export const getFeedback: IAuthedRouteHandler = async (req, res) => {
-  // Extract feedback ID from the request params or query
-  const feedbackId = parseInt(req.params.id, 10); // Ensure feedbackId is a number
+export const getFeedback: IBareRouteHandler = async (req, res) => {
+  const feedbackId = parseInt(req.params.id, 10);
 
   if (isNaN(feedbackId)) {
     return res.status(400).json({
@@ -34,30 +52,34 @@ export const getFeedback: IAuthedRouteHandler = async (req, res) => {
     });
   }
 
-  // Fetch feedback data from a database or another source using feedbackId
   const feedbackData = await fetchFeedbackById(feedbackId);
 
   if (!feedbackData) {
     return res.status(404).json({
-      status: 404,
-      message: 'Feedback not found',
-    });
+      error: 'Feedback not found',
+      code: 404,
+      details: 'No feedback found with the provided ID',
+    } satisfies GetFeedbackFailAPI);
   }
 
-  // Validate the fetched feedback data
+  // Validate the fetched data with the schema
   const validationResult = feedbackSchema.safeParse(feedbackData);
 
   if (!validationResult.success) {
-    return res.status(500).json({
-      status: 500,
-      message: 'Feedback data is invalid',
-      errors: validationResult.error.format(),
-    });
+    // Summarize the errors into a single string
+    const errorMessages = validationResult.error.errors
+      .map((err) => err.message)
+      .join(', ');
+
+    return res.status(400).json({
+      error: 'Invalid feedback data',
+      code: 400,
+      details: errorMessages,
+    } satisfies GetFeedbackFailAPI);
   }
 
-  // Return the valid feedback data in the correct format
   return res.status(200).json({
     status: 200,
-    data: feedbackData,
+    data: validationResult.data,
   } satisfies GetFeedbackSuccAPI);
 };
