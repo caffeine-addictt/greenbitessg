@@ -44,9 +44,5 @@
     "client",
     "server",
     "shared/*"
-  ],
-  "dependencies": {
-    "drizzle-orm": "^0.31.2",
-    "tailwindcss-animate": "^1.0.7"
-  }
+  ]
 }
