@@ -17,7 +17,7 @@ import {
   customType,
   boolean,
   jsonb,
-  date
+  date,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import type {

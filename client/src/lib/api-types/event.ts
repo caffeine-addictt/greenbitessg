@@ -10,7 +10,6 @@ import { event } from './schemas';
 import type { SuccessResponse } from './index';
 import type { ErrorResponse } from 'react-router-dom';
 
-
 export type GetEventFailAPI = ErrorResponse & {
   details: 'Please key in an event';
 };
