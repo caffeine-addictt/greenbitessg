@@ -5,7 +5,8 @@
  */
 
 import * as auth from './auth';
+import * as food from './food';
 import * as user from './user';
 import * as dashboard from './dashboard';
 
-export { auth, user, dashboard };
+export { auth, user, food, dashboard };
