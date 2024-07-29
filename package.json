@@ -37,11 +37,14 @@
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.4",
     "pre-commit": "^1.2.2",
-    "prettier": "^3.3.2"
+    "prettier": "^3.3.3"
   },
   "workspaces": [
     "client",
     "server",
     "shared/*"
-  ]
+  ],
+  "dependencies": {
+    "tailwindcss": "^3.4.7"
+  }
 }

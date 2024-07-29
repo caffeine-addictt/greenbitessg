@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import.meta.env;
 import Cookies from 'js-cookie';
 
 const ACCESS_TOKEN_COOKIE_NAME = 'access_token' as const;

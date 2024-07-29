@@ -52,6 +52,7 @@ export const usersTable = pgTable('users_table', {
     .$onUpdate(() => new Date()),
 });
 export const usersRelations = relations(usersTable, ({ many }) => ({
+  content: many(contentTable),
   jwtTokenBlocklist: many(jwtTokenBlocklist),
   tokens: many(tokens),
   passkeys: many(passkeysTable),
@@ -59,24 +60,6 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
-
-// Define the events table
-export const eventsTable = pgTable('events_table', {
-  id: serial('id').primaryKey(),
-  title: text('title').notNull(),
-  date: date('date').notNull(),
-  time: time('time').notNull(),
-  location: text('location').notNull(),
-  description: text('description').notNull(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at')
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-// Define types for inserting and selecting data
-export type InsertEvent = typeof eventsTable.$inferInsert;
-export type SelectEvent = typeof eventsTable.$inferSelect;
 
 /**
  * Passkey Challenges
