@@ -6,7 +6,6 @@
 
 import {
   pgTable,
-  time,
   serial,
   text,
   timestamp,
@@ -17,7 +16,6 @@ import {
   customType,
   boolean,
   jsonb,
-  date,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import type {
@@ -60,6 +58,75 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
+
+/**
+ * Content
+ * Data for uploaded content like images, videos etc.
+ *
+ * We only store the filename.
+ * To access content, add `https://utfs.io/f/` in front of the filename.
+ */
+export const contentTable = pgTable('content_table', {
+  filename: text('filename').primaryKey(),
+  size: integer('size').notNull(),
+  type: text('type').notNull().$type<'image'>(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const contentRelations = relations(contentTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [contentTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertContent = typeof contentTable.$inferInsert;
+export type SelectContent = typeof contentTable.$inferSelect;
+
+/**
+ * Food table
+ *
+  food_name: string;
+  serving_unit: string;
+  tag_name: string;
+  serving_qty: number;
+  nf_calories: number;
+ */
+export const foodTable = pgTable('food_table', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  servingUnit: text('serving_unit').notNull(),
+  servingQty: integer('serving_qty').notNull(),
+  calories: integer('nf_calories').notNull(),
+  imageId: text('image_id')
+    .notNull()
+    .references((): AnyPgColumn => contentTable.filename, {
+      onDelete: 'cascade',
+    }),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const foodRelations = relations(foodTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [foodTable.userId],
+    references: [usersTable.id],
+  }),
+  image: one(contentTable, {
+    fields: [foodTable.imageId],
+    references: [contentTable.filename],
+  }),
+}));
+export type InsertFood = typeof foodTable.$inferInsert;
+export type SelectFood = typeof foodTable.$inferSelect;
 
 /**
  * Passkey Challenges
