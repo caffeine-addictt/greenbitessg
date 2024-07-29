@@ -15,11 +15,11 @@ const routeMap: RoutingMap<`/v1/food${string}`> = {
   },
   '/v1/food/:id': {
     handler: getFood,
-    // accessLevel: 'authenticated',
+    accessLevel: 'authenticated',
   },
   '/v1/food': {
     handler: getFood,
-    // accessLevel: 'authenticated',
+    accessLevel: 'authenticated',
   },
 } as const;
 export default routeMap;
