@@ -17,6 +17,6 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       authOptions: { allowNonActivated: true },
     },
   },
-  } as const;
+} as const;
 
 export default routeMap;

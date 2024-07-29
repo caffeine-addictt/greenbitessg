@@ -11,7 +11,6 @@ import NotFound from '@pages/404';
 import RootPage from '@pages/root';
 import routeMap from '@pages/auth/route-map';
 
-
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
 export type PageComponent = (
