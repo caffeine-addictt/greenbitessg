@@ -1,13 +1,74 @@
-import { PageComponent } from '@pages/route-map';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import httpClient from '@utils/http';
+import { getAuthCookie } from '@utils/jwt'; // Assuming you have an auth utility to get the token
 
-const Dashboard: PageComponent = () => {
+const Dashboard = () => {
   const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState<{
+    id: number;
+    title: string;
+    description?: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Function to navigate to different pages
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      const token = getAuthCookie('access'); // Pass 'access' tokenType here
+      if (!token) {
+        setError('No authentication token found');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await httpClient.get<{
+          status: number;
+          data: {
+            id: number;
+            title: string;
+            description?: string;
+            isActive: boolean;
+            createdAt: string;
+            updatedAt: string;
+          };
+        }>({
+          uri: '/dashboard', // Ensure this is the correct endpoint
+          options: {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the token in the request
+            },
+          },
+        });
+
+        const { data } = response;
+
+        if (data) {
+          setDashboardData(data);
+        } else {
+          setError('Invalid data received from the server');
+        }
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Error fetching dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   const navigateToPage = (path: string) => {
     navigate(path);
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div>
@@ -15,7 +76,9 @@ const Dashboard: PageComponent = () => {
       <div className="space-y-8">
         <div>
           <h2 className="mb-2 text-xl font-semibold">Overview</h2>
-          <p className="text-gray-700">Some overview information here...</p>
+          <p className="text-gray-700">
+            {dashboardData?.description || 'No overview information available.'}
+          </p>
         </div>
         <div>
           <h2 className="mb-2 text-xl font-semibold">Recent Activities</h2>
