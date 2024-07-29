@@ -42,3 +42,10 @@ export type FoodGenerateFailAPI = ErrorResponse<
   | 'Could not get nutrition info!'
   | 'Could not access image!'
 >;
+
+/**
+ * Successful response for /v1/food/delete endpoint
+ */
+export interface FoodDeleteSuccessAPI
+  extends SuccessResponse<{ deleted: true }> {}
+export type FoodDeleteFailAPI = ErrorResponse<'Invalid ID!'>;
