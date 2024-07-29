@@ -5,12 +5,21 @@
  */
 
 import type { RoutingMap } from '../../route-map';
+import getFood from './food';
 import { postGenerate } from './generate';
 
-const routeMap: RoutingMap<`/v1/food/${string}`> = {
+const routeMap: RoutingMap<`/v1/food${string}`> = {
   '/v1/food/generate': {
     handler: postGenerate,
     accessLevel: 'authenticated',
+  },
+  '/v1/food/:id': {
+    handler: getFood,
+    // accessLevel: 'authenticated',
+  },
+  '/v1/food': {
+    handler: getFood,
+    // accessLevel: 'authenticated',
   },
 } as const;
 export default routeMap;
