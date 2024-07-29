@@ -6,6 +6,5 @@
 
 import * as auth from './auth';
 import * as user from './user';
-import * as inviteclient from './inviteclient';
 
-export { auth, user, inviteclient };
+export { auth, user };

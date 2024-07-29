@@ -80,7 +80,7 @@ class HTTPClient implements APIHttpClient {
     const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
     const opts: AxiosRequestConfig = withCredentials
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
-      : (options ?? DEFAULT_OPTS);
+      : options ?? DEFAULT_OPTS;
 
     const resp = await axios.get<T>(url, opts).catch((err: AxiosError) => err);
     const isErr = isAxiosError(resp);
@@ -111,7 +111,7 @@ class HTTPClient implements APIHttpClient {
     const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
     const opts: AxiosRequestConfig = withCredentials
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
-      : (options ?? DEFAULT_OPTS);
+      : options ?? DEFAULT_OPTS;
 
     const resp = await axios
       .post<T>(url, payload, opts)

@@ -17,7 +17,7 @@ import RegisterPage from './legacy-register';
 import ActivatePage from './activate';
 import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
 
-const routeMap: RouteMap = {
+const authRouteMap: RouteMap = {
   '/register': {
     title: 'Register',
     description: 'Register a new account with us!',
@@ -72,4 +72,4 @@ const routeMap: RouteMap = {
     accessLevel: 'authenticated',
   },
 } as const;
-export default routeMap;
+export default authRouteMap;

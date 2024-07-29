@@ -47,7 +47,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
         createdAt: string;
         updatedAt: string;
       }>({
-        uri: '/accountsettings',
+        uri: '/settings',
       })
       .then((data) => {
         setId(data.id);
