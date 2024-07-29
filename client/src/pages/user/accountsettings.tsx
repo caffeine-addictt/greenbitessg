@@ -5,6 +5,7 @@ import * as z from 'zod';
 import type { PageComponent } from '@pages/route-map';
 import { userType } from '@lib/api-types/schemas/user'; // Update the path as needed
 import httpClient from '@utils/http';
+import { getAuthCookie } from '@utils/jwt'; // Assuming you have an auth utility to get the token
 
 import {
   Form,
@@ -19,7 +20,6 @@ import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { cn } from '@utils/tailwind';
 
-// Define the AccountSettings component
 const AccountSettings: PageComponent = ({ className, ...props }) => {
   const [id, setId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -37,48 +37,93 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
   });
 
   useEffect(() => {
-    // Fetch account settings on component mount
-    httpClient
-      .get<{
-        id: string;
-        username: string;
-        email: string;
-        permission: string;
-        createdAt: string;
-        updatedAt: string;
-      }>({
-        uri: '/settings',
-      })
-      .then((data) => {
-        setId(data.id);
-        accountSettingsForm.setValue('username', data.username);
-        accountSettingsForm.setValue('email', data.email);
-      })
-      .catch((err) => {
+    const fetchAccountSettings = async () => {
+      const token = getAuthCookie('access'); // Pass 'access' tokenType here
+      if (!token) {
+        setError('No authentication token found');
+        return;
+      }
+
+      try {
+        const response = await httpClient.get<{
+          status: number;
+          data: {
+            id: string;
+            username: string;
+            email: string;
+            permission: string;
+            activated: boolean;
+            createdAt: string;
+            updatedAt: string;
+          };
+        }>({
+          uri: '/user', // Ensure this is the correct endpoint
+          options: {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the token in the request
+            },
+          },
+        });
+
+        // Access the 'data' field from the response
+        const { data } = response;
+
+        // Ensure response data matches expected format
+        if (data.id && data.username && data.email) {
+          setId(data.id);
+          accountSettingsForm.setValue('username', data.username);
+          accountSettingsForm.setValue('email', data.email);
+        } else {
+          setError('Invalid data received from the server');
+        }
+      } catch (err) {
         console.error('Error fetching account settings:', err);
         setError('Error fetching account settings');
-      });
+      }
+    };
+
+    fetchAccountSettings();
   }, [accountSettingsForm]);
 
-  const handleSave = (data: z.infer<typeof userType>) => {
-    // Update account settings using httpClient
-    httpClient
-      .post({
-        uri: `/accountsettings/${id}`,
+  const handleSave = async (data: z.infer<typeof userType>) => {
+    const token = getAuthCookie('access'); // Pass 'access' tokenType here
+    if (!token) {
+      setError('No authentication token found');
+      return;
+    }
+
+    type UpdateResponse = {
+      id: string;
+      username: string;
+      email: string;
+      permission: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+
+    type UpdatePayload = {
+      username: string;
+      email: string;
+    };
+
+    try {
+      await httpClient.post<UpdateResponse, UpdatePayload>({
+        uri: `/user/${id}`, // Correct endpoint
         payload: data,
-      })
-      .then((response) => {
-        console.log('Account details updated successfully:', response);
-        alert('Account details updated successfully');
-        setError(null); // Clear any previous errors
-      })
-      .catch((error) => {
-        console.error(
-          'There was an error updating the account details!',
-          error,
-        );
-        setError('Error updating account details');
+        options: {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the request
+          },
+        },
       });
+
+      console.log('Account details updated successfully');
+      alert('Account details updated successfully');
+      setError(null); // Clear any previous errors
+    } catch (error) {
+      console.error('There was an error updating the account details!', error);
+      setError('Error updating account details');
+    }
   };
 
   const handleCancel = () => {
