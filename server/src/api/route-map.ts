@@ -10,7 +10,7 @@ import type { RoutingMap } from '../route-map';
 import uploadthing from './uploadthing';
 
 const routeMap: RoutingMap<`/api/${string}`> = {
-  '/api/uploadthing': { handler: uploadthing, accessLevel: 'authenticated' },
+  '/api/uploadthing': { handler: uploadthing },
 } as const;
 
 export default routeMap;
