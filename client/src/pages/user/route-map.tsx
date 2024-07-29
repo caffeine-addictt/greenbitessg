@@ -4,17 +4,17 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import type { PageComponent, RouteMap } from '@pages/route-map';
+import type { RouteMap } from '@pages/route-map';
 
 // Import pages
 import Dashboard from './dashboard';
 
-const routeMap1: RouteMap = {
+const userRouteMap: RouteMap = {
   '/dashboard': {
     title: 'Dashboard',
     description: 'Check all the relevant details here',
-    component: Dashboard as PageComponent,
+    component: Dashboard,
     accessLevel: 'authenticated',
   },
 } as const;
-export default routeMap1;
+export default userRouteMap;

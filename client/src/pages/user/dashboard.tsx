@@ -1,7 +1,7 @@
-import React from 'react';
+import { PageComponent } from '@pages/route-map';
 import { useNavigate } from 'react-router-dom';
 
-const Dashboard: React.FC = () => {
+const Dashboard: PageComponent = () => {
   const navigate = useNavigate();
 
   // Function to navigate to different pages
