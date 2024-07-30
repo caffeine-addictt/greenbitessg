@@ -15,3 +15,8 @@ export const userType = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
 });
+
+export const userUpdateSchema = z.object({
+  username: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+});
