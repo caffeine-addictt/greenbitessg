@@ -5,7 +5,19 @@
  */
 
 import { IAuthedRouteHandler } from '../route-map';
-import { GetUserSuccAPI, UpdateUserSuccAPI } from '../lib/api-types/user';
+
+import { type ZodIssue } from 'zod';
+import { Http4XX } from '../lib/api-types/http-codes';
+import { type errors, schemas } from '../lib/api-types';
+import {
+  GetUserSuccAPI,
+  UpdateUserSuccAPI,
+  UpdateUserFailAPI,
+} from '../lib/api-types/user';
+
+import { db } from '../db';
+import { usersTable } from '../db/schemas';
+import { eq } from 'drizzle-orm';
 
 export const getUser: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json({
@@ -23,41 +35,50 @@ export const getUser: IAuthedRouteHandler = async (req, res) => {
 };
 
 export const updateUser: IAuthedRouteHandler = async (req, res) => {
-  const { username, email } = req.body;
-
-  // Validate input
-  if (!username || !email) {
-    return res.status(400).json({
-      status: 400,
-      error: 'Username and email are required',
+  // Validate request body
+  const validated = schemas.user.userUpdateSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
     });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies UpdateUserFailAPI);
   }
 
-  try {
-    // Simulate user update - Replace with actual database logic
-    req.user.username = username;
-    req.user.email = email;
-
-    // Persist the update to the database if necessary
-    // Example: await userRepository.update(req.user.id, { username, email });
-
-    return res.status(200).json({
-      status: 200,
-      data: {
-        id: req.user.id,
-        username: req.user.username,
-        email: req.user.email,
-        permission: req.user.permission,
-        activated: req.user.activated,
-        createdAt: req.user.createdAt,
-        updatedAt: req.user.updatedAt,
-      },
-    } satisfies UpdateUserSuccAPI);
-  } catch (error) {
-    console.error('Error updating user:', error);
-    return res.status(500).json({
-      status: 500,
-      error: 'Internal server error',
-    });
+  if (!validated.data.email && !validated.data.username) {
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: [{ message: 'Nothing to update!' }],
+    } satisfies UpdateUserFailAPI);
   }
+
+  const newUserData: typeof validated.data & { activated?: boolean } = {
+    ...validated.data,
+  };
+  if (validated.data.email) {
+    newUserData.activated = false;
+
+    // TODO: Create verification token (follow auth register)
+    // TODO: Send verification email
+  }
+
+  await db
+    .update(usersTable)
+    .set(newUserData)
+    .where(eq(usersTable.id, req.user.id));
+
+  return res.status(200).json({
+    status: 200,
+    data: { updated: true },
+  } satisfies UpdateUserSuccAPI);
 };

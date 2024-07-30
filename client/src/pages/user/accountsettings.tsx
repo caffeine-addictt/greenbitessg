@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useForm, useFormState } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState, useContext } from 'react';
+
 import * as z from 'zod';
-import { userType } from '@lib/api-types/schemas/user';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useFormState } from 'react-hook-form';
+
 import httpClient from '@utils/http';
-import { getAuthCookie } from '@utils/jwt';
+import { AuthContext } from '@service/auth';
+import { userUpdateSchema } from '@lib/api-types/schemas/user';
+import type { UpdateUserSuccAPI } from '@lib/api-types/user';
 
 import {
   Form,
@@ -23,14 +26,15 @@ const AccountSettings: React.FC<{ className?: string }> = ({
   className,
   ...props
 }) => {
+  const { user } = useContext(AuthContext)!;
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const accountSettingsForm = useForm<z.infer<typeof userType>>({
-    resolver: zodResolver(userType),
+  const accountSettingsForm = useForm<z.infer<typeof userUpdateSchema>>({
+    resolver: zodResolver(userUpdateSchema),
     defaultValues: {
-      username: '',
-      email: '',
+      username: user?.username,
+      email: user?.email,
     },
   });
 
@@ -38,97 +42,23 @@ const AccountSettings: React.FC<{ className?: string }> = ({
     control: accountSettingsForm.control,
   });
 
-  useEffect(() => {
-    const fetchAccountSettings = async () => {
-      const token = getAuthCookie('access');
-      if (!token) {
-        setError('No authentication token found');
-        return;
-      }
-
-      try {
-        const response = await httpClient.get<{
-          status: number;
-          data: {
-            id: string;
-            username: string;
-            email: string;
-            permission: string;
-            activated: boolean;
-            createdAt: string;
-            updatedAt: string;
-          };
-        }>({
-          uri: '/user',
-          options: {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        });
-
-        const { data } = response;
-
-        if (data.username && data.email) {
-          accountSettingsForm.setValue('username', data.username);
-          accountSettingsForm.setValue('email', data.email);
-        } else {
-          setError('Invalid data received from the server');
-        }
-      } catch (err) {
-        console.error('Error fetching account settings:', err);
-        setError('Error fetching account settings');
-      }
-    };
-
-    fetchAccountSettings();
-  }, [accountSettingsForm]);
-
-  const handleSave = async (data: z.infer<typeof userType>) => {
-    const token = getAuthCookie('access');
-    if (!token) {
-      setError('No authentication token found');
-      return;
-    }
-
-    try {
-      const response = await httpClient.put<
-        {
-          status: number;
-          data: {
-            id: string;
-            username: string;
-            email: string;
-            permission: string;
-            createdAt: string;
-            updatedAt: string;
-          };
-        },
-        { username: string; email: string }
-      >({
-        uri: '/user',
+  const handleSave = async (data: z.infer<typeof userUpdateSchema>) => {
+    await httpClient
+      .post<UpdateUserSuccAPI, z.infer<typeof userUpdateSchema>>({
+        uri: '/user/update',
         payload: data,
-        options: {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        },
+        withCredentials: 'access',
+      })
+      .then(() => {
+        setSuccessMessage('Account details updated successfully');
+        setError(null);
+        window.location.reload();
+      })
+      .catch((err) => {
+        setError('Error updating account details! Pelase try again later.');
+        setSuccessMessage(null);
+        console.log(err);
       });
-
-      console.log('Update response:', response);
-      setSuccessMessage('Account details updated successfully');
-      setError(null);
-    } catch (error) {
-      console.error('Error updating account details:', error);
-      setError('Error updating account details');
-      setSuccessMessage(null);
-    }
-  };
-
-  const handleCancel = () => {
-    console.log('Cancelled');
-    alert('Edit cancelled');
   };
 
   return (
@@ -185,9 +115,8 @@ const AccountSettings: React.FC<{ className?: string }> = ({
           />
           <div className="flex justify-end space-x-2">
             <Button
-              type="button"
+              type="reset"
               variant="ghost"
-              onClick={handleCancel}
               disabled={isSubmitting || !accountSettingsForm.formState.isDirty}
             >
               Cancel
