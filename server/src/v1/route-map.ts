@@ -9,7 +9,7 @@ import type { RoutingMap } from '../route-map';
 // Import endpoints
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
-import { getUser } from './user';
+import { getUser, updateUser } from './user';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -19,6 +19,10 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       handler: getUser,
       accessLevel: 'authenticated',
       authOptions: { allowNonActivated: true },
+    },
+    PUT: {
+      handler: updateUser,
+      accessLevel: 'authenticated',
     },
   },
 } as const;

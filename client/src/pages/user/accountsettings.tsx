@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import type { PageComponent } from '@pages/route-map';
-import { userType } from '@lib/api-types/schemas/user'; // Update the path as needed
+import { userType } from '@lib/api-types/schemas/user';
 import httpClient from '@utils/http';
-import { getAuthCookie } from '@utils/jwt'; // Assuming you have an auth utility to get the token
+import { getAuthCookie } from '@utils/jwt';
 
 import {
   Form,
@@ -20,9 +19,12 @@ import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { cn } from '@utils/tailwind';
 
-const AccountSettings: PageComponent = ({ className, ...props }) => {
-  const [id, setId] = useState<string>('');
+const AccountSettings: React.FC<{ className?: string }> = ({
+  className,
+  ...props
+}) => {
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const accountSettingsForm = useForm<z.infer<typeof userType>>({
     resolver: zodResolver(userType),
@@ -38,7 +40,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
 
   useEffect(() => {
     const fetchAccountSettings = async () => {
-      const token = getAuthCookie('access'); // Pass 'access' tokenType here
+      const token = getAuthCookie('access');
       if (!token) {
         setError('No authentication token found');
         return;
@@ -57,20 +59,17 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
             updatedAt: string;
           };
         }>({
-          uri: '/user', // Ensure this is the correct endpoint
+          uri: '/user',
           options: {
             headers: {
-              Authorization: `Bearer ${token}`, // Include the token in the request
+              Authorization: `Bearer ${token}`,
             },
           },
         });
 
-        // Access the 'data' field from the response
         const { data } = response;
 
-        // Ensure response data matches expected format
-        if (data.id && data.username && data.email) {
-          setId(data.id);
+        if (data.username && data.email) {
           accountSettingsForm.setValue('username', data.username);
           accountSettingsForm.setValue('email', data.email);
         } else {
@@ -86,43 +85,44 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
   }, [accountSettingsForm]);
 
   const handleSave = async (data: z.infer<typeof userType>) => {
-    const token = getAuthCookie('access'); // Pass 'access' tokenType here
+    const token = getAuthCookie('access');
     if (!token) {
       setError('No authentication token found');
       return;
     }
 
-    type UpdateResponse = {
-      id: string;
-      username: string;
-      email: string;
-      permission: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-
-    type UpdatePayload = {
-      username: string;
-      email: string;
-    };
-
     try {
-      await httpClient.post<UpdateResponse, UpdatePayload>({
-        uri: `/user/${id}`, // Correct endpoint
+      const response = await httpClient.put<
+        {
+          status: number;
+          data: {
+            id: string;
+            username: string;
+            email: string;
+            permission: string;
+            createdAt: string;
+            updatedAt: string;
+          };
+        },
+        { username: string; email: string }
+      >({
+        uri: '/user',
         payload: data,
         options: {
           headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the request
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         },
       });
 
-      console.log('Account details updated successfully');
-      alert('Account details updated successfully');
-      setError(null); // Clear any previous errors
+      console.log('Update response:', response);
+      setSuccessMessage('Account details updated successfully');
+      setError(null);
     } catch (error) {
-      console.error('There was an error updating the account details!', error);
+      console.error('Error updating account details:', error);
       setError('Error updating account details');
+      setSuccessMessage(null);
     }
   };
 
@@ -140,6 +140,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
           className="mt-8 w-[26.5rem] space-y-4"
         >
           {error && <p className="text-red-500">{error}</p>}
+          {successMessage && <p className="text-green-500">{successMessage}</p>}
           <FormField
             control={accountSettingsForm.control}
             name="username"
@@ -154,7 +155,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
                   />
                 </FormControl>
                 {fieldState.error ? (
-                  <FormMessage />
+                  <FormMessage>{fieldState.error.message}</FormMessage>
                 ) : (
                   <FormDescription>Your account username.</FormDescription>
                 )}
@@ -175,7 +176,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
                   />
                 </FormControl>
                 {fieldState.error ? (
-                  <FormMessage />
+                  <FormMessage>{fieldState.error.message}</FormMessage>
                 ) : (
                   <FormDescription>Your email address.</FormDescription>
                 )}
