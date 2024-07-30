@@ -5,7 +5,8 @@
  */
 
 import * as auth from './auth';
+import * as food from './food';
 import * as user from './user';
 import * as feedback from './feedback';
 
-export { auth, user, feedback };
+export { auth, user, food, feedback };

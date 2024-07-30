@@ -10,19 +10,17 @@ import * as schemas from './schemas';
 import * as httpCodes from './http-codes';
 import * as httpMethods from './http-methods';
 
+import type { LiteralUnion } from 'type-fest';
+
 export type SuccessResponse<T, N extends httpCodes.HttpOkCode = 200> = {
   status: N;
   data: T;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type ErrorResponse<T = string & {}> =
+export type ErrorResponse<T = string> =
   | {
       status: httpCodes.HttpErrorCode;
-      errors: T extends string
-        ? errors.CustomErrorContext<T>[]
-        : // eslint-disable-next-line @typescript-eslint/ban-types
-          errors.CustomErrorContext<string & {}>[];
+      errors: errors.CustomErrorContext<LiteralUnion<T, string>>[];
     }
   | {
       status: 401;
