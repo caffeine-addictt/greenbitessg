@@ -18,9 +18,10 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     GET: {
       handler: getUser,
       accessLevel: 'authenticated',
-      authOptions: { allowNonActivated: true },
     },
-    PUT: {
+  },
+  '/v1/user/update': {
+    POST: {
       handler: updateUser,
       accessLevel: 'authenticated',
     },
