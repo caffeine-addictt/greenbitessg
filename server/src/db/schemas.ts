@@ -60,33 +60,33 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
-// Define the feedback table
+/**
+ * Feedback
+ */
 export const feedbackTable = pgTable('feedback_table', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').notNull(), // Foreign key to users_table
+  userId: integer('user_id')
   name: text('name').notNull(),
   email: text('email').notNull(),
-  suggestion: text('suggestion').default(''), // Optional field, can be an empty string by default
+  suggestion: text('suggestion').default(''),
   feedbackMessage: text('feedback_message').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
     .$onUpdate(() => new Date()),
 });
-
-// Define relations (if needed)
 export const feedbackRelations = relations(feedbackTable, ({ one }) => ({
   user: one(usersTable, {
     fields: [feedbackTable.userId],
     references: [usersTable.id],
   }),
 }));
-
-// Define types for insert and select operations
 export type InsertFeedback = typeof feedbackTable.$inferInsert;
 export type SelectFeedback = typeof feedbackTable.$inferSelect;
 
-// Define the dashboard table
+/**
+ * Dashboard
+ */
 export const dashboardTable = pgTable('dashboard', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').notNull(),
@@ -97,8 +97,6 @@ export const dashboardTable = pgTable('dashboard', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-
-// Define relations (if needed)
 export const dashboardRelations = relations(dashboardTable, ({ one }) => ({
   user: one(usersTable, {
     fields: [dashboardTable.userId],
@@ -106,7 +104,9 @@ export const dashboardRelations = relations(dashboardTable, ({ one }) => ({
   }),
 }));
 
-// Define the event table
+/**
+ * Event
+ */
 export const eventTable = pgTable('events', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').notNull(),
@@ -116,8 +116,6 @@ export const eventTable = pgTable('events', {
   location: text('location').notNull(),
   description: text('description'),
 });
-
-// Define relations (if needed)
 export const eventRelations = relations(eventTable, ({ one }) => ({
   user: one(usersTable, {
     fields: [eventTable.userId],
