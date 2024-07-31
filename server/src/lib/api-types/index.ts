@@ -5,10 +5,10 @@
  */
 
 import * as auth from './auth';
-import * as errors from './errors';
-import * as schemas from './schemas';
-import * as httpCodes from './http-codes';
-import * as httpMethods from './http-methods';
+import * as errors from './errors'
+import * as schemas from './schemas'
+import * as httpCodes from './http-codes'
+import * as httpMethods from './http-methods'
 
 import type { LiteralUnion } from 'type-fest';
 

@@ -5,7 +5,7 @@
  */
 
 import { IAuthedRouteHandler } from '../route-map';
-import { GetUserSuccAPI } from '../lib/api-types/user';
+import { GetUserSuccAPI } from '@src/lib/api-types/dist/user';
 
 export const getUser: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json({

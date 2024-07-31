@@ -7,7 +7,7 @@
 import express from 'express';
 
 import routeMap, { RoutingMap } from '../route-map';
-import { HttpErrorCode } from '../lib/api-types/http-codes';
+import { HttpErrorCode } from '@src/lib/api-types/http-codes';
 import { errors, ErrorResponse, SuccessResponse } from '../lib/api-types';
 
 // Types
