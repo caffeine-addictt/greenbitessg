@@ -107,6 +107,8 @@ export const dashboardRelations = relations(dashboardTable, ({ one }) => ({
     references: [usersTable.id],
   }),
 }));
+export type InsertDashboard = typeof dashboardTable.$inferInsert;
+export type SelectDashboard = typeof dashboardTable.$inferSelect;
 
 /**
  * Event
@@ -132,6 +134,9 @@ export const eventRelations = relations(eventTable, ({ one }) => ({
     references: [usersTable.id],
   }),
 }));
+export type InsertEvent = typeof eventTable.$inferInsert;
+export type SelectEvent = typeof eventTable.$inferSelect;
+
 /**
  * Content
  * Data for uploaded content like images, videos etc.
