@@ -10,7 +10,7 @@ import type { RoutingMap } from '../route-map';
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
 import { getUser } from './user';
-import { getFeedback } from './feedback';
+import { createFeedback } from './feedback';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -23,8 +23,9 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     },
   },
   '/v1/feedback': {
-    GET: {
-      handler: getFeedback,
+    POST: {
+      handler: createFeedback,
+      accessLevel: 'authenticated',
     },
   },
 } as const;

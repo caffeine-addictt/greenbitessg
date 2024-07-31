@@ -60,24 +60,6 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
-export const feedbackTable = pgTable('feedback_table', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id')
-    .notNull()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(), // Added name field
-  email: text('email').notNull(), // Added email field
-  suggestion: text('suggestion').default(''), // Optional field with default empty string
-  feedbackMessage: text('feedback_message').notNull(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at')
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-export type InsertFeedback = typeof feedbackTable.$inferInsert;
-export type SelectFeedback = typeof feedbackTable.$inferSelect;
-
 /**
  * Feedback
  */

@@ -1,85 +1,85 @@
 import { db } from '../db';
 import { feedbackTable } from '../db/schemas';
+import { IAuthedRouteHandler } from '../route-map';
 import {
-  feedbackSchema,
-  FeedbackFormValues,
-} from '../lib/api-types/schemas/feedback';
-import type { IBareRouteHandler } from '@src/route-map';
-import type {
   GetFeedbackSuccAPI,
   GetFeedbackFailAPI,
-} from '../lib/api-types/feedback';
-import { eq } from 'drizzle-orm';
+} from '@src/lib/api-types/feedback';
+import { z } from 'zod';
 
-async function fetchFeedbackById(
-  id: number,
-): Promise<FeedbackFormValues | null> {
-  try {
-    const feedbackData = await db
-      .select()
-      .from(feedbackTable)
-      .where(eq(feedbackTable.id, id))
-      .limit(1);
+// Define Zod schema for feedback request
+const feedbackRequestObject = z.object({
+  name: z.string().nonempty(),
+  email: z.string().email(),
+  suggestion: z.string().optional(),
+  feedbackMessage: z.string().nonempty(),
+});
 
-    if (feedbackData.length === 0) {
-      return null;
-    }
+// Define Zod schema for feedback response
+const feedbackResponseObject = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  suggestion: z.string().optional(),
+  feedbackMessage: z.string(),
+});
 
-    const feedbackEntry = feedbackData[0];
+export const createFeedback: IAuthedRouteHandler = async (req, res) => {
+  console.log('Fetching events for:', req.user.id); // Assuming `req.user` exists
 
-    const feedbackFormValues: FeedbackFormValues = {
-      id: feedbackEntry.id,
-      name: feedbackEntry.name,
-      email: feedbackEntry.email,
-      suggestion: feedbackEntry.suggestion ?? undefined,
-      feedbackMessage: feedbackEntry.feedbackMessage,
-    };
-
-    return feedbackFormValues;
-  } catch (error) {
-    console.error('Error fetching feedback:', error);
-    return null;
-  }
-}
-
-export const getFeedback: IBareRouteHandler = async (req, res) => {
-  const feedbackId = parseInt(req.params.id, 10);
-
-  if (isNaN(feedbackId)) {
-    return res.status(400).json({
-      status: 400,
-      message: 'Invalid feedback ID',
-    });
-  }
-
-  const feedbackData = await fetchFeedbackById(feedbackId);
-
-  if (!feedbackData) {
-    return res.status(404).json({
-      error: 'Feedback not found',
-      code: 404,
-      details: 'No feedback found with the provided ID',
-    } satisfies GetFeedbackFailAPI);
-  }
-
-  // Validate the fetched data with the schema
-  const validationResult = feedbackSchema.safeParse(feedbackData);
+  // Validate request body
+  const validationResult = feedbackRequestObject.safeParse(req.body);
 
   if (!validationResult.success) {
-    // Summarize the errors into a single string
-    const errorMessages = validationResult.error.errors
-      .map((err) => err.message)
-      .join(', ');
+    const errorStack = validationResult.error.errors.map((error) => ({
+      message: error.message,
+      context: {
+        property: error.path.join('.'),
+        code: error.code,
+      },
+    }));
 
     return res.status(400).json({
-      error: 'Invalid feedback data',
-      code: 400,
-      details: errorMessages,
+      status: 400,
+      errors: errorStack,
     } satisfies GetFeedbackFailAPI);
   }
 
-  return res.status(200).json({
-    status: 200,
-    data: validationResult.data,
-  } satisfies GetFeedbackSuccAPI);
+  try {
+    const { name, email, suggestion, feedbackMessage } = validationResult.data;
+
+    // Create a new feedback entry
+    const [newFeedback] = await db
+      .insert(feedbackTable)
+      .values({
+        userId: req.user.id,
+        name,
+        email,
+        suggestion: suggestion ?? '', // Default to empty string if undefined
+        feedbackMessage,
+      })
+      .returning();
+
+    // Format the response data using feedbackResponseObject
+    const responseData = feedbackResponseObject.parse({
+      id: newFeedback.id,
+      name: newFeedback.name,
+      email: newFeedback.email,
+      suggestion: newFeedback.suggestion || '', // Default to empty string if undefined
+      feedbackMessage: newFeedback.feedbackMessage,
+    });
+
+    return res.status(200).json({
+      status: 200,
+      data: responseData,
+    } satisfies GetFeedbackSuccAPI);
+  } catch (error) {
+    console.error('Server error:', error); // Log unexpected errors
+    return res.status(500).json({
+      status: 500,
+      errors: [
+        { message: 'An unexpected error occurred. Please try again later.' },
+      ],
+    });
+  }
 };

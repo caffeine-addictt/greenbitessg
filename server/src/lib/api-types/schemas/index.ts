@@ -12,4 +12,3 @@ import * as feedback from './feedback';
 import * as dashboard from './dashboard';
 
 export { auth, food, user, event, feedback, dashboard };
-
