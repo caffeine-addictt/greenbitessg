@@ -7,7 +7,7 @@ import {
   CreateEventSuccAPI,
   CreateEventFailAPI,
 } from '../lib/api-types/event';
-import { eventSchema } from '../lib/api-types/schemas/event';
+import { z } from 'zod';
 
 // API handler for fetching events
 export const getEvent: IAuthedRouteHandler = async (req, res) => {
@@ -45,27 +45,45 @@ export const getEvent: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json(response);
 };
 
-// API handler for creating an event
+// Define Zod objects for validation and response formatting
+const eventRequestObject = z.object({
+  title: z.string().nonempty(),
+  date: z.string().nonempty(), // ISO string format
+  time: z.string().nonempty(),
+  location: z.string(),
+  description: z.string().optional(),
+});
+
+const eventResponseObject = z.object({
+  id: z.number(),
+  title: z.string(),
+  date: z.date(), // Use string to match ISO format for date
+  time: z.string(),
+  location: z.string(),
+  description: z.string().optional(),
+});
+
 export const createEvent: IAuthedRouteHandler = async (req, res) => {
+  // Validate request body
+  const validationResult = eventRequestObject.safeParse(req.body);
+
+  if (!validationResult.success) {
+    const errorStack = validationResult.error.errors.map((error) => ({
+      message: error.message,
+      context: {
+        property: error.path.join('.'),
+        code: error.code,
+      },
+    }));
+
+    return res.status(400).json({
+      status: 400,
+      errors: errorStack,
+    } satisfies CreateEventFailAPI);
+  }
+
   try {
-    const userId = req.user.id;
-
-    // Validate the request body against the event schema
-    const result = eventSchema.safeParse(req.body);
-
-    if (!result.success) {
-      console.error('Validation failed:', result.error.format()); // Log validation errors
-      return res.status(400).json({
-        status: 400,
-        errors: [
-          {
-            message: 'Invalid input data. Please check your form and try again',
-          },
-        ],
-      } satisfies CreateEventFailAPI);
-    }
-
-    const { title, date, time, location, description } = result.data;
+    const { title, date, time, location, description } = validationResult.data;
 
     // Convert date string to Date object
     const dateObject = new Date(date);
@@ -74,26 +92,28 @@ export const createEvent: IAuthedRouteHandler = async (req, res) => {
     const [newEvent] = await db
       .insert(eventTable)
       .values({
-        userId,
+        userId: req.user.id, // Make sure `req.user.id` is defined
         title,
-        date: dateObject, // Convert to Date object if necessary
+        date: dateObject, // Ensure date is a Date object
         time,
-        location,
-        description: description || undefined,
+        location: location || '', // Default to empty string if undefined
+        description: description || '', // Default to empty string if undefined
       })
-      .returning(); // Ensure this returns the newly created event
+      .returning();
 
-    // Construct the response object
+    // Format the response data using eventResponseObject
+    const responseData = eventResponseObject.parse({
+      id: newEvent.id,
+      title: newEvent.title,
+      date: newEvent.date, // Convert Date object to ISO string
+      time: newEvent.time,
+      location: newEvent.location || '', // Default to empty string if undefined
+      description: newEvent.description || '', // Default to empty string if undefined
+    });
+
     return res.status(200).json({
       status: 200,
-      data: {
-        id: newEvent.id,
-        title: newEvent.title,
-        date: newEvent.date, // Ensure date is in ISO format
-        time: newEvent.time,
-        location: newEvent.location,
-        description: newEvent.description || undefined,
-      },
+      data: responseData,
     } satisfies CreateEventSuccAPI);
   } catch (error) {
     console.error('Server error:', error); // Log unexpected errors
