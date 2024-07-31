@@ -66,6 +66,8 @@ export type SelectUser = typeof usersTable.$inferSelect;
 export const feedbackTable = pgTable('feedback_table', {
   id: serial('id').primaryKey(),
   userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   email: text('email').notNull(),
   suggestion: text('suggestion').default(''),
@@ -89,7 +91,9 @@ export type SelectFeedback = typeof feedbackTable.$inferSelect;
  */
 export const dashboardTable = pgTable('dashboard', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
   description: text('description'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -109,7 +113,9 @@ export const dashboardRelations = relations(dashboardTable, ({ one }) => ({
  */
 export const eventTable = pgTable('events', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
   date: timestamp('date').notNull(),
   time: text('time').notNull(),
