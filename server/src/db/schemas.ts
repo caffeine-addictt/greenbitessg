@@ -121,6 +121,10 @@ export const eventTable = pgTable('events', {
   time: text('time').notNull(),
   location: text('location').notNull(),
   description: text('description'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 export const eventRelations = relations(eventTable, ({ one }) => ({
   user: one(usersTable, {
