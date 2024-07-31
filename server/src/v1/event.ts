@@ -7,32 +7,21 @@ import {
   CreateEventSuccAPI,
   CreateEventFailAPI,
 } from '../lib/api-types/event';
-import { eq } from 'drizzle-orm';
 import { eventSchema } from '../lib/api-types/schemas/event';
 
 // API handler for fetching events
 export const getEvent: IAuthedRouteHandler = async (req, res) => {
-  // Validate user ID
-  if (!req.user || !req.user.id) {
-    return res.status(401).json({
-      status: 401,
-      errors: [{ message: 'Unauthorized: User ID missing!' }],
-    } satisfies GetEventFailAPI);
-  }
+  // Example usage of req (e.g., logging user info or other data)
+  console.log('Fetching events for:', req.user.id); // Assuming `req.user` exists
 
-  const userId = req.user.id;
-
-  // Fetch events for the authenticated user
-  const events = await db
-    .select()
-    .from(eventTable)
-    .where(eq(eventTable.userId, userId));
+  // Fetch all events
+  const events = await db.select().from(eventTable);
 
   // Check if events were found
   if (events.length === 0) {
     return res.status(404).json({
       status: 404,
-      errors: [{ message: 'No events found for this user!' }],
+      errors: [{ message: 'No events found!' }],
     } satisfies GetEventFailAPI);
   }
 
@@ -58,56 +47,61 @@ export const getEvent: IAuthedRouteHandler = async (req, res) => {
 
 // API handler for creating an event
 export const createEvent: IAuthedRouteHandler = async (req, res) => {
-  // Validate user ID
-  if (!req.user || !req.user.id) {
-    return res.status(401).json({
-      status: 401,
-      errors: [{ message: 'Unauthorized: User ID missing!' }],
-    } satisfies CreateEventFailAPI);
-  }
+  try {
+    const userId = req.user.id;
 
-  const userId = req.user.id;
+    // Validate the request body against the event schema
+    const result = eventSchema.safeParse(req.body);
 
-  // Validate the request body against the event schema
-  const result = eventSchema.safeParse(req.body);
+    if (!result.success) {
+      console.error('Validation failed:', result.error.format()); // Log validation errors
+      return res.status(400).json({
+        status: 400,
+        errors: [
+          {
+            message: 'Invalid input data. Please check your form and try again',
+          },
+        ],
+      } satisfies CreateEventFailAPI);
+    }
 
-  if (!result.success) {
-    return res.status(400).json({
-      status: 400,
+    const { title, date, time, location, description } = result.data;
+
+    // Convert date string to Date object
+    const dateObject = new Date(date);
+
+    // Create a new event and return the created event including its ID
+    const [newEvent] = await db
+      .insert(eventTable)
+      .values({
+        userId,
+        title,
+        date: dateObject, // Convert to Date object if necessary
+        time,
+        location,
+        description: description || undefined,
+      })
+      .returning(); // Ensure this returns the newly created event
+
+    // Construct the response object
+    return res.status(200).json({
+      status: 200,
+      data: {
+        id: newEvent.id,
+        title: newEvent.title,
+        date: newEvent.date, // Ensure date is in ISO format
+        time: newEvent.time,
+        location: newEvent.location,
+        description: newEvent.description || undefined,
+      },
+    } satisfies CreateEventSuccAPI);
+  } catch (error) {
+    console.error('Server error:', error); // Log unexpected errors
+    return res.status(500).json({
+      status: 500,
       errors: [
-        { message: 'Invalid input data. Please check your form and try again' },
+        { message: 'An unexpected error occurred. Please try again later.' },
       ],
-    } satisfies CreateEventFailAPI);
+    });
   }
-
-  const { title, date, time, location, description } = result.data;
-
-  // Create a new event and return the created event including its ID
-  const [newEvent] = await db
-    .insert(eventTable)
-    .values({
-      userId,
-      title,
-      date: new Date(date), // Ensure date is a Date object
-      time,
-      location,
-      description: description ?? null, // Use null if description is optional
-    })
-    .returning(); // Ensure this returns the newly created event
-
-  // Construct the response object
-  const response: CreateEventSuccAPI = {
-    status: 200,
-    data: {
-      id: newEvent.id, // Ensure the ID is included in the response
-      title: newEvent.title,
-      date: new Date(newEvent.date), // Convert Date to ISO string
-      time: newEvent.time,
-      location: newEvent.location,
-      description: newEvent.description || undefined, // Ensure description is optional
-    },
-  };
-
-  // Send the response
-  return res.status(201).json(response);
 };

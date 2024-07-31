@@ -1,36 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import httpClient from '@utils/http';
+import { z } from 'zod';
+import { eventSchema } from '@lib/api-types/schemas/event'; // Adjust the import path as needed
+import { PageComponent } from '@pages/route-map';
 
-interface Event {
-  id: number;
-  title: string;
-  date: Date; // Ensure this matches the format returned by the API
-  time: string;
-  location: string;
-  description?: string;
-}
+// Define the Event type using z.infer and eventSchema
+type Event = z.infer<typeof eventSchema>;
 
-const EventList: React.FC = () => {
+const EventList: PageComponent = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      try {
-        const response = await httpClient.get<{ data: Event[] }>({
-          uri: `/event`,
-          withCredentials: 'access', // Adjust if needed
-        });
+      const response = await httpClient.get<{ data: Event[] }>({
+        uri: `/event`,
+        withCredentials: 'access', // Adjust if needed
+      });
 
-        // Ensure that response.data.data is an array of events
-        setEvents(response.data);
-      } catch (err) {
-        setError('Error fetching events! Please try again later.');
-        console.error('Fetch error:', err);
-      }
+      // Ensure that response.data is an array of events
+      setEvents(response.data);
     };
 
-    fetchEvents();
+    fetchEvents().catch((err) => {
+      setError('Error fetching events! Please try again later.');
+      console.error('Fetch error:', err);
+    });
   }, []);
 
   return (
