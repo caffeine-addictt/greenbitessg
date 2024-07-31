@@ -327,3 +327,24 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
 export type TokenType = 'verification' | 'activation';
 export type InsertToken = typeof tokens.$inferInsert;
 export type SelectToken = typeof tokens.$inferSelect;
+
+/**
+ * Notifications
+ */
+export const notificationTable = pgTable('notification_table', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
+  notificationMessage: text('feedback_message').notNull(),
+  notificationType: text('notification_type').default('info').notNull(),
+  isRead: boolean('is_read').default(false).notNull(),
+  expiresAt: timestamp('expires_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type InsertNotification = typeof notificationTable.$inferInsert;
+export type SelectNotification = typeof notificationTable.$inferSelect;
