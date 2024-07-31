@@ -20,7 +20,7 @@ export const feedbackSchema = z.object({
       required_error: 'Email is required',
     })
     .email('Invalid email address'),
-  suggestion: z.string().optional().or(z.literal('').optional()), // Allows optional suggestion field
+  suggestion: z.string().min(1).optional(),
   feedbackMessage: z
     .string({
       invalid_type_error: 'Feedback message must be a string',
