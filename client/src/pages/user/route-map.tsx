@@ -16,7 +16,7 @@ const routeMaps: RouteMap = {
     description: 'Create Your Events Here',
     component: EventCreationPage as PageComponent,
   },
-  '/eventlist': {
+  '/event': {
     title: 'List Events',
     description: 'List Events Here',
     component: EventList as PageComponent,

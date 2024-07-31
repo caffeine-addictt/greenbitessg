@@ -11,6 +11,7 @@ import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
 import { getUser } from './user';
 import { getEvent } from './event';
+import { createEvent } from './event';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -25,6 +26,10 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/event': {
     GET: {
       handler: getEvent,
+      accessLevel: 'authenticated',
+    },
+    POST: {
+      handler: createEvent,
       accessLevel: 'authenticated',
     },
   },

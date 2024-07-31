@@ -9,7 +9,12 @@ import * as z from 'zod';
 import { event } from './schemas';
 import type { SuccessResponse, ErrorResponse } from './index';
 
+// Success response for GetEvent API
 export interface GetEventSuccAPI
+  extends SuccessResponse<Array<z.infer<typeof event.eventSchema>>> {}
+
+// Success response for CreateEvent API
+export interface CreateEventSuccAPI
   extends SuccessResponse<z.infer<typeof event.eventSchema>> {}
 
 /**
@@ -21,4 +26,13 @@ export type GetEventFailAPI = ErrorResponse<
   | 'Too many requests. Please try again later'
   | 'Unable to connect to the server. Please check your network connection'
   | 'Data inconsistency detected. Please refresh the page and try again'
+>;
+
+// Failure response for CreateEvent API
+export type CreateEventFailAPI = ErrorResponse<
+  | 'Invalid input data. Please check your form and try again'
+  | 'Event could not be created. Please try again later'
+  | 'There was a problem accessing the database. Please try again later'
+  | 'Too many requests. Please try again later'
+  | 'Unable to connect to the server. Please check your network connection'
 >;

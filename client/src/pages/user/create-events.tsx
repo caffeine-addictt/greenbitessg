@@ -1,144 +1,223 @@
-// src/pages/user/createevents.tsx
-
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z, ZodSchema } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-// Define your form schema using zod
-const eventSchema: ZodSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  date: z.string().min(1, 'Date is required'),
-  time: z.string().min(1, 'Time is required'),
-  location: z.string().min(1, 'Location is required'),
-  description: z.string().optional(),
-  file: z.instanceof(File).optional(),
-});
+import React, { useState } from 'react';
+import { useForm, useFormState } from 'react-hook-form';
+import httpClient from '@utils/http';
+import { Button } from '@components/ui/button';
+import { Input } from '@components/ui/input';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from '@components/ui/form';
+import { cn } from '@utils/tailwind';
+import { CreateEventSuccAPI } from '@lib/api-types/event';
+import { AxiosError } from 'axios';
 
 // Define TypeScript type for form data
-type EventFormData = z.infer<typeof eventSchema>;
+type EventFormData = {
+  title: string;
+  date: string; // The date should be in YYYY-MM-DD format
+  time: string;
+  location: string;
+  description?: string;
+};
 
-const EventCreationPage: React.FC = () => {
-  const { register, handleSubmit, setValue } = useForm<EventFormData>({
-    resolver: zodResolver(eventSchema),
+const EventCreationPage: React.FC<{ className?: string }> = ({
+  className,
+  ...props
+}) => {
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const eventForm = useForm<EventFormData>({
     mode: 'onBlur',
   });
 
-  // Handle form submission
-  const onSubmit = (data: EventFormData) => {
-    console.log('Form Data:', data);
+  const { isSubmitting } = useFormState({
+    control: eventForm.control,
+  });
 
-    // Handle file upload here if needed
-  };
-
-  // Handle file input change
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setValue('file', file);
+  const handleSave = async (data: EventFormData) => {
+    console.log('Form data:', data); // Log form data for debugging
+    try {
+      console.log('Sending request...');
+      const response = await httpClient.post<CreateEventSuccAPI, EventFormData>(
+        {
+          uri: '/event',
+          payload: data,
+          withCredentials: 'access',
+        },
+      );
+      console.log('Response received:', response);
+      setSuccessMessage('Event created successfully');
+      setError(null);
+      eventForm.reset();
+    } catch (err) {
+      console.error('Request failed:', err);
+      if (err instanceof AxiosError) {
+        if (err.response) {
+          setError(
+            `Server error: ${err.response?.data?.errors?.[0]?.message || 'An unexpected error occurred'}`,
+          );
+        } else if (err.request) {
+          setError(
+            'Network error: Please check your connection and try again.',
+          );
+        } else {
+          setError(
+            `Error creating event! ${err.message || 'An unexpected error occurred'}`,
+          );
+        }
+      } else {
+        setError(
+          `Error creating event! ${String(err) || 'An unexpected error occurred'}`,
+        );
+      }
+      setSuccessMessage(null);
     }
   };
 
   return (
-    <div className="mx-auto max-w-2xl rounded bg-white p-4 shadow-md">
-      <h1 className="mb-4 text-2xl font-bold">Create Event</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Title
-          </label>
-          <input
-            id="title"
-            type="text"
-            {...register('title')}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="date"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Date
-          </label>
-          <input
-            id="date"
-            type="date"
-            {...register('date')}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="time"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Time
-          </label>
-          <input
-            id="time"
-            type="time"
-            {...register('time')}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="location"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Location
-          </label>
-          <input
-            id="location"
-            type="text"
-            {...register('location')}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Description
-          </label>
-          <textarea
-            id="description"
-            {...register('description')}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="file"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Upload File
-          </label>
-          <input
-            id="file"
-            type="file"
-            onChange={handleFileChange}
-            className="mt-1 block w-full"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="rounded-md bg-blue-500 px-4 py-2 text-white"
+    <div {...props} className={cn(className, 'container mx-auto mt-16')}>
+      <h1 className="text-center text-2xl font-bold">Create Event</h1>
+      <Form {...eventForm}>
+        <form
+          onSubmit={eventForm.handleSubmit(handleSave)}
+          className="mt-8 w-[26.5rem] space-y-4"
         >
-          Create Event
-        </button>
-      </form>
+          {error && <p className="text-red-500">{error}</p>}
+          {successMessage && <p className="text-green-500">{successMessage}</p>}
+
+          <FormField
+            control={eventForm.control}
+            name="title"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Event Title"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field} // Ensure no duplicate `value` props
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                ) : (
+                  <FormDescription>Enter the event title.</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={eventForm.control}
+            name="date"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Date</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field} // Ensure no duplicate `value` props
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                ) : (
+                  <FormDescription>Select the event date.</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={eventForm.control}
+            name="time"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Time</FormLabel>
+                <FormControl>
+                  <Input
+                    type="time"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field} // Ensure no duplicate `value` props
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                ) : (
+                  <FormDescription>Enter the event time.</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={eventForm.control}
+            name="location"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Location</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Event Location"
+                    className={fieldState.error ? 'border-red-700' : ''}
+                    {...field} // Ensure no duplicate `value` props
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                ) : (
+                  <FormDescription>Enter the event location.</FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={eventForm.control}
+            name="description"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <textarea
+                    placeholder="Event Description"
+                    className={` ${fieldState.error ? 'border-red-700' : ''}`}
+                    {...field} // Ensure no duplicate `value` props
+                  />
+                </FormControl>
+                {fieldState.error ? (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                ) : (
+                  <FormDescription>
+                    Provide a description for the event.
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+
+          <div className="flex justify-end space-x-2">
+            <Button
+              type="reset"
+              variant="ghost"
+              disabled={isSubmitting || !eventForm.formState.isDirty}
+              onClick={() => eventForm.reset()}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" variant="secondary" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating...' : 'Create Event'}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

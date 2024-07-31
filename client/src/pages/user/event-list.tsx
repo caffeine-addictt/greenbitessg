@@ -1,72 +1,61 @@
-// src/pages/EventForm.tsx
+import React, { useEffect, useState } from 'react';
+import httpClient from '@utils/http';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { eventSchema } from '@lib/api-types/schemas/event';
-import { PageComponent } from '@pages/route-map';
-
-interface EventFormInputs {
+interface Event {
+  id: number;
   title: string;
-  date: string;
+  date: Date; // Ensure this matches the format returned by the API
   time: string;
   location: string;
   description?: string;
 }
 
-const EventForm: PageComponent = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<EventFormInputs>({
-    resolver: zodResolver(eventSchema),
-  });
+const EventList: React.FC = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = (data: EventFormInputs) => {
-    console.log(data);
-    // Handle form submission, e.g., send data to the server
-  };
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await httpClient.get<{ data: Event[] }>({
+          uri: `/event`,
+          withCredentials: 'access', // Adjust if needed
+        });
+
+        // Ensure that response.data.data is an array of events
+        setEvents(response.data);
+      } catch (err) {
+        setError('Error fetching events! Please try again later.');
+        console.error('Fetch error:', err);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
-    <div className="mx-auto max-w-2xl rounded bg-white p-4 shadow-md">
-      <h1 className="mb-4 text-2xl font-bold">Event Form</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-4">
-          <label htmlFor="title">Title</label>
-          <input id="title" type="text" {...register('title')} />
-          {errors.title && (
-            <p className="mt-2 text-red-600">{errors.title.message}</p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="date">Date</label>
-          <input id="date" type="date" {...register('date')} />
-          {errors.date && <p>{errors.date.message}</p>}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="time">Time</label>
-          <input id="time" type="time" {...register('time')} />
-          {errors.time && <p>{errors.time.message}</p>}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="location">Location</label>
-          <input id="location" type="text" {...register('location')} />
-          {errors.location && <p>{errors.location.message}</p>}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="description">Description</label>
-          <textarea id="description" {...register('description')} />
-          {errors.description && <p>{errors.description.message}</p>}
-        </div>
-
-        <button type="submit">Submit</button>
-      </form>
+    <div className="container mx-auto mt-16">
+      <h1 className="text-center text-2xl font-bold">Event List</h1>
+      {error && <p className="text-red-500">{error}</p>}
+      {events.length > 0 ? (
+        <ul>
+          {events.map((event) => (
+            <li
+              key={event.id}
+              className="mb-4 rounded border border-gray-300 p-4"
+            >
+              <h2 className="text-xl font-semibold">{event.title}</h2>
+              <p>{`${event.date} ${event.time}`}</p>
+              <p>{event.location}</p>
+              <p>{event.description || 'No description available'}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No events found.</p>
+      )}
     </div>
   );
 };
 
-export default EventForm;
+export default EventList;
