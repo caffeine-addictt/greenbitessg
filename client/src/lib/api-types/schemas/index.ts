@@ -5,7 +5,11 @@
  */
 
 import * as auth from './auth';
+import * as food from './food';
 import * as user from './user';
+import * as event from './event';
 import * as feedback from './feedback';
+import * as dashboard from './dashboard';
 
-export { auth, user, feedback };
+export { auth, food, user, event, feedback, dashboard };
+

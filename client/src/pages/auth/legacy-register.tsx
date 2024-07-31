@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { useState } from 'react';
 import { cn } from '@utils/tailwind';
 import type { PageComponent } from '@pages/route-map';
 
@@ -31,7 +30,7 @@ import { EnvelopeClosedIcon } from '@radix-ui/react-icons';
 import httpClient from '@utils/http';
 import { auth, schemas } from '@lib/api-types';
 import { AxiosError, isAxiosError } from 'axios';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import AuthLayout from './auth-layout';
 import { useToast } from '@components/ui/use-toast';
@@ -44,7 +43,6 @@ const RegisterPage: PageComponent = (props): React.JSX.Element => {
 
   const { toast } = useToast();
   const [url] = useSearchParams();
-  const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
 
   const registerFormSchema = schemas.auth.registerFormSchema
     .extend({
@@ -57,10 +55,6 @@ const RegisterPage: PageComponent = (props): React.JSX.Element => {
       agreePolicy: z.boolean().refine((val) => val === true, {
         message: 'Please agree to our Terms of Service!',
       }),
-    })
-    .refine(() => usernameAvailable, {
-      message: 'Username already taken!',
-      path: ['username'],
     })
     .refine((data) => data.password === data.confirm, {
       message: 'Passwords do not match!',
@@ -78,29 +72,6 @@ const RegisterPage: PageComponent = (props): React.JSX.Element => {
     },
   });
   const { isSubmitting } = useFormState({ control: registerForm.control });
-
-  // Validating username
-  const username = registerForm.watch('username');
-  useQuery(
-    {
-      queryKey: ['registerUsernameCheck', username],
-      queryFn: async () => {
-        const res = await httpClient
-          .get<auth.AvailabilityAPI>({
-            uri: `/availability?username=${username}`,
-          })
-          .catch((err) => console.log(err));
-
-        // Update validation state
-        setUsernameAvailable(res?.data.available || false);
-        registerForm.trigger('username', { shouldFocus: false });
-        return res ? res.data : false;
-      },
-      enabled: !!username, // Run check immediately only if username has a value
-      refetchInterval: 60000, // Run check every minute
-    },
-    queryClient,
-  );
 
   // Handling submiting
   const { mutate: createAccount } = useMutation(

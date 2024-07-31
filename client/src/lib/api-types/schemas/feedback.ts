@@ -1,17 +1,30 @@
-import { z, ZodSchema } from 'zod';
+import { z } from 'zod';
 
-export interface FeedbackFormValues {
-  id: number;
-  name: string;
-  email: string;
-  suggestion?: string;
-  feedbackMessage: string;
-}
-
-export const feedbackSchema: ZodSchema<FeedbackFormValues> = z.object({
-  id: z.number().int().positive('ID must be a positive integer'), // Add ID validation
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  suggestion: z.string().optional(),
-  feedbackMessage: z.string().min(1, 'Feedback message is required'),
+export const feedbackSchema = z.object({
+  id: z
+    .number({
+      invalid_type_error: 'ID must be a positive integer',
+      required_error: 'ID is required',
+    })
+    .int('ID must be an integer')
+    .positive('ID must be a positive integer'),
+  name: z
+    .string({
+      invalid_type_error: 'Name must be a string',
+      required_error: 'Name is required',
+    })
+    .min(1, { message: 'Name is required' }),
+  email: z
+    .string({
+      invalid_type_error: 'Email must be a string',
+      required_error: 'Email is required',
+    })
+    .email('Invalid email address'),
+  suggestion: z.string().min(1).optional(),
+  feedbackMessage: z
+    .string({
+      invalid_type_error: 'Feedback message must be a string',
+      required_error: 'Feedback message is required',
+    })
+    .min(1, { message: 'Feedback message is required' }),
 });
