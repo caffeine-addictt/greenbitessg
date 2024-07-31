@@ -8,14 +8,12 @@ import type { RoutingMap } from '../route-map';
 
 // Import endpoints
 import authRoutes from './auth/route-map';
-import { availability } from './availability';
+import foodRoutes from './food/route-map';
 import { getUser, deleteUser } from './user';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
-  '/v1/availability': {
-    GET: { handler: availability },
-  },
+  ...foodRoutes,
   '/v1/user': {
     GET: {
       handler: getUser,

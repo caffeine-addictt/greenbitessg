@@ -11,12 +11,6 @@ import {
 } from '@simplewebauthn/server';
 
 /**
- * Successful response for /v1/availability endpoint
- */
-export interface AvailabilityAPI
-  extends SuccessResponse<{ available: boolean }> {}
-
-/**
  * Successful response for /v1/auth/activate endpoint
  */
 export interface ActivateSuccAPI extends SuccessResponse<{ activated: true }> {}
