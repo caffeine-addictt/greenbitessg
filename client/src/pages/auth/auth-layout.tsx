@@ -92,7 +92,7 @@ export const AuthLayout = ({
 
   return (
     <div {...props} className={className}>
-      <div className="bg-surface-light dark:bg-surface-dark mx-auto my-4 flex w-[95%] grow-0 flex-col rounded p-2 lg:flex-row">
+      <div className="mx-auto my-4 flex w-[95%] grow-0 flex-col rounded bg-surface-light p-2 lg:flex-row dark:bg-surface-dark">
         {/* Login side (desktop:left, mobile:top) */}
         <div className="flex size-full flex-col lg:w-3/5">
           {/* Header */}
@@ -116,7 +116,7 @@ export const AuthLayout = ({
             </div>
 
             {/* Slider */}
-            <div className="bg-background-light dark:bg-background-dark flex size-fit flex-row items-center gap-2 rounded-lg p-1 max-sm:hidden">
+            <div className="flex size-fit flex-row items-center gap-2 rounded-lg bg-background-light p-1 max-sm:hidden dark:bg-background-dark">
               <InternalLink
                 href="/login"
                 disabled={isLoginOpts}
@@ -190,7 +190,7 @@ export const AuthLayout = ({
         {/* Images side (desktop:right, mobile:hidden) */}
         {isLgScreen && (
           <div className="my-auto flex h-full w-2/5 justify-center">
-            <div className="bg-surface-light/5 relative m-2 flex h-fit w-[90%] items-center justify-center self-center rounded-lg">
+            <div className="relative m-2 flex h-fit w-[90%] items-center justify-center self-center rounded-lg bg-surface-light/5">
               <Carousel
                 setApi={setApi}
                 className="my-4 mr-4 size-fit"
