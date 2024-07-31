@@ -65,7 +65,7 @@ export const signJwt = (
       ? process.env.JWT_ACCESS_KEY!
       : process.env.JWT_REFRESH_KEY!,
     {
-      ...(options && options),
+      ...options,
       ...DEFAULT_TOKEN_OPTIONS[key].options,
     },
   );

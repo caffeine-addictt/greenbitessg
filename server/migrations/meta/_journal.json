@@ -127,6 +127,27 @@
       "when": 1720863982193,
       "tag": "0017_graceful_arclight",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1722073793600,
+      "tag": "0018_tearful_loki",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1722184542315,
+      "tag": "0019_black_captain_america",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1722393249396,
+      "tag": "0020_icy_the_twelve",
+      "breakpoints": true
     }
   ]
 }
