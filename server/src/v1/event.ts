@@ -19,8 +19,12 @@ export const getEvent: IBareRouteHandler = async (req, res) => {
   if (!eventData) {
     return res.status(404).json({
       status: 404,
-      message: 'Event not found',
-    } satisfies GetEventFailAPI);
+      errors: [
+        {
+          message: 'Event not found',
+        },
+      ],
+    } as GetEventFailAPI);
   }
 
   return res.status(200).json({
