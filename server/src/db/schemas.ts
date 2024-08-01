@@ -339,12 +339,16 @@ export const notificationTable = pgTable('notification_table', {
   notificationMessage: text('feedback_message').notNull(),
   notificationType: text('notification_type').default('info').notNull(),
   isRead: boolean('is_read').default(false).notNull(),
-  expiresAt: timestamp('expires_at'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
     .$onUpdate(() => new Date()),
 });
-
+export const notificationRelations = relations(passkeysTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [passkeysTable.userId],
+    references: [usersTable.id],
+  }),
+}));
 export type InsertNotification = typeof notificationTable.$inferInsert;
 export type SelectNotification = typeof notificationTable.$inferSelect;
