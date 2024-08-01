@@ -56,6 +56,7 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
   passkeys: many(passkeysTable),
   passkeyChallenges: many(passkeyChallengesTable),
   feedback: many(feedbackTable),
+  notification: many(notificationTable),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
