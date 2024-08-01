@@ -16,6 +16,8 @@ import { getAuthCookie } from './jwt';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_VERSION = import.meta.env.VITE_API_VERSION;
 
+const API_URL = `${API_BASE_URL}/${API_VERSION}`;
+
 export const DEFAULT_OPTS: AxiosRequestConfig = {
   headers: {
     'Access-Control-Allow-Origin': '*',
@@ -33,7 +35,6 @@ export interface APIRequestParams {
   queryParams?: string;
   withCredentials?: 'access' | 'refresh';
   options?: AxiosRequestConfig;
-  fromRoot?: boolean;
 }
 
 export interface APIPayload {
@@ -53,7 +54,6 @@ export interface APIPutRequestParams<T extends APIPayload>
 export interface APIHttpClient {
   get<T>(params: APIGetRequestParams): Promise<T>;
   post<T, D extends APIPayload>(params: APIPostRequestParams<D>): Promise<T>;
-  put<T, D extends APIPayload>(params: APIPutRequestParams<D>): Promise<T>;
 }
 
 // Implementation
@@ -75,22 +75,14 @@ const addCredentials = (
   };
 };
 
-const resolveUrl = ({
-  uri,
-  queryParams,
-  fromRoot = false,
-}: Pick<APIRequestParams, 'uri' | 'queryParams' | 'fromRoot'>): string =>
-  fromRoot
-    ? `${API_BASE_URL}${uri}${queryParams ? `?${queryParams}` : ''}`
-    : `${API_BASE_URL}/${API_VERSION}${uri}${queryParams ? `?${queryParams}` : ''}`;
-
 class HTTPClient implements APIHttpClient {
   get = async <T>({
+    uri,
+    queryParams,
     withCredentials,
     options,
-    ...uri
   }: APIGetRequestParams): Promise<T> => {
-    const url = resolveUrl(uri);
+    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
     const opts: AxiosRequestConfig = withCredentials
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
       : (options ?? DEFAULT_OPTS);
@@ -115,12 +107,13 @@ class HTTPClient implements APIHttpClient {
   };
 
   post = async <T, D extends APIPayload>({
+    uri,
+    queryParams,
     payload,
     withCredentials,
     options,
-    ...uri
   }: APIPostRequestParams<D>): Promise<T> => {
-    const url = resolveUrl(uri);
+    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
     const opts: AxiosRequestConfig = withCredentials
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
       : (options ?? DEFAULT_OPTS);
@@ -145,35 +138,7 @@ class HTTPClient implements APIHttpClient {
 
     throw resp;
   };
-  put = async <T, D extends APIPayload>({
-    uri,
-    queryParams,
-    payload,
-    withCredentials,
-    options,
-  }: APIPutRequestParams<D>): Promise<T> => {
-    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
-    const opts: AxiosRequestConfig = withCredentials
-      ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
-      : (options ?? DEFAULT_OPTS);
-
-    const resp = await axios
-      .put<T>(url, payload, opts)
-      .catch((err: AxiosError) => err);
-    const isErr = isAxiosError(resp);
-
-    if (!isErr && isSuccessResponse(resp.data)) {
-      return resp.data;
-    } else if (!isErr) {
-      throw resp;
-    }
-    const data = resp.response?.data as T;
-    if (!data) throw resp;
-
-    if (isSuccessResponse(data)) return data;
-
-    throw resp;
-  };
+  
 }
 
 const httpClient = new HTTPClient();

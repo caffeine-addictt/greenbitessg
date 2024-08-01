@@ -1,5 +1,4 @@
 import { useState, useContext } from 'react';
-
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFormState } from 'react-hook-form';
@@ -20,12 +19,9 @@ import {
 } from '@components/ui/form';
 import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
-import { cn } from '@utils/tailwind';
+import { PageComponent } from '@pages/route-map';
 
-const AccountSettings: React.FC<{ className?: string }> = ({
-  className,
-  ...props
-}) => {
+const AccountSettings: PageComponent = () => {
   const { user } = useContext(AuthContext)!;
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -55,14 +51,14 @@ const AccountSettings: React.FC<{ className?: string }> = ({
         window.location.reload();
       })
       .catch((err) => {
-        setError('Error updating account details! Pelase try again later.');
+        setError('Error updating account details! Please try again later.');
         setSuccessMessage(null);
         console.log(err);
       });
   };
 
   return (
-    <div {...props} className={cn(className, 'container mx-auto mt-16')}>
+    <div className="container mx-auto mt-16">
       <h1 className="text-center text-2xl font-bold">Account Settings</h1>
       <Form {...accountSettingsForm}>
         <form
