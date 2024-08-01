@@ -72,7 +72,7 @@ export const feedbackTable = pgTable('feedback_table', {
   name: text('name').notNull(), // Added name field
   email: text('email').notNull(), // Added email field
   suggestion: text('suggestion').default(''), // Optional field with default empty string
-  feedbackMessage: text('feedback_message').notNull(),
+  feedbackMessage: text('message').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
@@ -337,8 +337,8 @@ export const notificationTable = pgTable('notification_table', {
   userId: integer('user_id')
     .notNull()
     .references(() => usersTable.id, { onDelete: 'cascade' }),
-  notificationMessage: text('feedback_message').notNull(),
-  notificationType: text('notification_type').default('info').notNull(),
+  notificationMessage: text('message').notNull(),
+  notificationType: text('type').default('info').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
