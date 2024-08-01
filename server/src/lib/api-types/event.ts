@@ -36,3 +36,17 @@ export type CreateEventFailAPI = ErrorResponse<
   | 'Too many requests. Please try again later'
   | 'Unable to connect to the server. Please check your network connection'
 >;
+
+// Success response for DeleteEvent API
+export interface DeleteEventSuccAPI
+  extends SuccessResponse<{ deleted: true }> {}
+/**
+ * Failure response for delete event-related endpoints
+ */
+export type DeleteEventFailAPI = ErrorResponse<
+  | 'Event not found'
+  | 'Event could not be deleted. Please try again later'
+  | 'There was a problem accessing the database. Please try again later'
+  | 'Too many requests. Please try again later'
+  | 'Unable to connect to the server. Please check your network connection'
+>;

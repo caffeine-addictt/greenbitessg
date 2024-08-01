@@ -11,21 +11,22 @@ const EventList: PageComponent = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch events from the server
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await httpClient.get<{ data: Event[] }>({
-        uri: `/event`,
-        withCredentials: 'access', // Adjust if needed
-      });
-
-      // Ensure that response.data is an array of events
-      setEvents(response.data);
+      try {
+        const response = await httpClient.get<{ data: Event[] }>({
+          uri: `/event`,
+          withCredentials: 'access', // Adjust if needed
+        });
+        setEvents(response.data);
+      } catch (err) {
+        setError('Error fetching events! Please try again later.');
+        console.error('Fetch error:', err);
+      }
     };
 
-    fetchEvents().catch((err) => {
-      setError('Error fetching events! Please try again later.');
-      console.error('Fetch error:', err);
-    });
+    fetchEvents();
   }, []);
 
   return (

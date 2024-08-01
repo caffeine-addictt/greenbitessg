@@ -6,8 +6,11 @@ import {
   GetEventFailAPI,
   CreateEventSuccAPI,
   CreateEventFailAPI,
+  DeleteEventSuccAPI,
+  DeleteEventFailAPI,
 } from '@src/lib/api-types/event';
 import { z } from 'zod';
+import { eq, and } from 'drizzle-orm';
 
 // API handler for fetching events
 export const getEvent: IAuthedRouteHandler = async (req, res) => {
@@ -125,3 +128,28 @@ export const createEvent: IAuthedRouteHandler = async (req, res) => {
     });
   }
 };
+// Handler for /v1/event/delete/:id
+const deleteEvent: IAuthedRouteHandler = async (req, res) => {
+  const { id } = req.params; // Assuming ID is in params
+
+  const castedId = parseInt(id);
+
+  if (isNaN(castedId) || castedId < 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Invalid ID!' }],
+    } satisfies DeleteEventFailAPI);
+  }
+  await db
+    .delete(eventTable)
+    .where(
+      and(eq(eventTable.userId, req.user.id), eq(eventTable.id, castedId)),
+    );
+  return res.status(200).json({
+    status: 200,
+    data: {
+      deleted: true,
+    },
+  } satisfies DeleteEventSuccAPI);
+};
+export default deleteEvent;
