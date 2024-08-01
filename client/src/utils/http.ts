@@ -47,11 +47,14 @@ export interface APIPostRequestParams<T extends APIPayload>
 }
 export interface APIPutRequestParams<T extends APIPayload>
   extends APIPostRequestParams<T> {}
+export interface APIDeleteRequestParams extends APIGetRequestParams {}
 
+/** Exposed class */
 export interface APIHttpClient {
   get<T>(params: APIGetRequestParams): Promise<T>;
   post<T, D extends APIPayload>(params: APIPostRequestParams<D>): Promise<T>;
   put<T, D extends APIPayload>(params: APIPutRequestParams<D>): Promise<T>;
+  delete<T>(params: APIDeleteRequestParams): Promise<T>;
 }
 
 // Implementation
@@ -146,7 +149,17 @@ class HTTPClient implements APIHttpClient {
     return httpRequestWithCacheHandling<T>(axios.put<T>(url, payload, opts));
   };
 
+  delete = async <T>({
+    withCredentials,
+    options,
+    ...uri
+  }: APIDeleteRequestParams): Promise<T> => {
+    const url = resolveUrl(uri);
+    const opts: AxiosRequestConfig = withCredentials
+      ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
+      : (options ?? DEFAULT_OPTS);
 
+    return httpRequestWithCacheHandling<T>(axios.delete<T>(url, opts));
   };
 }
 
