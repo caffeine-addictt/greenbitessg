@@ -8,7 +8,7 @@ import {
   CreateEventFailAPI,
   DeleteEventSuccAPI,
   DeleteEventFailAPI,
-} from '@src/lib/api-types/event';
+} from '../lib/api-types/event';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 
