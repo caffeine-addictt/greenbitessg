@@ -11,12 +11,12 @@ import EventCreationPage from './create-events';
 import EventList from './event-list';
 
 const userRouteMap: RouteMap = {
-  '/createevents': {
+  '/events/create': {
     title: 'Create Events',
     description: 'Create Your Events Here',
     component: EventCreationPage as PageComponent,
   },
-  '/event': {
+  '/events': {
     title: 'List Events',
     description: 'List Events Here',
     component: EventList as PageComponent,

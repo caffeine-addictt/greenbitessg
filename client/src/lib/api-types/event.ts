@@ -20,22 +20,11 @@ export interface CreateEventSuccAPI
 /**
  * Failure response for event-related endpoints
  */
-export type GetEventFailAPI = ErrorResponse<
-  | 'An unexpected error occurred. Please try again later'
-  | 'There was a problem accessing the database. Please try again later'
-  | 'Too many requests. Please try again later'
-  | 'Unable to connect to the server. Please check your network connection'
-  | 'Data inconsistency detected. Please refresh the page and try again'
->;
+export type GetEventFailAPI = ErrorResponse<'No events found!'>;
 
 // Failure response for CreateEvent API
-export type CreateEventFailAPI = ErrorResponse<
-  | 'Invalid input data. Please check your form and try again'
-  | 'Event could not be created. Please try again later'
-  | 'There was a problem accessing the database. Please try again later'
-  | 'Too many requests. Please try again later'
-  | 'Unable to connect to the server. Please check your network connection'
->;
+export type CreateEventFailAPI =
+  ErrorResponse<'An unexpected error occurred. Please try again later.'>;
 
 // Success response for DeleteEvent API
 export interface DeleteEventSuccAPI
@@ -43,10 +32,4 @@ export interface DeleteEventSuccAPI
 /**
  * Failure response for delete event-related endpoints
  */
-export type DeleteEventFailAPI = ErrorResponse<
-  | 'Event not found'
-  | 'Event could not be deleted. Please try again later'
-  | 'There was a problem accessing the database. Please try again later'
-  | 'Too many requests. Please try again later'
-  | 'Unable to connect to the server. Please check your network connection'
->;
+export type DeleteEventFailAPI = ErrorResponse<'Invalid id!'>;
