@@ -32,7 +32,7 @@ import { isAxiosError } from 'axios';
 
 // Type
 type APIParams = Partial<{
-  query: string;
+  q: string;
   limit: number;
   page: number;
 }>;
@@ -57,6 +57,7 @@ const FoodPage: PageComponent = (props) => {
 
   const buildURI = (params: APIParams): `/${string}` => {
     const currParams = new URLSearchParams(window.location.search);
+    params.q = query || currParams.get('query') || '';
 
     params.page = parseInt(currParams.get('page') || '') ?? params.page;
     if (isNaN(params.page) || params.page < 1) params.page = 1;
@@ -237,7 +238,7 @@ const FoodPage: PageComponent = (props) => {
                 window.history.pushState(
                   {},
                   '',
-                  buildURI({ query: e.target.value }),
+                  buildURI({ q: e.target.value }),
                 );
 
                 if (currTimeout) clearTimeout(currTimeout);
