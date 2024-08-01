@@ -11,6 +11,7 @@ import EventCreationPage from './create-events';
 import EventList from './event-list';
 import AccountSettings from './accountsettings';
 import Home from './homepage';
+import FeedbackForm from './feedback';
 
 const userRouteMap: RouteMap = {
   '/settings': {
@@ -36,6 +37,12 @@ const userRouteMap: RouteMap = {
     accessLevel: 'authenticated',
     description: 'List Events Here',
     component: EventList,
+  },
+  '/feedback': {
+    title: 'Feedback Form',
+    description: 'State feedback here',
+    accessLevel: 'authenticated',
+    component: FeedbackForm,
   },
 } as const;
 export default userRouteMap;

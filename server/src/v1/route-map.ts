@@ -9,8 +9,10 @@ import type { RoutingMap } from '../route-map';
 // Import endpoints
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
+import { createFeedback } from './feedback';
 import { getUser, updateUser, deleteUser } from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
+
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -45,6 +47,12 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/event/:id': {
     DELETE: {
       handler: deleteEvent,
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/feedback': {
+    POST: {
+      handler: createFeedback,
       accessLevel: 'authenticated',
     },
   },
