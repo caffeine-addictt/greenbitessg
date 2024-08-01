@@ -16,12 +16,11 @@ import {
   DeleteEventSuccAPI,
   DeleteEventFailAPI,
 } from '../lib/api-types/event';
-// API handler for fetching events
-export const getEvent: IAuthedRouteHandler = async (req, res) => {
-  // Example usage of req (e.g., logging user info or other data)
-  console.log('Fetching events for:', req.user.id); // Assuming `req.user` exists
 import { eventRequestObject } from '../lib/api-types/schemas/event';
+import { IAuthedRouteHandler } from '../route-map';
 
+// Handle /v1/event GET
+export const getEvent: IAuthedRouteHandler = async (_, res) => {
   // Fetch all events
   const events = await db.select().from(eventTable);
 
@@ -43,22 +42,18 @@ import { eventRequestObject } from '../lib/api-types/schemas/event';
     description: event.description || undefined,
   }));
 
-  // Construct the response object
-  const response: GetEventSuccAPI = {
+  // Send the response
+  return res.status(200).json({
     status: 200,
     data: formattedEvents,
-  };
-
-  // Send the response
-  return res.status(200).json(response);
+  } satisfies GetEventSuccAPI);
 };
 
+// Handle /v1/event POST
 export const createEvent: IAuthedRouteHandler = async (req, res) => {
-  // Validate request body
-  const validationResult = eventRequestObject.safeParse(req.body);
-
-  if (!validationResult.success) {
-    const errorStack = validationResult.error.errors.map((error) => ({
+  const validated = eventRequestObject.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack = validated.error.errors.map((error) => ({
       message: error.message,
       context: {
         property: error.path.join('.'),
@@ -72,53 +67,34 @@ export const createEvent: IAuthedRouteHandler = async (req, res) => {
     } satisfies CreateEventFailAPI);
   }
 
-  try {
-    const { title, date, time, location, description } = validationResult.data;
+  // Insert to DB
+  const [newEvent] = await db
+    .insert(eventTable)
+    .values({
+      userId: req.user.id,
+      title: validated.data.title,
+      date: new Date(validated.data.date),
+      time: validated.data.time,
+      location: validated.data.location || '',
+      description: validated.data.description || '',
+    })
+    .returning();
 
-    // Convert date string to Date object
-    const dateObject = new Date(date);
-
-    // Create a new event and return the created event including its ID
-    const [newEvent] = await db
-      .insert(eventTable)
-      .values({
-        userId: req.user.id, // Make sure `req.user.id` is defined
-        title,
-        date: dateObject, // Ensure date is a Date object
-        time,
-        location: location || '', // Default to empty string if undefined
-        description: description || '', // Default to empty string if undefined
-      })
-      .returning();
-
-    // Format the response data using eventResponseObject
-    const responseData = eventResponseObject.parse({
-      id: newEvent.id,
-      title: newEvent.title,
-      date: newEvent.date, // Convert Date object to ISO string
-      time: newEvent.time,
-      location: newEvent.location || '', // Default to empty string if undefined
-      description: newEvent.description || '', // Default to empty string if undefined
-    });
-
-    return res.status(200).json({
-      status: 200,
-      data: responseData,
-    } satisfies CreateEventSuccAPI);
-  } catch (error) {
-    console.error('Server error:', error); // Log unexpected errors
-    return res.status(500).json({
-      status: 500,
-      errors: [
-        { message: 'An unexpected error occurred. Please try again later.' },
-      ],
-    });
-  }
+  return res.status(200).json({
+    status: 200,
+    data: {
+      ...newEvent,
+      title: newEvent.title ?? '',
+      description: newEvent.description ?? '',
+    },
+  } satisfies CreateEventSuccAPI);
 };
+
+// Handle /v1/event/:id DELETE
 export const deleteEvent: IAuthedRouteHandler = async (req, res) => {
   const eventId = parseInt(req.params.id, 10);
 
-  if (isNaN(eventId)) {
+  if (isNaN(eventId) || eventId < 0) {
     return res.status(400).json({
       status: 400,
       errors: [{ message: 'Invalid event ID' }],

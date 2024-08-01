@@ -47,31 +47,27 @@ const EventCreationPage: PageComponent = () => {
   });
 
   const handleSave = async (data: Event) => {
-    try {
-      // Convert date to ISO string and combine with time
-      const formattedDateTime = `${new Date(data.date).toISOString().split('T')[0]}T${data.time}`;
-
-      // Prepare the payload with Date object
-      const payload = {
-        ...data,
-        date: new Date(formattedDateTime), // Convert to Date object for payload
-      };
-
-      console.log('Sending request with data:', payload); // Log the data being sent
-      const response = await httpClient.post<Event, Event>({
+    const response = await httpClient
+      .post<unknown, Event>({
         uri: '/event',
-        payload: payload,
+        payload: {
+          ...data,
+          date: new Date(
+            `${new Date(data.date).toISOString().split('T')[0]}T${data.time}`,
+          ),
+        },
         withCredentials: 'access',
+      })
+      .then(() => {
+        console.log('Response received:', response);
+        setSuccessMessage('Event created successfully');
+        setError(null);
+        eventForm.reset();
+      })
+      .catch((err) => {
+        console.error('Error creating event:', err);
+        setError('Failed to create event');
       });
-
-      console.log('Response received:', response);
-      setSuccessMessage('Event created successfully');
-      setError(null);
-      eventForm.reset();
-    } catch (err) {
-      console.error('Error creating event:', err);
-      setError('Failed to create event');
-    }
   };
 
   return (
