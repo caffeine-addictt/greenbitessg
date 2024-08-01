@@ -6,9 +6,7 @@
 
 import { useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
-import httpClient from '@utils/http';
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
+
 import {
   Form,
   FormField,
@@ -18,8 +16,12 @@ import {
   FormDescription,
   FormMessage,
 } from '@components/ui/form';
+import { Input } from '@components/ui/input';
+import { Button } from '@components/ui/button';
+
 import { z } from 'zod';
-import { eventSchema } from '@lib/api-types/schemas/event'; // Adjust the import path as needed
+import httpClient from '@utils/http';
+import { eventSchema } from '@lib/api-types/schemas/event';
 import { PageComponent } from '@pages/route-map';
 
 // Define the Event type using z.infer and eventSchema
@@ -32,7 +34,7 @@ const EventCreationPage: PageComponent = () => {
   const eventForm = useForm<Event>({
     mode: 'onBlur',
     defaultValues: {
-      date: new Date(), // Default value set as today
+      date: new Date(),
       time: '',
       location: '',
       description: '',

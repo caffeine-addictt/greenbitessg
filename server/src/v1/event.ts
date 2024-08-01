@@ -5,8 +5,9 @@
  */
 
 import { db } from '../db';
+import { eq } from 'drizzle-orm';
 import { eventTable } from '../db/schemas';
-import { IAuthedRouteHandler } from '../route-map';
+
 import {
   GetEventSuccAPI,
   GetEventFailAPI,
@@ -15,9 +16,6 @@ import {
   DeleteEventSuccAPI,
   DeleteEventFailAPI,
 } from '../lib/api-types/event';
-import { z } from 'zod';
-import { eq } from 'drizzle-orm';
-
 // API handler for fetching events
 export const getEvent: IAuthedRouteHandler = async (req, res) => {
   // Example usage of req (e.g., logging user info or other data)
@@ -39,10 +37,10 @@ import { eventRequestObject } from '../lib/api-types/schemas/event';
   const formattedEvents = events.map((event) => ({
     id: event.id,
     title: event.title,
-    date: new Date(event.date), // Ensure date is a Date object
+    date: new Date(event.date),
     time: event.time,
     location: event.location,
-    description: event.description || undefined, // Ensure description is optional
+    description: event.description || undefined,
   }));
 
   // Construct the response object
@@ -123,7 +121,7 @@ export const deleteEvent: IAuthedRouteHandler = async (req, res) => {
   if (isNaN(eventId)) {
     return res.status(400).json({
       status: 400,
-      errors: [{ message: 'Invalid event ID' }], // Using 'errors' array with message
+      errors: [{ message: 'Invalid event ID' }],
     } satisfies DeleteEventFailAPI);
   }
 
