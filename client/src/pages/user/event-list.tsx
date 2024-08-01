@@ -1,8 +1,15 @@
-import { useEffect, useState } from 'react';
-import httpClient from '@utils/http';
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
 import { z } from 'zod';
-import { eventSchema } from '@lib/api-types/schemas/event'; // Adjust the import path as needed
+import { useEffect, useState } from 'react';
+
+import httpClient from '@utils/http';
 import { PageComponent } from '@pages/route-map';
+import { eventSchema } from '@lib/api-types/schemas/event';
 
 // Define the Event type using z.infer and eventSchema
 type Event = z.infer<typeof eventSchema>;
@@ -17,7 +24,7 @@ const EventList: PageComponent = () => {
       try {
         const response = await httpClient.get<{ data: Event[] }>({
           uri: `/event`,
-          withCredentials: 'access', // Adjust if needed
+          withCredentials: 'access',
         });
         setEvents(response.data);
       } catch (err) {
@@ -33,7 +40,7 @@ const EventList: PageComponent = () => {
     try {
       await httpClient.delete<{ id: number }>({
         uri: `/event/${id}`,
-        withCredentials: 'access', // Adjust if needed
+        withCredentials: 'access',
       });
 
       // Remove the deleted event from the list
