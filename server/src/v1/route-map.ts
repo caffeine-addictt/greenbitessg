@@ -10,6 +10,7 @@ import type { RoutingMap } from '../route-map';
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
 import { getUser, updateUser, deleteUser } from './user';
+import { createEvent, deleteEvent, getEvent } from './event';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -28,6 +29,22 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/user/update': {
     POST: {
       handler: updateUser,
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/event': {
+    GET: {
+      handler: getEvent,
+      accessLevel: 'authenticated',
+    },
+    POST: {
+      handler: createEvent,
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/event/:id': {
+    DELETE: {
+      handler: deleteEvent,
       accessLevel: 'authenticated',
     },
   },
