@@ -88,7 +88,7 @@ export const postGenerate: IAuthedRouteHandler = async (req, res) => {
   }
 
   const foundImage = await db
-    .selectDistinct({})
+    .select({})
     .from(contentTable)
     .where(
       and(
