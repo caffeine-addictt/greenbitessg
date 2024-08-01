@@ -27,7 +27,7 @@
     "db-migrate": "npm run db-migrate -w server",
     "db-push": "npm run db-push -w server",
     "db-studio": "npm run db-studio -w server",
-    "gen-token": "node -p 'console.log(require(\"crypto\").randomBytes(64).toString(\"hex\"))'"
+    "gen-token": "node -p 'require(\"crypto\").randomBytes(64).toString(\"hex\")'"
   },
   "pre-commit": [
     "lint",
