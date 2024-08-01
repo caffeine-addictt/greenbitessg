@@ -29,6 +29,21 @@ const EventList: PageComponent = () => {
     fetchEvents();
   }, []);
 
+  const deleteEvent = async (id: number) => {
+    try {
+      await httpClient.delete<{ id: number }>({
+        uri: `/event/${id}`,
+        withCredentials: 'access', // Adjust if needed
+      });
+
+      // Remove the deleted event from the list
+      setEvents(events.filter((event) => event.id !== id));
+    } catch (err) {
+      setError('Error deleting event! Please try again later.');
+      console.error('Delete error:', err);
+    }
+  };
+
   return (
     <div className="container mx-auto mt-16">
       <h1 className="text-center text-2xl font-bold">Event List</h1>
@@ -44,6 +59,12 @@ const EventList: PageComponent = () => {
               <p>{`${event.date} ${event.time}`}</p>
               <p>{event.location}</p>
               <p>{event.description || 'No description available'}</p>
+              <button
+                className="mt-2 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                onClick={() => deleteEvent(event.id)}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>

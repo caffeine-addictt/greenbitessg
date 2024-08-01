@@ -27,8 +27,7 @@ export type CreateEventFailAPI =
   ErrorResponse<'An unexpected error occurred. Please try again later.'>;
 
 // Success response for DeleteEvent API
-export interface DeleteEventSuccAPI
-  extends SuccessResponse<{ deleted: true }> {}
+export interface DeleteEventSuccAPI extends SuccessResponse<null> {}
 /**
  * Failure response for delete event-related endpoints
  */

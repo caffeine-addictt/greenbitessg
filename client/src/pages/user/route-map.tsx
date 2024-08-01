@@ -15,13 +15,13 @@ const userRouteMap: RouteMap = {
     title: 'Create Events',
     accessLevel: 'authenticated',
     description: 'Create Your Events Here',
-    component: EventCreationPage 
+    component: EventCreationPage,
   },
   '/events': {
     title: 'List Events',
     accessLevel: 'authenticated',
     description: 'List Events Here',
-    component: EventList
+    component: EventList,
   },
 } as const;
 export default userRouteMap;
