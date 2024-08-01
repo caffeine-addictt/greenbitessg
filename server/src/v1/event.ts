@@ -22,6 +22,7 @@ import { eq } from 'drizzle-orm';
 export const getEvent: IAuthedRouteHandler = async (req, res) => {
   // Example usage of req (e.g., logging user info or other data)
   console.log('Fetching events for:', req.user.id); // Assuming `req.user` exists
+import { eventRequestObject } from '../lib/api-types/schemas/event';
 
   // Fetch all events
   const events = await db.select().from(eventTable);
@@ -53,24 +54,6 @@ export const getEvent: IAuthedRouteHandler = async (req, res) => {
   // Send the response
   return res.status(200).json(response);
 };
-
-// Define Zod objects for validation and response formatting
-const eventRequestObject = z.object({
-  title: z.string().min(1),
-  date: z.string().min(1), // ISO string format
-  time: z.string().min(1),
-  location: z.string(),
-  description: z.string().optional(),
-});
-
-const eventResponseObject = z.object({
-  id: z.number(),
-  title: z.string(),
-  date: z.date(), // Use string to match ISO format for date
-  time: z.string(),
-  location: z.string(),
-  description: z.string().optional(),
-});
 
 export const createEvent: IAuthedRouteHandler = async (req, res) => {
   // Validate request body
