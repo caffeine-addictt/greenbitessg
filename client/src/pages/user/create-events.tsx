@@ -1,3 +1,9 @@
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
 import { useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import httpClient from '@utils/http';
