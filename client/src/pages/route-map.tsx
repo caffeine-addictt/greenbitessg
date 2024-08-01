@@ -43,6 +43,6 @@ const routes: RootRouteMap = {
   },
   ...authRouteMap,
   ...userRouteMap,
-  ...foodRouteMap
+  ...foodRouteMap,
 } as const;
 export default routes;
