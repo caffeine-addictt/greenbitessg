@@ -10,7 +10,7 @@ import type { PageComponent, RouteMap } from '@pages/route-map';
 import EventCreationPage from './create-events';
 import EventList from './event-list';
 
-const routeMaps: RouteMap = {
+const userRouteMap: RouteMap = {
   '/createevents': {
     title: 'Create Events',
     description: 'Create Your Events Here',
@@ -22,4 +22,4 @@ const routeMaps: RouteMap = {
     component: EventList as PageComponent,
   },
 } as const;
-export default routeMaps;
+export default userRouteMap;

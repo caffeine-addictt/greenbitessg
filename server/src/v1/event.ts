@@ -1,7 +1,12 @@
 import { db } from '../db';
 import { eventTable } from '../db/schemas';
 import { IAuthedRouteHandler } from '../route-map';
-import { GetEventSuccAPI, GetEventFailAPI, CreateEventSuccAPI, CreateEventFailAPI } from '@src/lib/api-types/event';
+import {
+  GetEventSuccAPI,
+  GetEventFailAPI,
+  CreateEventSuccAPI,
+  CreateEventFailAPI,
+} from '@src/lib/api-types/event';
 import { z } from 'zod';
 
 // API handler for fetching events

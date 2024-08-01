@@ -18,7 +18,7 @@ import ActivatePage from './activate';
 import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
 import RedirectToAuth from './auth-redirect';
 
-const routeMap: RouteMap = {
+const authRouteMap: RouteMap = {
   '/register': {
     title: 'Register',
     description: 'Register a new account with us!',
@@ -93,4 +93,4 @@ const routeMap: RouteMap = {
     accessLevel: 'authenticated',
   },
 } as const;
-export default routeMap;
+export default authRouteMap;
