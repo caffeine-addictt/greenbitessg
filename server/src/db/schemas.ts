@@ -69,9 +69,9 @@ export const feedbackTable = pgTable('feedback_table', {
   userId: integer('user_id')
     .notNull()
     .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(), // Added name field
-  email: text('email').notNull(), // Added email field
-  suggestion: text('suggestion').default(''), // Optional field with default empty string
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  suggestion: text('suggestion').default(''),
   feedbackMessage: text('message').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
