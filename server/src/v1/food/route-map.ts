@@ -11,7 +11,7 @@ import { postGenerate } from './generate';
 
 const routeMap: RoutingMap<`/v1/food${string}`> = {
   '/v1/food/generate': {
-    GET: { handler: postGenerate },
+    POST: { handler: postGenerate },
     accessLevel: 'authenticated',
   },
   '/v1/food/:id': {

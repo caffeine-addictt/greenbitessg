@@ -16,8 +16,6 @@ import { getAuthCookie } from './jwt';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_VERSION = import.meta.env.VITE_API_VERSION;
 
-const API_URL = `${API_BASE_URL}/${API_VERSION}`;
-
 export const DEFAULT_OPTS: AxiosRequestConfig = {
   headers: {
     'Access-Control-Allow-Origin': '*',
@@ -35,6 +33,7 @@ export interface APIRequestParams {
   queryParams?: string;
   withCredentials?: 'access' | 'refresh';
   options?: AxiosRequestConfig;
+  fromRoot?: boolean;
 }
 
 export interface APIPayload {
@@ -70,14 +69,22 @@ const addCredentials = (
   };
 };
 
+const resolveUrl = ({
+  uri,
+  queryParams,
+  fromRoot = false,
+}: Pick<APIRequestParams, 'uri' | 'queryParams' | 'fromRoot'>): string =>
+  fromRoot
+    ? `${API_BASE_URL}${uri}${queryParams ? `?${queryParams}` : ''}`
+    : `${API_BASE_URL}/${API_VERSION}${uri}${queryParams ? `?${queryParams}` : ''}`;
+
 class HTTPClient implements APIHttpClient {
   get = async <T>({
-    uri,
-    queryParams,
     withCredentials,
     options,
+    ...uri
   }: APIGetRequestParams): Promise<T> => {
-    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
+    const url = resolveUrl(uri);
     const opts: AxiosRequestConfig = withCredentials
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
       : (options ?? DEFAULT_OPTS);
@@ -102,13 +109,12 @@ class HTTPClient implements APIHttpClient {
   };
 
   post = async <T, D extends APIPayload>({
-    uri,
-    queryParams,
     payload,
     withCredentials,
     options,
+    ...uri
   }: APIPostRequestParams<D>): Promise<T> => {
-    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
+    const url = resolveUrl(uri);
     const opts: AxiosRequestConfig = withCredentials
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
       : (options ?? DEFAULT_OPTS);

@@ -56,6 +56,7 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
   passkeys: many(passkeysTable),
   passkeyChallenges: many(passkeyChallengesTable),
   feedback: many(feedbackTable),
+  notification: many(notificationTable),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
@@ -327,3 +328,31 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
 export type TokenType = 'verification' | 'activation';
 export type InsertToken = typeof tokens.$inferInsert;
 export type SelectToken = typeof tokens.$inferSelect;
+
+/**
+ * Notifications
+ */
+export const notificationTable = pgTable('notification_table', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
+  notificationMessage: text('feedback_message').notNull(),
+  notificationType: text('notification_type').default('info').notNull(),
+  isRead: boolean('is_read').default(false).notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const notificationRelations = relations(
+  notificationTable,
+  ({ one }) => ({
+    user: one(usersTable, {
+      fields: [notificationTable.userId],
+      references: [usersTable.id],
+    }),
+  }),
+);
+export type InsertNotification = typeof notificationTable.$inferInsert;
+export type SelectNotification = typeof notificationTable.$inferSelect;
