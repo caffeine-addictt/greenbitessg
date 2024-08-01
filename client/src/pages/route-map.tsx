@@ -5,6 +5,9 @@
  */
 
 import * as React from 'react';
+import authrouteMap from '@pages/auth/route-map';
+import userrouteMap from '@pages/user/route-map';
+import foodRouteMap from './food/route-map';
 
 // Page imports
 import NotFound from '@pages/404';

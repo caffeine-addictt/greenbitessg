@@ -8,7 +8,7 @@ import {
   CreateEventFailAPI,
   DeleteEventSuccAPI,
   DeleteEventFailAPI,
-} from '@src/lib/api-types/event';
+} from '../lib/api-types/event';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 
@@ -50,9 +50,9 @@ export const getEvent: IAuthedRouteHandler = async (req, res) => {
 
 // Define Zod objects for validation and response formatting
 const eventRequestObject = z.object({
-  title: z.string().nonempty(),
-  date: z.string().nonempty(), // ISO string format
-  time: z.string().nonempty(),
+  title: z.string().min(1),
+  date: z.string().min(1), // ISO string format
+  time: z.string().min(1),
   location: z.string(),
   description: z.string().optional(),
 });
