@@ -38,6 +38,9 @@ const iCachingMiddleware = (
   time?: number,
   ignoreRFC: boolean = false,
 ) => {
+  // Ignore uploadthing
+  if (req.url.startsWith('/api/uploadthing')) return next();
+
   const cachableMethod = CachableMethod.includes(
     req.method.toUpperCase() as keyof typeof Methods,
   );

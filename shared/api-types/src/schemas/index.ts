@@ -7,5 +7,9 @@
 import * as auth from './auth';
 import * as food from './food';
 import * as user from './user';
+import * as event from './event';
+import * as feedback from './feedback';
+import * as dashboard from './dashboard';
+import * as notification from './notification';
 
-export { auth, food, user };
+export { auth, food, user, event, feedback, dashboard, notification };
