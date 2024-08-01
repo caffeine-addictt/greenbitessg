@@ -68,7 +68,7 @@ export const feedbackTable = pgTable('feedback_table', {
   id: serial('id').primaryKey(),
   userId: integer('user_id')
     .notNull()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   name: text('name').notNull(), // Added name field
   email: text('email').notNull(), // Added email field
   suggestion: text('suggestion').default(''), // Optional field with default empty string
@@ -78,7 +78,12 @@ export const feedbackTable = pgTable('feedback_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-
+export const feedbackRelations = relations(feedbackTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [feedbackTable.userId],
+    references: [usersTable.id],
+  }),
+}));
 export type InsertFeedback = typeof feedbackTable.$inferInsert;
 export type SelectFeedback = typeof feedbackTable.$inferSelect;
 
