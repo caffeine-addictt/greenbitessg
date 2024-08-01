@@ -54,7 +54,6 @@ export interface APIPutRequestParams<T extends APIPayload>
 export interface APIHttpClient {
   get<T>(params: APIGetRequestParams): Promise<T>;
   post<T, D extends APIPayload>(params: APIPostRequestParams<D>): Promise<T>;
-  put<T, D extends APIPayload>(params: APIPutRequestParams<D>): Promise<T>;
 }
 
 // Implementation
@@ -139,35 +138,7 @@ class HTTPClient implements APIHttpClient {
 
     throw resp;
   };
-  put = async <T, D extends APIPayload>({
-    uri,
-    queryParams,
-    payload,
-    withCredentials,
-    options,
-  }: APIPutRequestParams<D>): Promise<T> => {
-    const url = `${API_URL}${uri}${queryParams ? `?${queryParams}` : ''}`;
-    const opts: AxiosRequestConfig = withCredentials
-      ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
-      : (options ?? DEFAULT_OPTS);
-
-    const resp = await axios
-      .put<T>(url, payload, opts)
-      .catch((err: AxiosError) => err);
-    const isErr = isAxiosError(resp);
-
-    if (!isErr && isSuccessResponse(resp.data)) {
-      return resp.data;
-    } else if (!isErr) {
-      throw resp;
-    }
-    const data = resp.response?.data as T;
-    if (!data) throw resp;
-
-    if (isSuccessResponse(data)) return data;
-
-    throw resp;
-  };
+  
 }
 
 const httpClient = new HTTPClient();
