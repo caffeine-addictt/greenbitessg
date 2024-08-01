@@ -344,11 +344,14 @@ export const notificationTable = pgTable('notification_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-export const notificationRelations = relations(notificationTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [notificationTable.userId],
-    references: [usersTable.id],
+export const notificationRelations = relations(
+  notificationTable,
+  ({ one }) => ({
+    user: one(usersTable, {
+      fields: [notificationTable.userId],
+      references: [usersTable.id],
+    }),
   }),
-}));
+);
 export type InsertNotification = typeof notificationTable.$inferInsert;
 export type SelectNotification = typeof notificationTable.$inferSelect;
