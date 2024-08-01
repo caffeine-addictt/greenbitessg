@@ -10,12 +10,14 @@ import type { RoutingMap } from '../route-map';
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
 import { createFeedback } from './feedback';
+import notificationRoutes from './notification/route-map';
 import { getUser, updateUser, deleteUser } from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
   ...foodRoutes,
+  ...notificationRoutes,
   '/v1/user': {
     GET: {
       handler: getUser,
