@@ -18,10 +18,11 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     GET: {
       handler: getUser,
       accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
     },
     DELETE: {
       handler: deleteUser,
-      accessLevel: 'authenticated'
+      accessLevel: 'authenticated',
     },
   },
   '/v1/user/update': {

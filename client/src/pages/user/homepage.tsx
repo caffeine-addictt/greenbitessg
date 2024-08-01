@@ -49,6 +49,6 @@ const Home: PageComponent = (props) => {
       </div>
     </div>
   );
-}
+};
 
 export default Home;

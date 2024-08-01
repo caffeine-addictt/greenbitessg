@@ -9,7 +9,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFormState } from 'react-hook-form';
 
-import httpClient, { APIPayload } from '@utils/http';
+import httpClient from '@utils/http';
 import { AuthContext } from '@service/auth';
 import { userUpdateSchema } from '@lib/api-types/schemas/user';
 import type { UpdateUserSuccAPI } from '@lib/api-types/user';
@@ -31,15 +31,15 @@ import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { PageComponent } from '@pages/route-map';
 import { useNavigate } from 'react-router-dom';
+import { cn } from '@utils/tailwind';
 
-const AccountSettings: PageComponent = () => {
+const AccountSettings: PageComponent = ({ className, ...props }) => {
   const { user } = useContext(AuthContext)!;
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const navigate = useNavigate();
-
 
   const accountSettingsForm = useForm<z.infer<typeof userUpdateSchema>>({
     resolver: zodResolver(userUpdateSchema),
@@ -77,11 +77,11 @@ const AccountSettings: PageComponent = () => {
     {
       mutationKey: ['delete-user'],
       mutationFn: () => {
-        return httpClient.delete<SuccessResponse<null>, APIPayload>({
-          uri: '/user/deleteUser',
+        return httpClient.delete<SuccessResponse<null>>({
+          uri: '/user',
           withCredentials: 'access',
         });
-        },
+      },
       onError: (err) => {
         console.log(err);
         toast({
@@ -100,11 +100,16 @@ const AccountSettings: PageComponent = () => {
   );
 
   return (
-    <div {...props} className='mx-auto mb-7 mt-3 w-full'>
-      <div className="flex flex-col items-center">
+    <div
+      {...props}
+      className={cn(className, 'mx-auto mb-7 mt-3 w-full md:w-2/3')}
+    >
+      <div className="mx-auto flex flex-col items-center">
         <h1 className="text-center text-2xl font-bold">My Account</h1>
-        <div className="mx-auto my-7 block w-3/5 rounded-md bg-primary-dark p-10 text-lg dark:text-text-light md:w-2/5">
-          <h4 className="flex justify-center mb-3 font-semibold underline">Personal Particulars</h4>
+        <div className="mx-auto my-7 block w-full rounded-md bg-primary-dark p-10 text-lg dark:text-text-light">
+          <h4 className="mb-3 flex justify-center font-semibold underline">
+            Personal Particulars
+          </h4>
           <div className="mx-auto flex justify-center">
             <Form {...accountSettingsForm}>
               <form
@@ -159,7 +164,7 @@ const AccountSettings: PageComponent = () => {
                     </FormItem>
                   )}
                 />
-                <div className="flex justify-center md:justify-end space-x-2">
+                <div className="flex justify-center space-x-2 md:justify-end">
                   <Button
                     type="reset"
                     variant="ghost"
@@ -181,17 +186,16 @@ const AccountSettings: PageComponent = () => {
             </Form>
           </div>
         </div>
-        <div className="mx-auto my-7 block w-3/5 rounded-md bg-primary-dark p-4 md:w-2/5">
-            <Button
-              type="button"
-              variant="destructive"
-              size="default"
-              className='mx-auto'
-              onClick={() => deleteUser()}
-            >
-              Delete My Account
-            </Button>
-          </div>
+        <div className="my-7 flex w-full justify-center rounded-md bg-primary-dark p-4">
+          <Button
+            type="button"
+            variant="destructive"
+            size="default"
+            onClick={() => deleteUser()}
+          >
+            Delete My Account
+          </Button>
+        </div>
       </div>
     </div>
   );
