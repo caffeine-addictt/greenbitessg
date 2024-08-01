@@ -46,8 +46,14 @@ const FoodPage: PageComponent = (props) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const [query, setQuery] = useState<string>(
+    new URLSearchParams(window.location.search).get('query') || '',
+  );
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [currTimeout, setCurrTimeout] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   const buildURI = (params: APIParams): `/${string}` => {
     const currParams = new URLSearchParams(window.location.search);
@@ -155,9 +161,6 @@ const FoodPage: PageComponent = (props) => {
     queryClient,
   );
 
-  // debounce for fetch
-  let timeout: ReturnType<typeof setTimeout> | null;
-
   return (
     <div {...props}>
       <div className="m-4 flex w-screen flex-col gap-2 md:flex-row">
@@ -228,18 +231,17 @@ const FoodPage: PageComponent = (props) => {
             <Input
               placeholder="Search food items..."
               className="w-full lg:w-2/3"
-              value={
-                new URLSearchParams(window.location.search).get('query') || ''
-              }
+              value={query}
               onChange={(e) => {
+                setQuery(e.target.value);
                 window.history.pushState(
                   {},
                   '',
                   buildURI({ query: e.target.value }),
                 );
 
-                if (timeout) clearTimeout(timeout);
-                timeout = setTimeout(() => refetch(), 200);
+                if (currTimeout) clearTimeout(currTimeout);
+                setCurrTimeout(setTimeout(() => refetch(), 500));
               }}
             />
 
