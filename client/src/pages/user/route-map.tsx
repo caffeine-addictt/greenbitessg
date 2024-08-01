@@ -9,7 +9,7 @@ import type { RouteMap } from '@pages/route-map';
 // Import pages
 import EventCreationPage from './create-events';
 import EventList from './event-list';
-import AccountSettings from './accountsettings';
+import AccountSettings from './settings';
 import Home from './homepage';
 import FeedbackForm from './feedback';
 
