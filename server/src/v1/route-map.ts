@@ -13,7 +13,6 @@ import { createFeedback } from './feedback';
 import { getUser, updateUser, deleteUser } from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
 
-
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
   ...foodRoutes,
