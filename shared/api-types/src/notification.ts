@@ -20,3 +20,10 @@ export interface GetNotificationSuccAPI
  */
 export type GetNotificationFailAPI =
   ErrorResponse<'An unexpected error occurred. Please try again later!'>;
+
+/**
+ * Successful response for /v1/notification/archive
+ */
+export interface NotificationArchiveSuccessAPI
+  extends SuccessResponse<{ deleted: true }> {}
+export type NotificationArchiveFailAPI = ErrorResponse<'Invalid key!'>;
