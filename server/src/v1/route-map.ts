@@ -55,22 +55,6 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       accessLevel: 'authenticated',
     },
   },
-  '/v1/event': {
-    GET: {
-      handler: getEvent,
-      accessLevel: 'authenticated',
-    },
-    POST: {
-      handler: createEvent,
-      accessLevel: 'authenticated',
-    },
-  },
-  '/v1/event/:id': {
-    DELETE: {
-      handler: deleteEvent,
-      accessLevel: 'authenticated',
-    },
-  },
 } as const;
 
 export default routeMap;
