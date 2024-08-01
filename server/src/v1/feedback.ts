@@ -4,7 +4,7 @@ import { IAuthedRouteHandler } from '../route-map';
 import {
   GetFeedbackSuccAPI,
   GetFeedbackFailAPI,
-} from '@src/lib/api-types/feedback';
+} from '../lib/api-types/feedback';
 import { z } from 'zod';
 
 // Define Zod schema for feedback request
