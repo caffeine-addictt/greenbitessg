@@ -21,3 +21,8 @@ export interface GetUserSuccAPI
  */
 export interface UpdateUserSuccAPI extends SuccessResponse<{ updated: true }> {}
 export type UpdateUserFailAPI = ErrorResponse<'Nothing to update!'>;
+
+/**
+ * Successful response for /v1/user/delete POST endpoint
+ */
+export interface DeleteUserSuccessAPI extends SuccessResponse<null> {}
