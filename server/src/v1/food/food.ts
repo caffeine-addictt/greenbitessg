@@ -14,14 +14,13 @@ import type {
   FoodGetSuccessAPI,
 } from '../../lib/api-types/food';
 
-// Handler for /v1/food/get and /v1/food/get/:id
+// Handler for /v1/food GET and /v1/food/:id GET
 const getFood: IAuthedRouteHandler = async (req, res) => {
   const { id } = req.params;
   const { q, limit, page } = req.query;
 
   // Find range
   if (!id) {
-    console.log(q, limit, page);
     // Validate query
     if (
       (q !== undefined && typeof q !== 'string') ||
@@ -86,7 +85,7 @@ const getFood: IAuthedRouteHandler = async (req, res) => {
     query = query.orderBy(asc(foodTable.id));
 
     // Handle query limit
-    const after = pageNum * limitNum;
+    const after = (pageNum - 1) * limitNum;
     query = query.limit(limitNum).offset(after);
 
     const found = await query;
