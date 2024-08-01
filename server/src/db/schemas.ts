@@ -344,9 +344,9 @@ export const notificationTable = pgTable('notification_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-export const notificationRelations = relations(passkeysTable, ({ one }) => ({
+export const notificationRelations = relations(notificationTable, ({ one }) => ({
   user: one(usersTable, {
-    fields: [passkeysTable.userId],
+    fields: [notificationTable.userId],
     references: [usersTable.id],
   }),
 }));
