@@ -9,10 +9,10 @@ import { z } from 'zod';
 
 // Define Zod schema for feedback request
 const feedbackRequestObject = z.object({
-  name: z.string().nonempty(),
+  name: z.string().min(1),
   email: z.string().email(),
   suggestion: z.string().optional(),
-  feedbackMessage: z.string().nonempty(),
+  feedbackMessage: z.string().min(1),
 });
 
 // Define Zod schema for feedback response
