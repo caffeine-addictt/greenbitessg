@@ -339,7 +339,6 @@ export const notificationTable = pgTable('notification_table', {
     .references(() => usersTable.id, { onDelete: 'cascade' }),
   notificationMessage: text('feedback_message').notNull(),
   notificationType: text('notification_type').default('info').notNull(),
-  isRead: boolean('is_read').default(false).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
