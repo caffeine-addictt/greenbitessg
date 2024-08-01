@@ -10,5 +10,6 @@ import * as user from './user';
 import * as event from './event';
 import * as feedback from './feedback';
 import * as dashboard from './dashboard';
+import * as notification from './notification';
 
-export { auth, food, user, event, feedback, dashboard };
+export { auth, food, user, event, feedback, dashboard, notification };
