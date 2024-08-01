@@ -6,6 +6,7 @@
 
 import axios, {
   AxiosError,
+  AxiosResponse,
   isAxiosError,
   type AxiosRequestConfig,
 } from 'axios';
@@ -48,6 +49,7 @@ export interface APIPostRequestParams<T extends APIPayload>
 export interface APIHttpClient {
   get<T>(params: APIGetRequestParams): Promise<T>;
   post<T, D extends APIPayload>(params: APIPostRequestParams<D>): Promise<T>;
+  put<T, D extends APIPayload>(params: APIPutRequestParams<D>): Promise<T>;
 }
 
 // Implementation
@@ -78,6 +80,28 @@ const resolveUrl = ({
     ? `${API_BASE_URL}${uri}${queryParams ? `?${queryParams}` : ''}`
     : `${API_BASE_URL}/${API_VERSION}${uri}${queryParams ? `?${queryParams}` : ''}`;
 
+const httpRequestWithCacheHandling = async <T>(
+  httpRequest: Promise<AxiosResponse<T, unknown>>,
+): Promise<T> => {
+  const resp = await httpRequest.catch((err: AxiosError) => err);
+  const isErr = isAxiosError(resp);
+
+  if (!isErr && isSuccessResponse(resp.data)) {
+    return resp.data;
+  } else if (!isErr) {
+    throw resp;
+  }
+
+  // See if cached
+  const data = resp.response?.data as T;
+  if (!data) throw resp;
+
+  // Resolve if cached is OK
+  if (isSuccessResponse(data)) return data;
+
+  throw resp;
+};
+
 class HTTPClient implements APIHttpClient {
   get = async <T>({
     withCredentials,
@@ -89,23 +113,7 @@ class HTTPClient implements APIHttpClient {
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
       : (options ?? DEFAULT_OPTS);
 
-    const resp = await axios.get<T>(url, opts).catch((err: AxiosError) => err);
-    const isErr = isAxiosError(resp);
-
-    if (!isErr && isSuccessResponse(resp.data)) {
-      return resp.data;
-    } else if (!isErr) {
-      throw resp;
-    }
-
-    // See if cached
-    const data = resp.response?.data as T;
-    if (!data) throw resp;
-
-    // Resolve if cached is OK
-    if (isSuccessResponse(data)) return data;
-
-    throw resp;
+    return httpRequestWithCacheHandling<T>(axios.get<T>(url, opts));
   };
 
   post = async <T, D extends APIPayload>({
@@ -119,25 +127,11 @@ class HTTPClient implements APIHttpClient {
       ? addCredentials(withCredentials, options ?? DEFAULT_OPTS)
       : (options ?? DEFAULT_OPTS);
 
-    const resp = await axios
-      .post<T>(url, payload, opts)
-      .catch((err: AxiosError) => err);
-    const isErr = isAxiosError(resp);
+    return httpRequestWithCacheHandling<T>(axios.post<T>(url, payload, opts));
 
-    if (!isErr && isSuccessResponse(resp.data)) {
-      return resp.data;
-    } else if (!isErr) {
-      throw resp;
-    }
 
-    // See if cached
-    const data = resp.response?.data as T;
-    if (!data) throw resp;
 
-    // Resolve if cached is OK
-    if (isSuccessResponse(data)) return data;
 
-    throw resp;
   };
 }
 
