@@ -88,7 +88,7 @@ export const postGenerate: IAuthedRouteHandler = async (req, res) => {
   }
 
   const foundImage = await db
-    .selectDistinct({})
+    .select({})
     .from(contentTable)
     .where(
       and(
@@ -96,7 +96,8 @@ export const postGenerate: IAuthedRouteHandler = async (req, res) => {
         eq(contentTable.userId, req.user.id),
         eq(contentTable.filename, key),
       ),
-    );
+    )
+    .limit(1);
   if (foundImage.length === 0) {
     return res.status(Http4XX.BAD_REQUEST).json({
       status: Http4XX.BAD_REQUEST,

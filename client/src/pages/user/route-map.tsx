@@ -13,6 +13,7 @@ const userrouteMap: RouteMap = {
   '/feedback': {
     title: 'Feedback Form',
     description: 'State feedback here',
+    accessLevel: 'authenticated',
     component: FeedbackForm,
   },
 } as const;
