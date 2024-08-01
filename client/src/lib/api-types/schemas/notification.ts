@@ -20,10 +20,4 @@ export const notificationSchema = z.object({
       required_error: 'Notification type is required',
     })
     .default('info'),
-  expiresAt: z
-    .string({
-      invalid_type_error: 'Expiration date must be a string',
-    })
-    .datetime({ message: 'Expiration date must be a valid datetime' })
-    .optional(),
 });
