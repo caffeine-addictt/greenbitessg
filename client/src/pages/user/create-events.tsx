@@ -1,8 +1,12 @@
+/**
+ * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
 import { useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
-import httpClient from '@utils/http';
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
+
 import {
   Form,
   FormField,
@@ -12,10 +16,13 @@ import {
   FormDescription,
   FormMessage,
 } from '@components/ui/form';
-import { z } from 'zod';
-import { eventSchema } from '@lib/api-types/schemas/event'; // Adjust the import path as needed
-import { PageComponent } from '@pages/route-map';
+import { Input } from '@components/ui/input';
+import { Button } from '@components/ui/button';
 
+import { z } from 'zod';
+import httpClient from '@utils/http';
+import { eventSchema } from '@lib/api-types/schemas/event';
+import { PageComponent } from '@pages/route-map';
 // Define the Event type using z.infer and eventSchema
 type Event = z.infer<typeof eventSchema>;
 
@@ -40,16 +47,15 @@ const EventCreationPage: PageComponent = () => {
 
   const handleSave = async (data: Event) => {
     try {
-      // Convert date to ISO string and combine with time
-      const formattedDateTime = `${new Date(data.date).toISOString().split('T')[0]}T${data.time}`;
-
       // Prepare the payload with Date object
       const payload = {
         ...data,
-        date: new Date(formattedDateTime), // Convert to Date object for payload
+        date: new Date(
+          `${new Date(data.date).toISOString().split('T')[0]}T${data.time}`,
+        ),
       };
 
-      console.log('Sending request with data:', payload); // Log the data being sent
+      console.log('Sending request with data:', payload);
       const response = await httpClient.post<Event, Event>({
         uri: '/event',
         payload: payload,
