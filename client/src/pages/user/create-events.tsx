@@ -33,7 +33,7 @@ const EventCreationPage: PageComponent = () => {
   const eventForm = useForm<Event>({
     mode: 'onBlur',
     defaultValues: {
-      date: new Date(), 
+      date: new Date(),
       location: '',
       description: '',
       title: '',
