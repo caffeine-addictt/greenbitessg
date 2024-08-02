@@ -33,8 +33,7 @@ const EventCreationPage: PageComponent = () => {
   const eventForm = useForm<Event>({
     mode: 'onBlur',
     defaultValues: {
-      date: new Date(), // Default value set as today
-      time: '',
+      date: new Date(), 
       location: '',
       description: '',
       title: '',
