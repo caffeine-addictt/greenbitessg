@@ -23,7 +23,6 @@ import { z } from 'zod';
 import httpClient from '@utils/http';
 import { eventSchema } from '@lib/api-types/schemas/event';
 import { PageComponent } from '@pages/route-map';
-
 // Define the Event type using z.infer and eventSchema
 type Event = z.infer<typeof eventSchema>;
 
@@ -35,7 +34,6 @@ const EventCreationPage: PageComponent = () => {
     mode: 'onBlur',
     defaultValues: {
       date: new Date(),
-      time: '',
       location: '',
       description: '',
       title: '',
@@ -47,27 +45,30 @@ const EventCreationPage: PageComponent = () => {
   });
 
   const handleSave = async (data: Event) => {
-    const response = await httpClient
-      .post<unknown, Event>({
+    try {
+      // Prepare the payload with Date object
+      const payload = {
+        ...data,
+        date: new Date(
+          `${new Date(data.date).toISOString().split('T')[0]}T${data.time}`,
+        ),
+      };
+
+      console.log('Sending request with data:', payload);
+      const response = await httpClient.post<Event, Event>({
         uri: '/event',
-        payload: {
-          ...data,
-          date: new Date(
-            `${new Date(data.date).toISOString().split('T')[0]}T${data.time}`,
-          ),
-        },
+        payload: payload,
         withCredentials: 'access',
-      })
-      .then(() => {
-        console.log('Response received:', response);
-        setSuccessMessage('Event created successfully');
-        setError(null);
-        eventForm.reset();
-      })
-      .catch((err) => {
-        console.error('Error creating event:', err);
-        setError('Failed to create event');
       });
+
+      console.log('Response received:', response);
+      setSuccessMessage('Event created successfully');
+      setError(null);
+      eventForm.reset();
+    } catch (err) {
+      console.error('Error creating event:', err);
+      setError('Failed to create event');
+    }
   };
 
   return (
