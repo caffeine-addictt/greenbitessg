@@ -5,6 +5,7 @@
  */
 
 import * as auth from './auth';
+import * as user from './user';
 import * as errors from './errors';
 import * as schemas from './schemas';
 import * as httpCodes from './http-codes';
@@ -77,4 +78,4 @@ export const isAPIResponse = <T>(
 ): response is SuccessResponse<T> | ErrorResponse<T> =>
   isSuccessResponse(response) || isErrorResponse(response);
 
-export { auth, errors, schemas, httpCodes, httpMethods };
+export { auth, user, errors, schemas, httpCodes, httpMethods };

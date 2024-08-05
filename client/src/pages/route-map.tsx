@@ -9,7 +9,8 @@ import * as React from 'react';
 // Page imports
 import NotFound from '@pages/404';
 import RootPage from '@pages/root';
-import routeMap from '@pages/auth/route-map';
+import authRouteMap from '@pages/auth/route-map';
+import userRouteMap from './user/route-map';
 import foodRouteMap from './food/route-map';
 
 export type PathStr = `/${string}`;
@@ -40,7 +41,8 @@ const routes: RootRouteMap = {
     accessLevel: 'admin',
     title: 'Admin',
   },
-  ...routeMap,
+  ...authRouteMap,
+  ...userRouteMap,
   ...foodRouteMap,
 } as const;
 export default routes;
