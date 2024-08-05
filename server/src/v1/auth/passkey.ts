@@ -18,7 +18,6 @@ import {
   usersTable,
 } from '../../db/schemas';
 
-import type { AuthenticatorTransportFuture } from '@simplewebauthn/server/script/deps';
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
@@ -26,9 +25,11 @@ import {
   verifyRegistrationResponse,
 } from '@simplewebauthn/server';
 import { signJwt } from '../../utils/service/auth/jwt';
+import { getHostDomain, getURL } from '../../utils/app';
+import { bytesToBase64, base64ToBytes } from '../../utils/bytearry-encoding';
 
 // Constants
-const RP_ID = 'greenbitessg.ngjx.org' as const;
+const RP_ID = getHostDomain();
 const RP_NAME = 'GreenbitesSG' as const;
 
 // Start login passkey
@@ -76,7 +77,7 @@ export const loginPasskeyStart: IBareRouteHandler = async (req, res) => {
 
   // Gen opts
   const opts = await generateAuthenticationOptions({
-    rpID: RP_ID,
+    rpID: process.env.NODE_ENV === 'development' ? 'localhost' : RP_ID,
     allowCredentials: foundUsers.map((p) => p.passkey),
   });
 
@@ -152,6 +153,7 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
   }
 
   // Parse body
+  console.log('Body:', JSON.stringify(castedBody, null, 2));
   let verification;
   try {
     verification = await verifyAuthenticationResponse({
@@ -159,9 +161,10 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
       expectedChallenge: currentChallenges[0].challenge,
       expectedOrigin: `https://${RP_ID}`,
       expectedRPID: RP_ID,
+      requireUserVerification: false,
       authenticator: {
         credentialID: passkeys[0].id,
-        credentialPublicKey: passkeys[0].publicKey,
+        credentialPublicKey: base64ToBytes(passkeys[0].publicKey),
         counter: passkeys[0].counter,
         transports: passkeys[0].transports,
       },
@@ -187,6 +190,13 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
     .set({ counter: verification.authenticationInfo.newCounter })
     .where(eq(passkeysTable.id, passkeys[0].id));
 
+  // Delete challenge
+  await db
+    .delete(passkeyChallengesTable)
+    .where(
+      eq(passkeyChallengesTable.challenge, currentChallenges[0].challenge),
+    );
+
   const accessToken = signJwt({ sub: passkeys[0].userId }, 'access');
   const refreshToken = signJwt({ sub: passkeys[0].userId }, 'refresh');
 
@@ -208,7 +218,7 @@ export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
     .where(eq(passkeysTable.userId, req.user.id));
   const opts = await generateRegistrationOptions({
     rpName: RP_NAME,
-    rpID: RP_ID,
+    rpID: process.env.NODE_ENV === 'development' ? 'localhost' : RP_ID,
     userName: req.user.username,
     timeout: 60000,
     attestationType: 'none',
@@ -283,10 +293,11 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
   let verification;
   try {
     verification = await verifyRegistrationResponse({
-      response: req.body,
+      response: castedBody.signed,
       expectedChallenge: currentChallenges[0].challenge,
-      expectedOrigin: `https://${RP_ID}`,
-      expectedRPID: RP_ID,
+      expectedOrigin: getURL(),
+      expectedRPID:
+        process.env.NODE_ENV === 'development' ? 'localhost' : RP_ID,
     });
   } catch (err) {
     console.log(`ERR ${err}`);
@@ -311,16 +322,23 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     );
 
   // Register passkey
-  await db.insert(passkeysTable).values({
-    counter: 0,
-    userId: req.user.id,
-    id: verification.registrationInfo.credentialID,
-    webAuthnUserId: currentChallenges[0].challengeUserId,
-    backedUp: verification.registrationInfo.credentialBackedUp,
-    publicKey: verification.registrationInfo.credentialPublicKey,
-    deviceType: verification.registrationInfo.credentialDeviceType,
-    transports: req.body.response.transports as AuthenticatorTransportFuture[],
-  });
+  const saved = await db
+    .insert(passkeysTable)
+    .values({
+      counter: 0,
+      userId: req.user.id,
+      id: verification.registrationInfo.credentialID,
+      webAuthnUserId: currentChallenges[0].challengeUserId,
+      backedUp: verification.registrationInfo.credentialBackedUp,
+      publicKey: bytesToBase64(
+        verification.registrationInfo.credentialPublicKey,
+      ),
+      deviceType: verification.registrationInfo.credentialDeviceType,
+      transports: castedBody.signed.response.transports ?? [],
+    })
+    .returning();
+  console.log('Saved', saved);
+  console.log('Body:', castedBody.signed);
 
   return res.status(201).json({
     status: 201,

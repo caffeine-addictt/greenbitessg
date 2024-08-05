@@ -20,3 +20,8 @@ requireEnv('DATABASE_URL');
 requireEnv('JWT_ACCESS_KEY');
 requireEnv('JWT_REFRESH_KEY');
 requireEnv('RESEND_API_KEY');
+requireEnv('UPLOADTHING_APP_ID');
+requireEnv('UPLOADTHING_SECRET');
+requireEnv('RECOGNITION_API_TOKEN');
+requireEnv('NUTRITION_API_KEY');
+requireEnv('NUTRITION_API_ID');

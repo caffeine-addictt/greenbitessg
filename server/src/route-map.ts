@@ -10,6 +10,7 @@ import type { Request, Response, NextFunction } from 'express';
 
 // Importing route handlers
 import v1 from './v1/route-map';
+import api from './api/route-map';
 import { AuthenticatedRequest } from './middleware/jwt';
 
 // Types
@@ -43,7 +44,7 @@ export type AuthenticationOptions = {
 export type RouteDetails = { handler: RouteHandler } & AuthenticationOptions;
 export type RouteHandlers = {
   [M in httpMethods]?: RouteDetails;
-} & AuthenticationOptions;
+} & { handler?: RouteHandler } & AuthenticationOptions;
 export type RoutingMap<T extends string = `/${string}`> = {
   [uri in T]: RouteHandlers;
 };
@@ -62,6 +63,7 @@ const routeMap: RoutingMap = {
     },
   },
   ...v1,
+  ...api,
 } as const;
 
 export default routeMap;

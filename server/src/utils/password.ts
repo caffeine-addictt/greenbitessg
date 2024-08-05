@@ -15,15 +15,14 @@ export const hashPassword = async (password: string): Promise<string> => {
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = await encrypt(password, salt);
 
-  return hash + salt;
+  return hash + ':' + salt;
 };
 
 export const matchPassword = async (
   password: string,
   hash: string,
 ): Promise<boolean> => {
-  const stored = hash.slice(0, 65);
-  const salt = hash.slice(64);
+  const [stored, salt] = hash.split(':');
   const encrypted = await encrypt(password, salt);
 
   const a = Buffer.from(encrypted);

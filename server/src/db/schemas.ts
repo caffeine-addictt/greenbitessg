@@ -9,7 +9,6 @@ import {
   serial,
   text,
   timestamp,
-  date,
   smallint,
   integer,
   AnyPgColumn,
@@ -26,7 +25,11 @@ import type {
 
 // Custom types
 /** For binary data - Currently for storing Unit8Array publicKey */
-const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
+export const bytea = customType<{
+  data: Buffer;
+  notNull: false;
+  default: false;
+}>({
   dataType: () => 'bytea',
 });
 
@@ -40,7 +43,6 @@ export const usersTable = pgTable('users_table', {
   permission: smallint('permission').default(0).notNull(),
   username: text('username').notNull(),
   email: text('email').notNull().unique(),
-  dateOfBirth: date('date_of_birth').notNull(),
   password: text('password').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
@@ -48,13 +50,162 @@ export const usersTable = pgTable('users_table', {
     .$onUpdate(() => new Date()),
 });
 export const usersRelations = relations(usersTable, ({ many }) => ({
+  content: many(contentTable),
   jwtTokenBlocklist: many(jwtTokenBlocklist),
   tokens: many(tokens),
   passkeys: many(passkeysTable),
   passkeyChallenges: many(passkeyChallengesTable),
+  feedback: many(feedbackTable),
+  notification: many(notificationTable),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
+
+/**
+ * Feedback
+ */
+export const feedbackTable = pgTable('feedback_table', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  suggestion: text('suggestion').default(''),
+  feedbackMessage: text('feedback_message').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const feedbackRelations = relations(feedbackTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [feedbackTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertFeedback = typeof feedbackTable.$inferInsert;
+export type SelectFeedback = typeof feedbackTable.$inferSelect;
+
+/**
+ * Dashboard
+ */
+export const dashboardTable = pgTable('dashboard', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const dashboardRelations = relations(dashboardTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [dashboardTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertDashboard = typeof dashboardTable.$inferInsert;
+export type SelectDashboard = typeof dashboardTable.$inferSelect;
+
+/**
+ * Event
+ */
+export const eventTable = pgTable('events', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  date: timestamp('date').notNull(),
+  time: text('time').notNull(),
+  location: text('location').notNull(),
+  description: text('description'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const eventRelations = relations(eventTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [eventTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertEvent = typeof eventTable.$inferInsert;
+export type SelectEvent = typeof eventTable.$inferSelect;
+
+/**
+ * Content
+ * Data for uploaded content like images, videos etc.
+ *
+ * We only store the filename.
+ * To access content, add `https://utfs.io/f/` in front of the filename.
+ */
+export const contentTable = pgTable('content_table', {
+  filename: text('filename').primaryKey(),
+  size: integer('size').notNull(),
+  type: text('type').notNull().$type<'image'>(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const contentRelations = relations(contentTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [contentTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertContent = typeof contentTable.$inferInsert;
+export type SelectContent = typeof contentTable.$inferSelect;
+
+/**
+ * Food table
+ *
+  food_name: string;
+  serving_unit: string;
+  tag_name: string;
+  serving_qty: number;
+  nf_calories: number;
+ */
+export const foodTable = pgTable('food_table', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  servingUnit: text('serving_unit').notNull(),
+  servingQty: integer('serving_qty').notNull(),
+  calories: integer('nf_calories').notNull(),
+  imageId: text('image_id')
+    .notNull()
+    .references((): AnyPgColumn => contentTable.filename, {
+      onDelete: 'cascade',
+    }),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const foodRelations = relations(foodTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [foodTable.userId],
+    references: [usersTable.id],
+  }),
+  image: one(contentTable, {
+    fields: [foodTable.imageId],
+    references: [contentTable.filename],
+  }),
+}));
+export type InsertFood = typeof foodTable.$inferInsert;
+export type SelectFood = typeof foodTable.$inferSelect;
 
 /**
  * Passkey Challenges
@@ -66,7 +217,6 @@ export const passkeyChallengesTable = pgTable('passkey_challenges_table', {
   challengeUserId: text('challenge_user_id').notNull(),
   userId: integer('user_id')
     .notNull()
-    .unique()
     .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
@@ -94,7 +244,7 @@ export const passkeysTable = pgTable('passkeys_table', {
   id: text('id').notNull().primaryKey(),
 
   /** Public key bytes */
-  publicKey: bytea('public_key').notNull().$type<Uint8Array>(),
+  publicKey: text('public_key').notNull(),
 
   /** From generateRegistrationOptions() */
   webAuthnUserId: text('webauthn_user_id').notNull(),
@@ -178,3 +328,31 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
 export type TokenType = 'verification' | 'activation';
 export type InsertToken = typeof tokens.$inferInsert;
 export type SelectToken = typeof tokens.$inferSelect;
+
+/**
+ * Notifications
+ */
+export const notificationTable = pgTable('notification_table', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
+  notificationMessage: text('feedback_message').notNull(),
+  notificationType: text('notification_type').default('info').notNull(),
+  isRead: boolean('is_read').default(false).notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const notificationRelations = relations(
+  notificationTable,
+  ({ one }) => ({
+    user: one(usersTable, {
+      fields: [notificationTable.userId],
+      references: [usersTable.id],
+    }),
+  }),
+);
+export type InsertNotification = typeof notificationTable.$inferInsert;
+export type SelectNotification = typeof notificationTable.$inferSelect;
