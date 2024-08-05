@@ -4,6 +4,8 @@ import { IAuthedRouteHandler } from '../route-map';
 import {
   GetFeedbackSuccAPI,
   GetFeedbackFailAPI,
+  CreateFeedbackFailAPI,
+  CreateFeedbackSuccAPI,
 } from '@src/lib/api-types/feedback';
 import { z } from 'zod';
 
@@ -42,7 +44,7 @@ export const createFeedback: IAuthedRouteHandler = async (req, res) => {
     return res.status(400).json({
       status: 400,
       errors: errorStack,
-    } satisfies GetFeedbackFailAPI);
+    } satisfies CreateFeedbackFailAPI);
   }
 
   try {
@@ -72,7 +74,7 @@ export const createFeedback: IAuthedRouteHandler = async (req, res) => {
     return res.status(200).json({
       status: 200,
       data: responseData,
-    } satisfies GetFeedbackSuccAPI);
+    } satisfies CreateFeedbackSuccAPI);
   } catch (error) {
     console.error('Server error:', error); // Log unexpected errors
     return res.status(500).json({
@@ -82,4 +84,31 @@ export const createFeedback: IAuthedRouteHandler = async (req, res) => {
       ],
     });
   }
+};
+
+export const getFeedback: IAuthedRouteHandler = async (_, res) => {
+  // Fetch all feedback
+  const feedbacks = await db.select().from(feedbackTable);
+
+  // Check if feedbacks were found
+  if (feedbacks.length === 0) {
+    return res.status(404).json({
+      status: 404,
+      errors: [{ message: 'No feedbacks found!' }],
+    } satisfies GetFeedbackFailAPI);
+  }
+
+  const formattedFeedbacks = feedbacks.map((feedback) => ({
+    id: feedback.id,
+    name: feedback.name,
+    email: feedback.email,
+    suggestion: feedback.suggestion || undefined,
+    feedbackMessage: feedback.feedbackMessage,
+  }));
+
+  // Send the response
+  return res.status(200).json({
+    status: 200,
+    data: formattedFeedbacks,
+  } satisfies GetFeedbackSuccAPI);
 };
