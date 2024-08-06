@@ -69,7 +69,7 @@ export const feedbackTable = pgTable('feedback_table', {
   name: text('name').notNull(), // Added name field
   email: text('email').notNull(), // Added email field
   suggestion: text('suggestion').default(''), // Optional field with default empty string
-  feedbackMessage: text('feedback_message').notNull(),
+  feedbackMessage: text('message').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
