@@ -1,4 +1,5 @@
 import { db } from '../db';
+import { eq } from 'drizzle-orm';
 import { feedbackTable } from '../db/schemas';
 import { IAuthedRouteHandler } from '../route-map';
 import {
@@ -6,6 +7,8 @@ import {
   GetFeedbackFailAPI,
   CreateFeedbackFailAPI,
   CreateFeedbackSuccAPI,
+  DeleteFeedbackSuccAPI,
+  DeleteFeedbackFailAPI,
 } from '@src/lib/api-types/feedback';
 import { z } from 'zod';
 
@@ -111,4 +114,23 @@ export const getFeedback: IAuthedRouteHandler = async (_, res) => {
     status: 200,
     data: formattedFeedbacks,
   } satisfies GetFeedbackSuccAPI);
+};
+
+// Handle /v1/event/:id DELETE
+export const deleteFeedback: IAuthedRouteHandler = async (req, res) => {
+  const feedbackId = parseInt(req.params.id, 10);
+
+  if (isNaN(feedbackId) || feedbackId < 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Invalid feedback ID' }],
+    } satisfies DeleteFeedbackFailAPI);
+  }
+
+  await db.delete(feedbackTable).where(eq(feedbackTable.id, feedbackId));
+
+  return res.status(200).json({
+    status: 200,
+    data: null,
+  } satisfies DeleteFeedbackSuccAPI);
 };

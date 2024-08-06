@@ -30,6 +30,24 @@ const FeedbackList: PageComponent = () => {
     fetchFeedbacks();
   }, []);
 
+  // Function to handle feedback deletion
+  const deleteFeedback = async (id: number) => {
+    try {
+      await httpClient.delete<{ data: null }>({
+        uri: `/feedback/${id}`,
+        withCredentials: 'access',
+      });
+
+      // Remove the deleted feedback from the state
+      setFeedbacks((prevFeedbacks) =>
+        prevFeedbacks.filter((feedback) => feedback.id !== id),
+      );
+    } catch (err) {
+      setError('Error deleting feedback! Please try again later.');
+      console.error('Delete error:', err);
+    }
+  };
+
   return (
     <div className="container mx-auto mt-16">
       <h1 className="text-center text-2xl font-bold">Feedback List</h1>
@@ -45,6 +63,12 @@ const FeedbackList: PageComponent = () => {
               <p>Email: {feedback.email}</p>
               <p>Suggestion: {feedback.suggestion || 'N/A'}</p>
               <p>Message: {feedback.feedbackMessage}</p>
+              <button
+                onClick={() => deleteFeedback(feedback.id)}
+                className="mt-2 rounded bg-red-500 px-4 py-1 text-white"
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
