@@ -13,7 +13,6 @@ import foodRouteMap from './food/route-map';
 import NotFound from '@pages/404';
 import RootPage from '@pages/root';
 
-
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
 export type PageComponent = (
