@@ -61,20 +61,6 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
-// Define the schema for the dashboard table
-export const dashboardTable = pgTable('dashboard', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  description: text('description'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at')
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-// Define types for insertion and selection
-export type InsertDashboard = typeof dashboardTable.$inferInsert;
-export type SelectDashboard = typeof dashboardTable.$inferSelect;
 /**
  * Feedback
  */
