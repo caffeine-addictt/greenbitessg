@@ -10,7 +10,7 @@ import {
   type FileRouter,
 } from 'uploadthing/express';
 
-import { AuthenticatedRequest } from '../middleware/jwt';
+import { iAuthenticate, type AuthenticatedRequest } from '../middleware/jwt';
 
 import { db } from '..//db';
 import { contentTable } from '../db/schemas';
@@ -18,9 +18,10 @@ import { contentTable } from '../db/schemas';
 const f = createUploadthing();
 const uploadRouter = {
   imageRouter: f({ image: { maxFileSize: '4MB' } })
-    .middleware(async ({ req }) => ({
-      userId: (req as AuthenticatedRequest).user.id,
-    }))
+    .middleware(async ({ req }) => {
+      await iAuthenticate('access', 'authenticated', {}, req);
+      return { userId: (req as AuthenticatedRequest).user.id };
+    })
     .onUploadComplete(async ({ metadata, file }) => {
       // Save to DB
       await db.insert(contentTable).values({

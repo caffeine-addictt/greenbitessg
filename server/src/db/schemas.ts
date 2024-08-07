@@ -55,6 +55,8 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
   tokens: many(tokens),
   passkeys: many(passkeysTable),
   passkeyChallenges: many(passkeyChallengesTable),
+  feedback: many(feedbackTable),
+  notification: many(notificationTable),
 }));
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
@@ -73,6 +75,83 @@ export const dashboardTable = pgTable('dashboard', {
 // Define types for insertion and selection
 export type InsertDashboard = typeof dashboardTable.$inferInsert;
 export type SelectDashboard = typeof dashboardTable.$inferSelect;
+/**
+ * Feedback
+ */
+export const feedbackTable = pgTable('feedback_table', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  suggestion: text('suggestion').default(''),
+  feedbackMessage: text('message').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const feedbackRelations = relations(feedbackTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [feedbackTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertFeedback = typeof feedbackTable.$inferInsert;
+export type SelectFeedback = typeof feedbackTable.$inferSelect;
+
+/**
+ * Dashboard
+ */
+export const dashboardTable = pgTable('dashboard', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const dashboardRelations = relations(dashboardTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [dashboardTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertDashboard = typeof dashboardTable.$inferInsert;
+export type SelectDashboard = typeof dashboardTable.$inferSelect;
+
+/**
+ * Event
+ */
+export const eventTable = pgTable('events', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references((): AnyPgColumn => usersTable.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  date: timestamp('date').notNull(),
+  time: text('time').notNull(),
+  location: text('location').notNull(),
+  description: text('description'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const eventRelations = relations(eventTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [eventTable.userId],
+    references: [usersTable.id],
+  }),
+}));
+export type InsertEvent = typeof eventTable.$inferInsert;
+export type SelectEvent = typeof eventTable.$inferSelect;
+
 /**
  * Content
  * Data for uploaded content like images, videos etc.
@@ -263,3 +342,30 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
 export type TokenType = 'verification' | 'activation';
 export type InsertToken = typeof tokens.$inferInsert;
 export type SelectToken = typeof tokens.$inferSelect;
+
+/**
+ * Notifications
+ */
+export const notificationTable = pgTable('notification_table', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
+  notificationMessage: text('message').notNull(),
+  notificationType: text('type').default('info').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export const notificationRelations = relations(
+  notificationTable,
+  ({ one }) => ({
+    user: one(usersTable, {
+      fields: [notificationTable.userId],
+      references: [usersTable.id],
+    }),
+  }),
+);
+export type InsertNotification = typeof notificationTable.$inferInsert;
+export type SelectNotification = typeof notificationTable.$inferSelect;
