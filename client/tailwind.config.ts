@@ -30,7 +30,10 @@ const config = withUt({
         },
         primary: {
           light: '#3CC360',
-          dark: '#CDBCB1',
+          dark: {
+            DEFAULT: '#CDBCB1',
+            200: '#B5A69C',
+          },
         },
         text: {
           light: '#010E04',
