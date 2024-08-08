@@ -5,17 +5,23 @@
  */
 
 import * as React from 'react';
-import { Button } from '@/components/ui/button';
+import { AuthContext } from '@service/auth';
+import { Button, InternalLink } from '@components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
+import { BellIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { PageComponent } from '@pages/route-map';
 
-const Navbar = (): React.ReactNode => {
+const Navbar: PageComponent = (props): React.JSX.Element => {
+  const { isAdmin } = React.useContext(AuthContext)!;
   return (
-    <nav className="bg-accent-dark">
+    <nav {...props} className="bg-accent-dark">
       <div className="mx-auto flex h-16 max-w-screen-xl flex-wrap items-center justify-between p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/logo_279x279.webp" className="h-8" alt="Logo" />
@@ -26,48 +32,102 @@ const Navbar = (): React.ReactNode => {
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button className="size-9 items-center !bg-primary-dark p-2 text-center">
-                <img src="/dropdown.svg"></img>
+              <Button className="size-10 items-center !bg-primary-dark p-2 text-center">
+                <HamburgerMenuIcon />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="block w-80 rounded border-none !bg-primary-dark px-2 py-1 !text-text-light md:w-60 md:p-2 md:text-sm">
-              <DropdownMenuItem>
-                <a href="/" aria-current="page">
+            <DropdownMenuContent className="block w-80 rounded border-none !bg-primary-dark !text-text-light !no-underline md:w-60 md:p-1 md:text-sm">
+              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                <InternalLink
+                  href="/"
+                  aria-current="page"
+                  className="m-0 p-0 !text-text-light !no-underline"
+                  variant={'link'}
+                >
                   Home
-                </a>
+                </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <a href="#">About</a>
+              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                <InternalLink
+                  href="/about"
+                  className="m-0 p-0 !text-text-light !no-underline"
+                  variant={'link'}
+                >
+                  About
+                </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <a href="/home">My Account</a>
+              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                <InternalLink
+                  href="/home"
+                  className="m-0 p-0 !text-text-light !no-underline"
+                  variant={'link'}
+                >
+                  My Account
+                </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <a href="#">Today's Sustainable Food Tips</a>
+              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                <InternalLink
+                  href="/food-tips"
+                  className="m-0 p-0 !text-text-light !no-underline"
+                  variant={'link'}
+                >
+                  Today's Sustainable Food Tips
+                </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem className="md:hidden">
-                <a href="/my-events" className="md:hidden">
+              <DropdownMenuItem className="focus:bg-primary-dark-200 md:hidden dark:focus:bg-primary-dark-200">
+                <InternalLink
+                  href="/my-events"
+                  className="m-0 p-0 !text-text-light !no-underline md:hidden"
+                  variant={'link'}
+                >
                   My Events
-                </a>
+                </InternalLink>
               </DropdownMenuItem>
+              {isAdmin && (
+                <>
+                  <DropdownMenuLabel>Admin</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                    <InternalLink
+                      href="/dashboard"
+                      className="m-0 p-0 !text-text-light !no-underline"
+                      variant={'link'}
+                    >
+                      Dashboard
+                    </InternalLink>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                    <InternalLink
+                      href="/events"
+                      className="m-0 p-0 !text-text-light !no-underline"
+                      variant={'link'}
+                    >
+                      Event Management
+                    </InternalLink>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button className="size-9 items-center !bg-primary-dark p-2 text-center">
-                <img src="/notificationBell.svg"></img>
+              <Button className="size-10 items-center !bg-primary-dark p-2 text-center">
+                <BellIcon />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="h-52 w-60 !min-w-full border-none !bg-primary-dark px-2 py-3 text-base !text-text-light md:text-sm">
-              <DropdownMenuItem>Notification Item</DropdownMenuItem>
+            <DropdownMenuContent className="h-52 w-60 !min-w-full border-none !bg-primary-dark text-base md:p-2 md:text-sm">
+              <DropdownMenuItem className="!text-text-light focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                Notification Item
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <a
+          <InternalLink
             href="/my-events"
-            className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm text-text-light md:inline-flex"
+            variant={'link'}
+            className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm !text-text-light !no-underline md:inline-flex"
           >
             My Events
-          </a>
+          </InternalLink>
         </div>
       </div>
     </nav>
