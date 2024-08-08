@@ -5,13 +5,13 @@
  */
 
 import * as React from 'react';
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 
 const Navbar = (): React.ReactNode => {
   return (
@@ -26,21 +26,39 @@ const Navbar = (): React.ReactNode => {
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button className='!bg-primary-dark size-9 items-center text-center p-2'><img src="/dropdown.svg"></img></Button>
+              <Button className="size-9 items-center !bg-primary-dark p-2 text-center">
+                <img src="/dropdown.svg"></img>
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='!bg-primary-dark block rounded !text-text-light md:text-sm px-2 py-1 md:p-2 border-none w-80 md:w-60'>
-              <DropdownMenuItem><a href="/" aria-current="page">Home</a></DropdownMenuItem>
-              <DropdownMenuItem><a href="#">About</a></DropdownMenuItem>
-              <DropdownMenuItem><a href="/home">My Account</a></DropdownMenuItem>
-              <DropdownMenuItem><a href="#">Today's Sustainable Food Tips</a></DropdownMenuItem>
-              <DropdownMenuItem className="md:hidden"><a href="/my-events" className="md:hidden">My Events</a></DropdownMenuItem>
+            <DropdownMenuContent className="block w-80 rounded border-none !bg-primary-dark px-2 py-1 !text-text-light md:w-60 md:p-2 md:text-sm">
+              <DropdownMenuItem>
+                <a href="/" aria-current="page">
+                  Home
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <a href="#">About</a>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <a href="/home">My Account</a>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <a href="#">Today's Sustainable Food Tips</a>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="md:hidden">
+                <a href="/my-events" className="md:hidden">
+                  My Events
+                </a>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button className='!bg-primary-dark size-9 items-center text-center p-2'><img src="/notificationBell.svg"></img></Button>
+              <Button className="size-9 items-center !bg-primary-dark p-2 text-center">
+                <img src="/notificationBell.svg"></img>
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='!bg-primary-dark h-52 w-60 !text-text-light text-base md:text-sm border-none !min-w-full py-3 px-2'>
+            <DropdownMenuContent className="h-52 w-60 !min-w-full border-none !bg-primary-dark px-2 py-3 text-base !text-text-light md:text-sm">
               <DropdownMenuItem>Notification Item</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
