@@ -13,14 +13,14 @@ const routeMap: RoutingMap<`/v1/notification${string}`> = {
     GET: {
       handler: getNotification,
       accessLevel: 'authenticated',
-      authOptions: { allowNonActivated: false },
+      authOptions: { allowNonActivated: true },
     },
   },
   '/v1/notification/archive': {
     POST: {
       handler: archiveNotification,
       accessLevel: 'authenticated',
-      authOptions: { allowNonActivated: false },
+      authOptions: { allowNonActivated: true},
     },
   },
 } as const;
