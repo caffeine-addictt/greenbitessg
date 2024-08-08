@@ -20,7 +20,7 @@ const routeMap: RoutingMap<`/v1/notification${string}`> = {
     POST: {
       handler: archiveNotification,
       accessLevel: 'authenticated',
-      authOptions: { allowNonActivated: true},
+      authOptions: { allowNonActivated: true },
     },
   },
 } as const;
