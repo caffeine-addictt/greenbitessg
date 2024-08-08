@@ -5,6 +5,13 @@
  */
 
 import * as React from 'react';
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const Navbar = (): React.ReactNode => {
   return (
@@ -17,59 +24,32 @@ const Navbar = (): React.ReactNode => {
           </span>
         </a>
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
-          <button
-            data-collapse-toggle="navbar-dropdown"
-            type="button"
-            className="inline-flex size-9 items-center justify-center rounded-md bg-primary-dark p-2 text-sm text-text-light"
-            aria-controls="navbar-cta"
-            aria-expanded="false"
-          >
-            <span className="sr-only"></span>
-            <img src="/dropdown.svg"></img>
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button className='!bg-primary-dark size-9 items-center text-center p-2'><img src="/dropdown.svg"></img></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='!bg-primary-dark block rounded !text-text-light md:text-sm px-2 py-1 md:p-2 border-none w-80 md:w-60'>
+              <DropdownMenuItem><a href="/" aria-current="page">Home</a></DropdownMenuItem>
+              <DropdownMenuItem><a href="#">About</a></DropdownMenuItem>
+              <DropdownMenuItem><a href="/home">My Account</a></DropdownMenuItem>
+              <DropdownMenuItem><a href="#">Today's Sustainable Food Tips</a></DropdownMenuItem>
+              <DropdownMenuItem className="md:hidden"><a href="/my-events" className="md:hidden">My Events</a></DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button className='!bg-primary-dark size-9 items-center text-center p-2'><img src="/notificationBell.svg"></img></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='!bg-primary-dark h-52 w-60 !text-text-light text-base md:text-sm border-none !min-w-full py-3 px-2'>
+              <DropdownMenuItem>Notification Item</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <a
-            href="#"
-            className="hidden size-9 items-center justify-center rounded-md bg-primary-dark p-2 text-center text-base font-medium md:inline-flex"
-          >
-            <img src="/notificationBell.svg"></img>
-          </a>
-          <a
-            href="#"
+            href="/my-events"
             className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm text-text-light md:inline-flex"
           >
             My Events
           </a>
-        </div>
-        <div
-          className="flex w-full items-center justify-between text-center md:order-1 md:hidden md:w-auto"
-          id="navbar-dropdown"
-        >
-          <ul className="mt-4 flex flex-col rounded-lg p-4 font-medium">
-            <li>
-              <a
-                href="#"
-                className="block px-3 py-2 md:p-0"
-                aria-current="page"
-              >
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block rounded px-3 py-2 md:p-0">
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block rounded px-3 py-2 md:p-0">
-                My Account
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block rounded px-3 py-2 md:p-0">
-                Today's Sustainable Food Tips
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
     </nav>
