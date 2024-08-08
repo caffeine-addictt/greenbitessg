@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import { asc } from 'drizzle-orm';
 import { db } from '../../db';
 import { notificationTable } from '../../db/schemas';
 import { IAuthedRouteHandler } from '../../route-map';
 import {
   GetNotificationSuccAPI,
   GetNotificationFailAPI,
-} from '@src/lib/api-types/notification';
+} from 'src/lib/api-types/notification';
 
 //
 const getNotification: IAuthedRouteHandler = async (req, res) => {
@@ -34,10 +33,7 @@ const getNotification: IAuthedRouteHandler = async (req, res) => {
   }
 
   // Build query
-  let query = db.select().from(notificationTable).$dynamic();
-
-  // Order
-  query = query.orderBy(asc(notificationTable.id));
+  const query = db.select().from(notificationTable);
 
   const found = await query;
   return res.status(200).json({
