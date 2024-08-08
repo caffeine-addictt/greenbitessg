@@ -10,7 +10,7 @@ import { IAuthedRouteHandler } from '../../route-map';
 import {
   GetNotificationSuccAPI,
   GetNotificationFailAPI,
-} from 'src/lib/api-types/notification';
+} from '../../lib/api-types/notification';
 
 //
 const getNotification: IAuthedRouteHandler = async (req, res) => {
@@ -33,9 +33,8 @@ const getNotification: IAuthedRouteHandler = async (req, res) => {
   }
 
   // Build query
-  const query = db.select().from(notificationTable);
+  const found = await db.select().from(notificationTable);
 
-  const found = await query;
   return res.status(200).json({
     status: 200,
     data: found.map((n) => ({
