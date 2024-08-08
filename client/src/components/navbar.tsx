@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
+} from '@components/ui/dropdown-menu';
 import { BellIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { PageComponent } from '@pages/route-map';
 
