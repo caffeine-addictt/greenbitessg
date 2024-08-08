@@ -18,10 +18,10 @@ import {
 import { BellIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { PageComponent } from '@pages/route-map';
 
-const Navbar: PageComponent = (props): React.JSX.Element => {
+const Navbar: PageComponent = (): React.JSX.Element => {
   const { isAdmin } = React.useContext(AuthContext)!;
   return (
-    <nav {...props} className="bg-accent-dark">
+    <nav className="bg-accent-dark">
       <div className="mx-auto flex h-16 max-w-screen-xl flex-wrap items-center justify-between p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/logo_279x279.webp" className="h-8" alt="Logo" />
