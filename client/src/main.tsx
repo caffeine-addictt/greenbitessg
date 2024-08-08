@@ -95,7 +95,7 @@ export const Layout = (): JSX.Element => {
   return (
     <div className="flex min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
       <main className="flex min-h-screen flex-col">
-        <Navbar location={location} isAdmin />
+        <Navbar />
 
         <QueryClientProvider client={new QueryClient()}>
           <Routes location={location}>
