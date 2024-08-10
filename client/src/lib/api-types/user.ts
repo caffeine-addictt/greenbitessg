@@ -32,3 +32,10 @@ export interface DeleteUserSuccAPI extends SuccessResponse<{ deleted: true }> {}
  * Successful response for /v1/user/passkey GET endpoint
  */
 export interface GetPasskeySuccAPI extends SuccessResponse<PasskeyData[]> {}
+
+/**
+ * Successful response for /v1/user/passkey DELETE endpoint
+ */
+export interface DeletePasskeySuccAPI
+  extends SuccessResponse<{ deleted: true }> {}
+export type DeletePasskeyFailAPI = ErrorResponse<'Passkey not found!'>;

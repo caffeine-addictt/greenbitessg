@@ -16,6 +16,7 @@ import {
   updateUser,
   deleteUser,
   getUserPasskeys,
+  deleteUserPasskey,
 } from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
 
@@ -42,6 +43,10 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   },
   '/v1/user/passkey': {
     GET: { handler: getUserPasskeys },
+    accessLevel: 'authenticated',
+  },
+  '/v1/user/passkey/:id': {
+    DELETE: { handler: deleteUserPasskey },
     accessLevel: 'authenticated',
   },
   '/v1/event': {

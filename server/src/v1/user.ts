@@ -15,6 +15,8 @@ import type {
   UpdateUserFailAPI,
   DeleteUserSuccAPI,
   GetPasskeySuccAPI,
+  DeletePasskeySuccAPI,
+  DeletePasskeyFailAPI,
 } from '../lib/api-types/user';
 
 import { db } from '../db';
@@ -112,4 +114,38 @@ export const getUserPasskeys: IAuthedRouteHandler = async (req, res) => {
     status: 200,
     data: passkeys,
   } satisfies GetPasskeySuccAPI);
+};
+
+// Delete user passket
+export const deleteUserPasskey: IAuthedRouteHandler = async (req, res) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id) || id < 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Passkey not found!' }],
+    } satisfies DeletePasskeyFailAPI);
+  }
+
+  const found = await db
+    .select({})
+    .from(passkeysTable)
+    .where(and(eq(passkeysTable.userId, req.user.id), eq(passkeysTable.id, id)))
+    .limit(1);
+  if (found.length === 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Passkey not found!' }],
+    } satisfies DeletePasskeyFailAPI);
+  }
+
+  await db
+    .delete(passkeysTable)
+    .where(
+      and(eq(passkeysTable.userId, req.user.id), eq(passkeysTable.id, id)),
+    );
+
+  return res.status(200).json({
+    status: 200,
+    data: { deleted: true },
+  } satisfies DeletePasskeySuccAPI);
 };
