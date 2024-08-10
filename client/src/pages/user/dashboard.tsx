@@ -9,7 +9,7 @@ import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, UseQueryResult, UseQueryOptions } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { cn } from '@utils/tailwind';
 
@@ -28,7 +28,6 @@ interface SustainabilityData {
 type Dashboard = z.infer<typeof dashboardUpdateSchema>;
 
 interface DashboardResponse {
-  data: Record<string, unknown>; // Use Record<string, unknown> as a placeholder for unknown structures
   dashboard: Dashboard[];
   salesData: SalesData[];
   sustainabilityData: SustainabilityData[];
@@ -41,24 +40,30 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
   const queryClient = useQueryClient();
 
   // Fetch dashboard data from the server
-  const { data, isError, isLoading } = useQuery({
+  const { data, isError, isLoading }: UseQueryResult<DashboardResponse> = useQuery<DashboardResponse>({
     queryKey: ['dashboard'],
-    queryFn: async () => {
+    queryFn: async (): Promise<DashboardResponse> => {
       try {
+        // Directly return data as DashboardResponse
         const response = await httpClient.get<DashboardResponse>({
           uri: '/dashboard',
-          withCredentials: 'access',
+          withCredentials: 'access', // Pass withCredentials as 'access'
         });
-        return response.data;
+        return response; // Directly return response
       } catch (err) {
         console.error('Fetch error:', err);
         throw err;
       }
     },
-    onError: () => {
-      setError('Error fetching dashboard data! Please try again later.');
+    onError: (err: unknown) => {
+      if (isAxiosError(err) && err.response) {
+        setError('Error fetching dashboard data! Please try again later.');
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
+      console.error('Query error:', err);
     },
-  });
+  } as UseQueryOptions<DashboardResponse, Error>); // Ensure the options type matches
 
   // Initialize form with empty values
   const DashboardForm = useForm<Dashboard>({
@@ -69,17 +74,12 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
     },
   });
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    formState: { isSubmitting, errors },
-  } = DashboardForm;
+  const { control, handleSubmit, setValue, formState: { isSubmitting, errors } } = DashboardForm;
 
   // Update form values when data is fetched
   useEffect(() => {
     if (data?.dashboard && data.dashboard.length > 0 && !isEditing) {
-      const dashboardItem = data.dashboard[0]; // Assuming you want the first item in the array
+      const dashboardItem = data.dashboard[0];
       setValue('title', dashboardItem.title);
       setValue('description', dashboardItem.description);
     }
@@ -90,7 +90,7 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
       await httpClient.post({
         uri: '/dashboard/update',
         payload: formData,
-        withCredentials: 'access',
+        withCredentials: 'access', // Pass withCredentials as 'access'
       });
       setSuccessMessage('Dashboard details updated successfully');
       setError(null);
@@ -115,13 +115,7 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
   if (isError) return <p>{error}</p>;
 
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center min-h-screen p-8',
-        className,
-      )}
-      {...props}
-    >
+    <div className={cn('flex flex-col items-center justify-center min-h-screen p-8', className)} {...props}>
       <div className="w-full max-w-6xl space-y-8">
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Form Container */}
@@ -141,9 +135,7 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
                     />
                   )}
                 />
-                {errors.title && (
-                  <p className="text-red-500">{errors.title.message}</p>
-                )}
+                {errors.title && <p className="text-red-500">{errors.title.message}</p>}
               </div>
 
               <div>
@@ -160,9 +152,7 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
                     />
                   )}
                 />
-                {errors.description && (
-                  <p className="text-red-500">{errors.description.message}</p>
-                )}
+                {errors.description && <p className="text-red-500">{errors.description.message}</p>}
               </div>
 
               {isEditing && (
@@ -182,10 +172,7 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
             </form>
             {!isEditing && (
               <div className="mt-4 flex justify-end">
-                <Button
-                  onClick={handleEditClick}
-                  className="text-xl text-blue-500"
-                >
+                <Button onClick={handleEditClick} className="text-xl text-blue-500">
                   Edit
                 </Button>
               </div>
