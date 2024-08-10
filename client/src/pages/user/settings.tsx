@@ -126,6 +126,95 @@ export const AccountPasskeys = () => {
     queryClient,
   );
 
+  // Finish passkey registration
+  const { mutate: finishRegistrationFlow, isPending: isRegisteringFinish } =
+    useMutation(
+      {
+        mutationKey: ['finish-registration'],
+        mutationFn: (data: passkeyRegisterFinishSchema) => {
+          toast({
+            title: 'Registering passkey...',
+            description: 'Please wait, this may take a few seconds',
+          });
+          return httpClient.post<
+            RegisterPasskeysFinishSuccAPI,
+            passkeyRegisterFinishSchema
+          >({
+            uri: '/auth/register/passkeys/finish',
+            withCredentials: 'access',
+            payload: data,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Passkey registered',
+            description: 'Passkey registered successfully',
+          });
+          refetch();
+        },
+        onError: (err) => {
+          console.log(err);
+          toast({
+            title: 'Something went wrong',
+            description: isAxiosError(err)
+              ? err.response?.data.errors[0].message
+              : 'Please try again later',
+            variant: 'destructive',
+          });
+        },
+      },
+      queryClient,
+    );
+
+  // Start passkey registration
+  const { mutate: startRegistrationFlow, isPending: isRegisteringStart } =
+    useMutation(
+      {
+        mutationKey: ['start-registration'],
+        mutationFn: async () => {
+          toast({
+            title: 'Firing up our servers...',
+            description: 'Please wait, this may take a few seconds',
+          });
+          const res = await httpClient.post<
+            RegisterPasskeysStartSuccAPI,
+            APIPayload
+          >({
+            uri: '/auth/register/passkeys/start',
+            withCredentials: 'access',
+          });
+          return res.data;
+        },
+        onSuccess: (data) =>
+          startRegistration(data.challenge)
+            .then((authResp) => {
+              finishRegistrationFlow({
+                track: data.track,
+                signed: authResp,
+              });
+            })
+            .catch((err) => {
+              console.error('Failed to start passkey:', err);
+              toast({
+                title: 'Something went wrong',
+                description: 'Please try again later',
+                variant: 'destructive',
+              });
+            }),
+        onError: (err) => {
+          console.log(err);
+          toast({
+            title: 'Something went wrong',
+            description: isAxiosError(err)
+              ? err.response?.data.errors[0].message
+              : 'Please try again later',
+            variant: 'destructive',
+          });
+        },
+      },
+      queryClient,
+    );
+
   return (
     <div className="my-7 flex w-full flex-col justify-center gap-2 rounded-md border-2 border-secondary-light bg-primary-dark p-4">
       <h2 className="mb-5 text-3xl font-bold text-text-dark dark:text-text-light">
@@ -166,6 +255,15 @@ export const AccountPasskeys = () => {
             </Button>
           </div>
         ))}
+
+      <Button
+        type="button"
+        disabled={isRegisteringStart || isRegisteringFinish}
+        onClick={() => startRegistrationFlow()}
+      >
+        <KeyRoundIcon className="mr-2 size-6" />
+        Register a new passkey
+      </Button>
     </div>
   );
 };
