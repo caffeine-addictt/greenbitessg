@@ -4,18 +4,33 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
+import type { PageComponent } from '@pages/route-map';
+
 import { useContext } from 'react';
+import { AuthContext } from '@service/auth';
+import { useNavigate } from 'react-router-dom';
+
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFormState } from 'react-hook-form';
 
-import httpClient from '@utils/http';
-import { AuthContext } from '@service/auth';
-import { userUpdateSchema } from '@lib/api-types/schemas/user';
-import type { UpdateUserSuccAPI } from '@lib/api-types/user';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@components/ui/use-toast';
+import httpClient, { APIPayload } from '@utils/http';
 import { isAxiosError } from 'axios';
+import { userUpdateSchema } from '@lib/api-types/schemas/user';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { passkeyRegisterFinishSchema } from '@lib/api-types/schemas/auth';
+import type {
+  RegisterPasskeysFinishSuccAPI,
+  RegisterPasskeysStartSuccAPI,
+} from '@lib/api-types/auth';
+import type {
+  UpdateUserSuccAPI,
+  DeleteUserSuccAPI,
+  GetPasskeySuccAPI,
+  DeletePasskeySuccAPI,
+} from '@lib/api-types/user';
+
+import { startRegistration } from '@simplewebauthn/browser';
 
 import {
   Form,
@@ -26,11 +41,12 @@ import {
   FormDescription,
   FormMessage,
 } from '@components/ui/form';
+import { cn } from '@utils/tailwind';
 import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
-import { PageComponent } from '@pages/route-map';
-import { useNavigate } from 'react-router-dom';
-import { cn } from '@utils/tailwind';
+import { useToast } from '@components/ui/use-toast';
+import { TrashIcon } from '@radix-ui/react-icons';
+import { KeyRoundIcon, LoaderIcon } from 'lucide-react';
 
 const AccountSettingsPage: PageComponent = ({ className, ...props }) => (
   <div
