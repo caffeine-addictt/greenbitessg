@@ -178,7 +178,12 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
                 <Button
                   type="submit"
                   variant="secondary"
-                  disabled={isSubmitting}
+                  disabled={
+                    isSubmitting ||
+                    (user?.username ===
+                      accountSettingsForm.getValues('username') &&
+                      user?.email === accountSettingsForm.getValues('email'))
+                  }
                 >
                   {isSubmitting ? 'Saving...' : 'Save'}
                 </Button>
