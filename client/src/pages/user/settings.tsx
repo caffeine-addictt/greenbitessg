@@ -34,9 +34,9 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '@utils/tailwind';
 
 const AccountSettings: PageComponent = ({ className, ...props }) => {
-  const { user } = useContext(AuthContext)!;
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { user, refetch } = useContext(AuthContext)!;
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -53,25 +53,36 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
     control: accountSettingsForm.control,
   });
 
-  // Handle saving account
-  const handleSave = async (data: z.infer<typeof userUpdateSchema>) => {
-    await httpClient
-      .post<UpdateUserSuccAPI, z.infer<typeof userUpdateSchema>>({
-        uri: '/user/update',
-        payload: data,
-        withCredentials: 'access',
-      })
-      .then(() => {
-        setSuccessMessage('Account details updated successfully');
-        setError(null);
-        window.location.reload();
-      })
-      .catch((err) => {
-        setError('Error updating account details! Please try again later.');
-        setSuccessMessage(null);
+  // Handle updating account
+  const { mutate: updateUser } = useMutation(
+    {
+      mutationKey: ['update-user'],
+      mutationFn: (data: z.infer<typeof userUpdateSchema>) =>
+        httpClient.post<UpdateUserSuccAPI, z.infer<typeof userUpdateSchema>>({
+          uri: '/user/update',
+          payload: data,
+          withCredentials: 'access',
+        }),
+      onSuccess: () => {
+        toast({
+          title: 'Success',
+          description: 'Updated account details successfully',
+        });
+        refetch();
+      },
+      onError: (err) => {
         console.log(err);
-      });
-  };
+        toast({
+          title: 'Something went wrong',
+          description: isAxiosError(err)
+            ? err.response?.data.errors[0].message
+            : 'Please try again later',
+          variant: 'destructive',
+        });
+      },
+    },
+    queryClient,
+  );
 
   // Handle deleting account
   const { mutate: deleteUser } = useMutation(
@@ -116,7 +127,9 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
         <div className="mx-auto flex justify-center">
           <Form {...accountSettingsForm}>
             <form
-              onSubmit={accountSettingsForm.handleSubmit(handleSave)}
+              onSubmit={accountSettingsForm.handleSubmit((data) =>
+                updateUser(data),
+              )}
               className="mt-8 w-[26.5rem] space-y-4"
             >
               {error && <p className="text-red-500">{error}</p>}
