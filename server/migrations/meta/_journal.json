@@ -162,6 +162,13 @@
       "when": 1722521772694,
       "tag": "0022_past_natasha_romanoff",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1723296380347,
+      "tag": "0023_solid_jean_grey",
+      "breakpoints": true
     }
   ]
 }
