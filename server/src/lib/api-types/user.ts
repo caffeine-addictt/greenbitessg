@@ -9,6 +9,7 @@ import * as z from 'zod';
 import { user } from './schemas';
 import type { SuccessResponse } from './index';
 import { ErrorResponse } from './errors';
+import { PasskeyData } from './schemas/auth';
 
 /**
  * Successful response for /v1/user endpoint
@@ -26,3 +27,8 @@ export type UpdateUserFailAPI = ErrorResponse<'Nothing to update!'>;
  * Successful response for /v1/user/delete POST endpoint
  */
 export interface DeleteUserSuccAPI extends SuccessResponse<{ deleted: true }> {}
+
+/**
+ * Successful response for /v1/user/passkey GET endpoint
+ */
+export interface GetPasskeySuccAPI extends SuccessResponse<PasskeyData[]> {}

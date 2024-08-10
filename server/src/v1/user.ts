@@ -4,21 +4,22 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import { IAuthedRouteHandler } from '../route-map';
+import type { IAuthedRouteHandler } from '../route-map';
 
-import { type ZodIssue } from 'zod';
+import type { ZodIssue } from 'zod';
 import { Http4XX } from '../lib/api-types/http-codes';
 import { type errors, schemas } from '../lib/api-types';
-import {
+import type {
   GetUserSuccAPI,
   UpdateUserSuccAPI,
   UpdateUserFailAPI,
   DeleteUserSuccAPI,
+  GetPasskeySuccAPI,
 } from '../lib/api-types/user';
 
 import { db } from '../db';
-import { usersTable } from '../db/schemas';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
+import { usersTable, passkeysTable } from '../db/schemas';
 
 export const getUser: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json({
@@ -92,4 +93,23 @@ export const deleteUser: IAuthedRouteHandler = async (req, res) => {
     status: 200,
     data: { deleted: true },
   } satisfies DeleteUserSuccAPI);
+};
+
+// Get user passkeys
+export const getUserPasskeys: IAuthedRouteHandler = async (req, res) => {
+  const passkeys: GetPasskeySuccAPI['data'] = await db
+    .select({
+      id: passkeysTable.id,
+      counter: passkeysTable.counter,
+      device_type: passkeysTable.deviceType,
+      created_at: passkeysTable.createdAt,
+      updated_at: passkeysTable.updatedAt,
+    })
+    .from(passkeysTable)
+    .where(eq(passkeysTable.userId, req.user.id));
+
+  return res.status(200).json({
+    status: 200,
+    data: passkeys,
+  } satisfies GetPasskeySuccAPI);
 };
