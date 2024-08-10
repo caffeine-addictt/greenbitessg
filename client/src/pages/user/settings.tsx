@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFormState } from 'react-hook-form';
@@ -34,8 +34,6 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '@utils/tailwind';
 
 const AccountSettings: PageComponent = ({ className, ...props }) => {
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { user, refetch } = useContext(AuthContext)!;
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -132,10 +130,6 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
               )}
               className="mt-8 w-[26.5rem] space-y-4"
             >
-              {error && <p className="text-red-500">{error}</p>}
-              {successMessage && (
-                <p className="text-green-500">{successMessage}</p>
-              )}
               <FormField
                 control={accountSettingsForm.control}
                 name="username"
