@@ -13,7 +13,6 @@ import httpClient from '@utils/http';
 import { AuthContext } from '@service/auth';
 import { userUpdateSchema } from '@lib/api-types/schemas/user';
 import type { UpdateUserSuccAPI } from '@lib/api-types/user';
-import { SuccessResponse } from '@lib/api-types/index';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@components/ui/use-toast';
 import { isAxiosError } from 'axios';
@@ -46,7 +45,6 @@ const AccountSettingsPage: PageComponent = ({ className, ...props }) => (
     <AccountDangerActions />
   </div>
 );
-
 export default AccountSettingsPage;
 
 // Danger Actions
@@ -61,7 +59,7 @@ export const AccountDangerActions = () => {
     {
       mutationKey: ['delete-user'],
       mutationFn: () => {
-        return httpClient.delete<SuccessResponse<null>>({
+        return httpClient.delete<DeleteUserSuccAPI>({
           uri: '/user',
           withCredentials: 'access',
         });

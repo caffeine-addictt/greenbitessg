@@ -13,7 +13,7 @@ import {
   GetUserSuccAPI,
   UpdateUserSuccAPI,
   UpdateUserFailAPI,
-  DeleteUserSuccessAPI,
+  DeleteUserSuccAPI,
 } from '../lib/api-types/user';
 
 import { db } from '../db';
@@ -90,6 +90,6 @@ export const deleteUser: IAuthedRouteHandler = async (req, res) => {
 
   return res.status(200).json({
     status: 200,
-    data: null,
-  } satisfies DeleteUserSuccessAPI);
+    data: { deleted: true },
+  } satisfies DeleteUserSuccAPI);
 };
