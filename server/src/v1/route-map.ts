@@ -12,6 +12,7 @@ import foodRoutes from './food/route-map';
 import { createFeedback } from './feedback';
 import { getUser, updateUser, deleteUser } from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
+import { updateDashboard, getDashboard } from './dashboard';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -52,6 +53,18 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/feedback': {
     POST: {
       handler: createFeedback,
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/dashboard/update': {
+    POST: {
+      handler: updateDashboard,
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/dashboard': {
+    GET: {
+      handler: getDashboard,
       accessLevel: 'authenticated',
     },
   },

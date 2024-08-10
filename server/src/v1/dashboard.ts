@@ -1,42 +1,132 @@
-import { z } from 'zod';
-import { IAuthedRouteHandler } from '../route-map';
-import { GetDashboardSuccAPI } from '../lib/api-types/dashboard';
+import { IAuthedRouteHandler } from '@src/route-map';
+import {
+  GetDashboardSuccAPI,
+  GetDashboardFailAPI,
+  UpdateDashboardSuccAPI,
+  UpdateDashboardFailAPI,
+} from '@src/lib/api-types/dashboard';
+import { db } from '../db';
+import { dashboardTable } from '../db/schemas';
+import { eq } from 'drizzle-orm';
+import { type errors, schemas } from '../lib/api-types';
+import { Http4XX } from '../lib/api-types/http-codes';
+import { ZodIssue } from 'zod';
 
-// Define the schema for the dashboard
-export const dashboardSchema = z.object({
-  id: z.number().int().positive().optional(), // Optional because it might be auto-generated
-  title: z.string().min(1, 'Title is required'), // Ensure the title is a non-empty string
-  description: z.string().optional(), // Optional field for description
-  isActive: z.boolean().default(true), // Default value is true if not provided
-  createdAt: z.date().default(() => new Date()), // Default to current date
-  updatedAt: z.date().default(() => new Date()), // Default to current date
-});
-
-// Handler for getting dashboard data
-export const getDashboard: IAuthedRouteHandler = async (_req, res) => {
-  // Example dashboard data; replace with actual data fetching logic
-  const dashboardData = {
-    id: 1, // Example value
-    title: 'Dashboard Title',
-    description: 'Sample description', // Example value
-    isActive: true, // Example value
-    createdAt: new Date(), // Example value
-    updatedAt: new Date(), // Example value
-  };
-
-  // Validate the data with the schema
-  const validationResult = dashboardSchema.safeParse(dashboardData);
-
-  if (!validationResult.success) {
-    return res.status(400).json({
-      status: 400,
-      error: 'Invalid data format',
-      issues: validationResult.error.errors,
-    });
+export const getDashboard: IAuthedRouteHandler = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({
+      status: 401,
+      errors: [{ message: 'User is not logged in' }],
+    } satisfies GetDashboardFailAPI);
   }
 
-  return res.status(200).json({
-    status: 200,
-    data: validationResult.data,
-  } satisfies GetDashboardSuccAPI);
+  try {
+    // Fetch dashboard data from the database
+    const dashboard = await db
+      .select()
+      .from(dashboardTable)
+      .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
+
+    if (dashboard.length === 0) {
+      return res.status(404).json({
+        status: 404,
+        errors: [{ message: 'No dashboard found for this user' }],
+      } satisfies GetDashboardFailAPI);
+    }
+
+    const formattedDashboard = dashboard.map((dashboard) => ({
+      id: dashboard.id,
+      title: dashboard.title,
+      description: dashboard.description || undefined,
+      createdAt: dashboard.createdAt,
+      updatedAt: dashboard.updatedAt,
+    }));
+
+    // Calculate sales data (dummy data for illustration)
+    const salesData = [
+      { date: '2023-01-01', amount: 100 },
+      { date: '2023-02-01', amount: 200 },
+      { date: '2023-03-01', amount: 150 },
+      { date: '2023-04-01', amount: 350 },
+      { date: '2023-05-01', amount: 250 },
+      { date: '2023-06-01', amount: 400 },
+    ];
+
+    // Food sustainability data for the pie chart (dummy data)
+    const sustainabilityData = [
+      { label: 'Local Sourcing', value: 30 },
+      { label: 'Organic Produce', value: 25 },
+      { label: 'Waste Reduction', value: 20 },
+      { label: 'Energy Efficiency', value: 15 },
+      { label: 'Water Conservation', value: 10 },
+    ];
+
+    return res.status(200).json({
+      status: 200,
+      data: {
+        dashboard: formattedDashboard,
+        salesData: salesData,
+        sustainabilityData: sustainabilityData, // Include sustainability data here
+      },
+    } satisfies GetDashboardSuccAPI);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: 500,
+      errors: [{ message: 'Internal server error!' }],
+    } satisfies GetDashboardFailAPI);
+  }
+};
+
+export const updateDashboard: IAuthedRouteHandler = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({
+      status: 401,
+      errors: [{ message: 'User is not logged in' }],
+    } satisfies UpdateDashboardFailAPI);
+  }
+
+  const validated = schemas.dashboard.dashboardUpdateSchema.safeParse(req.body);
+  if (!validated.success) {
+    const errorStack: errors.CustomErrorContext[] = [];
+    validated.error.errors.forEach((error: ZodIssue) => {
+      errorStack.push({
+        message: error.message,
+        context: {
+          property: error.path,
+          code: error.code,
+        },
+      });
+    });
+
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: errorStack,
+    } satisfies UpdateDashboardFailAPI);
+  }
+
+  if (!validated.data.title && !validated.data.description) {
+    return res.status(Http4XX.BAD_REQUEST).json({
+      status: Http4XX.BAD_REQUEST,
+      errors: [{ message: 'Nothing to update!' }],
+    } satisfies UpdateDashboardFailAPI);
+  }
+
+  try {
+    await db
+      .update(dashboardTable)
+      .set(validated.data)
+      .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
+
+    return res.status(200).json({
+      status: 200,
+      data: { updated: true },
+    } satisfies UpdateDashboardSuccAPI);
+  } catch (error) {
+    console.error('Database update error:', error);
+    return res.status(500).json({
+      status: 500,
+      errors: [{ message: 'Internal server error!' }],
+    } satisfies UpdateDashboardFailAPI);
+  }
 };

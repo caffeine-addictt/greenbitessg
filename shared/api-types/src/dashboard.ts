@@ -13,7 +13,17 @@ import type { SuccessResponse, ErrorResponse } from './index';
  * Successful response for /v1/user endpoint
  */
 export interface GetDashboardSuccAPI
-  extends SuccessResponse<z.infer<typeof dashboard.dashboardSchema>> {}
+  extends SuccessResponse<{
+    dashboard: Array<z.infer<typeof dashboard.dashboardSchema>>;
+    salesData: {
+      date: string;
+      amount: number;
+    }[];
+    sustainabilityData: {
+      label: string;
+      value: number;
+    }[]; // Add this array for sustainability data
+  }> {}
 
 /**
  * Failure response for dashboard-related endpoints
@@ -25,3 +35,10 @@ export type GetDashboardFailAPI = ErrorResponse<
   | 'Unable to connect to the server. Please check your network connection'
   | 'Data inconsistency detected. Please refresh the page and try again'
 >;
+
+/**
+ * Successful response for /v1/user/update POST endpoint
+ */
+export interface UpdateDashboardSuccAPI
+  extends SuccessResponse<{ updated: true }> {}
+export type UpdateDashboardFailAPI = ErrorResponse<'Nothing to update!'>;

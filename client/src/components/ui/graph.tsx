@@ -46,7 +46,6 @@ const Graph: React.FC<GraphProps> = ({ salesData }) => {
 
   return (
     <div>
-      <h2>Sales Dashboard</h2>
       <Line data={chartData} />
     </div>
   );
