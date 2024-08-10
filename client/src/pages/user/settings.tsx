@@ -58,10 +58,77 @@ const AccountSettingsPage: PageComponent = ({ className, ...props }) => (
   >
     <h1 className="mb-10 text-center text-5xl font-bold">My Account</h1>
     <AccountDetails />
+    <AccountPasskeys />
     <AccountDangerActions />
   </div>
 );
 export default AccountSettingsPage;
+
+// Passkeys
+export const AccountPasskeys = () => {
+  const queryClient = useQueryClient();
+
+  const { toast } = useToast();
+
+  // Fetch passkeys
+  const { data, refetch, isFetching } = useQuery(
+    {
+      queryKey: ['fetch-passkeys'],
+      queryFn: () =>
+        httpClient
+          .get<GetPasskeySuccAPI>({
+            uri: '/user/passkey',
+            withCredentials: 'access',
+          })
+          .then((res) => res.data)
+          .catch((err) => {
+            console.log(err);
+            toast({
+              title: 'Something went wrong fetching passkeys',
+              description: isAxiosError(err)
+                ? err.response?.data.errors[0].message
+                : 'Please try again later',
+              variant: 'destructive',
+            });
+            return [];
+          }),
+    },
+    queryClient,
+  );
+
+  return (
+    <div className="my-7 flex w-full flex-col justify-center gap-2 rounded-md border-2 border-secondary-light bg-primary-dark p-4">
+      <h2 className="mb-5 text-3xl font-bold text-text-dark dark:text-text-light">
+        Passkeys
+      </h2>
+
+      {isFetching && (
+        <div className="mx-auto flex flex-row text-center">
+          <LoaderIcon className="mr-2 size-6 animate-spin" />
+          Loading...
+        </div>
+      )}
+
+      {data &&
+        data.map((p, i) => (
+          <div
+            key={`passkey-${i}`}
+            className="flex w-full items-center justify-between rounded-md bg-secondary-light p-4 text-sm text-text-light dark:text-text-light"
+          >
+            <div className="flex w-1/3 flex-col">
+              <p>Device Type: {p.device_type}</p>
+              <p>Used {p.counter} times</p>
+            </div>
+
+            <div className="flex w-1/3 flex-col">
+              <p>Created: {new Date(p.created_at).toLocaleDateString()}</p>
+              <p>Updated: {new Date(p.updated_at).toLocaleDateString()}</p>
+            </div>
+          </div>
+        ))}
+    </div>
+  );
+};
 
 // Danger Actions
 export const AccountDangerActions = () => {
