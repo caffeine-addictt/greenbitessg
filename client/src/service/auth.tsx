@@ -6,7 +6,7 @@
 
 import * as z from 'zod';
 import { AxiosError, isAxiosError } from 'axios';
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useCallback, useState, useEffect } from 'react';
 
 import httpClient from '@utils/http';
 import { auth } from '@lib/api-types';
@@ -22,6 +22,7 @@ export type AuthContextType = {
   isLoggedIn: boolean;
   isAdmin: boolean;
   isActivated: boolean;
+  refetch: () => Promise<void>;
   login: (tokens: auth.LoginSuccAPI['data']) => void;
   logout: () => Promise<unknown>;
 };
@@ -73,55 +74,57 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return err;
       });
 
-  useEffect(() => {
-    (async () => {
-      const validate = await validateUser();
+  const fetchUser = useCallback(async () => {
+    const validate = await validateUser();
 
-      // Handle validated
-      if (!validate) {
-        setState('done');
-        return;
-      }
-
-      // See if fail reason is expired access token
-      const castedErr = validate.response?.data as RefreshFailAPI | undefined;
-      if (!castedErr || castedErr.errors[0].message !== 'Token is expired!') {
-        setState('done');
-        return;
-      }
-
-      // Handle refreshing token
-      const refreshTokenResp = await refreshToken();
-
-      // Non-axios error
-      if (!refreshTokenResp) {
-        setState('done');
-        return;
-      }
-
-      // Handle axios error
-      if (isAxiosError(refreshTokenResp)) {
-        console.log('Failed to refresh token:', refreshTokenResp.message);
-        setState('done');
-        return;
-      }
-
-      // Handle success refresh
-      const validateAfterRefresh = await validateUser();
-
-      // Handle non-axios error or validated
-      if (!validateAfterRefresh) {
-        setState('done');
-        return;
-      }
-
-      console.log(
-        'Failed to authenticate user after refreshing token:',
-        validateAfterRefresh.message,
-      );
+    // Handle validated
+    if (!validate) {
       setState('done');
-    })();
+      return;
+    }
+
+    // See if fail reason is expired access token
+    const castedErr = validate.response?.data as RefreshFailAPI | undefined;
+    if (!castedErr || castedErr.errors[0].message !== 'Token is expired!') {
+      setState('done');
+      return;
+    }
+
+    // Handle refreshing token
+    const refreshTokenResp = await refreshToken();
+
+    // Non-axios error
+    if (!refreshTokenResp) {
+      setState('done');
+      return;
+    }
+
+    // Handle axios error
+    if (isAxiosError(refreshTokenResp)) {
+      console.log('Failed to refresh token:', refreshTokenResp.message);
+      setState('done');
+      return;
+    }
+
+    // Handle success refresh
+    const validateAfterRefresh = await validateUser();
+
+    // Handle non-axios error or validated
+    if (!validateAfterRefresh) {
+      setState('done');
+      return;
+    }
+
+    console.log(
+      'Failed to authenticate user after refreshing token:',
+      validateAfterRefresh.message,
+    );
+    setState('done');
   }, []);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   return (
     <AuthContext.Provider
@@ -132,6 +135,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isLoggedIn: isLoggedIn,
         isAdmin: isAdmin,
         isActivated: isActivated,
+        refetch: fetchUser,
         logout: async () => {
           // Invalidate tokens HTTP
           return await httpClient

@@ -13,14 +13,11 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFormState } from 'react-hook-form';
 
-import {
-  startAuthentication,
-  startRegistration,
-} from '@simplewebauthn/browser';
+import { startAuthentication } from '@simplewebauthn/browser';
 
 import { AxiosError, isAxiosError } from 'axios';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import httpClient, { APIPayload } from '@utils/http';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import httpClient from '@utils/http';
 import { auth, schemas } from '@lib/api-types';
 
 import {
@@ -36,63 +33,6 @@ import { Input } from '@components/ui/input';
 import { Button } from '@components/ui/button';
 import { useToast } from '@components/ui/use-toast';
 import { KeyRoundIcon, LoaderIcon } from 'lucide-react';
-
-export const PasskeyRegisterPage: PageComponent = ({ className, ...props }) => {
-  const queryClient = useQueryClient();
-
-  const { refetch } = useQuery(
-    {
-      queryKey: ['register-passkey'],
-      queryFn: async () => {
-        const resp = await httpClient
-          .post<auth.RegisterPasskeysStartSuccAPI, APIPayload>({
-            uri: '/auth/register/passkeys/start',
-            withCredentials: 'access',
-          })
-          .then((res) => res.data)
-          .catch((err: AxiosError) => console.error(err));
-
-        if (!resp) return false;
-
-        let authResp;
-        try {
-          authResp = await startRegistration(resp.challenge);
-        } catch (err) {
-          console.error('Failed to register passkey:', err);
-          return false;
-        }
-
-        // Verify passkey
-        const verifyResp = await httpClient
-          .post<
-            auth.RegisterPasskeysFinishSuccAPI,
-            schemas.auth.passkeyRegisterFinishSchema
-          >({
-            uri: '/auth/register/passkeys/finish',
-            withCredentials: 'access',
-            payload: {
-              track: resp.track,
-              signed: authResp,
-            },
-          })
-          .then((res) => res.data)
-          .catch((err: AxiosError) => console.error(err));
-
-        if (!verifyResp) return false;
-        console.log('Successfully registered passkey:', verifyResp);
-        return true;
-      },
-      enabled: false,
-    },
-    queryClient,
-  );
-
-  return (
-    <div className={className} {...props}>
-      <Button onClick={() => refetch()}>Test register passkey</Button>
-    </div>
-  );
-};
 
 export const PasskeyLoginPage: PageComponent = (props) => {
   const queryClient = useQueryClient();

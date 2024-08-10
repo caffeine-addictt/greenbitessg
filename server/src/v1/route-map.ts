@@ -11,7 +11,13 @@ import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
 import { createFeedback } from './feedback';
 import notificationRoutes from './notification/route-map';
-import { getUser, updateUser, deleteUser } from './user';
+import {
+  getUser,
+  updateUser,
+  deleteUser,
+  getUserPasskeys,
+  deleteUserPasskey,
+} from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
@@ -34,6 +40,14 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       handler: updateUser,
       accessLevel: 'authenticated',
     },
+  },
+  '/v1/user/passkey': {
+    GET: { handler: getUserPasskeys },
+    accessLevel: 'authenticated',
+  },
+  '/v1/user/passkey/:id': {
+    DELETE: { handler: deleteUserPasskey },
+    accessLevel: 'authenticated',
   },
   '/v1/event': {
     GET: {

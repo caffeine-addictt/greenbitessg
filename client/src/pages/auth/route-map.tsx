@@ -15,7 +15,7 @@ import LoginPage from './legacy-login';
 import RegisterPage from './legacy-register';
 
 import ActivatePage from './activate';
-import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
+import { PasskeyLoginPage } from './passkey';
 import RedirectToAuth from './auth-redirect';
 
 const authRouteMap: RouteMap = {
@@ -63,12 +63,6 @@ const authRouteMap: RouteMap = {
     description: 'Passkey',
     component: PasskeyLoginPage,
     accessLevel: 'public-only',
-  },
-  '/auth0/register': {
-    title: 'Passkey',
-    description: 'Passkey',
-    component: PasskeyRegisterPage,
-    accessLevel: 'authenticated',
   },
   '/auth0': {
     title: 'Login',
