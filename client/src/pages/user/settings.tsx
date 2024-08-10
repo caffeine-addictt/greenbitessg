@@ -200,10 +200,13 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
         </div>
       </div>
       <div className="my-7 flex w-full justify-center rounded-md bg-primary-dark p-4">
+      {/* Danger zone */}
+      <div className="bg-primary-dark my-7 flex w-full flex-col justify-center gap-5 rounded-md border-2 border-red-400 p-4">
+        <h2 className="text-3xl font-bold text-red-900">Danger Zone</h2>
+
         <Button
           type="button"
           variant="destructive"
-          size="default"
           onClick={() => deleteUser()}
         >
           Delete My Account
