@@ -53,6 +53,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
     control: accountSettingsForm.control,
   });
 
+  // Handle saving account
   const handleSave = async (data: z.infer<typeof userUpdateSchema>) => {
     await httpClient
       .post<UpdateUserSuccAPI, z.infer<typeof userUpdateSchema>>({
@@ -72,7 +73,7 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
       });
   };
 
-  // handle delete user
+  // Handle deleting account
   const { mutate: deleteUser } = useMutation(
     {
       mutationKey: ['delete-user'],
@@ -102,100 +103,99 @@ const AccountSettings: PageComponent = ({ className, ...props }) => {
   return (
     <div
       {...props}
-      className={cn(className, 'mx-auto mb-7 mt-3 w-full md:w-2/3')}
+      className={cn(
+        className,
+        'flex flex-col mx-auto py-10 w-[90%] sm:w-4/5 md:w-2/3 lg:w-1/3',
+      )}
     >
-      <div className="mx-auto flex flex-col items-center">
-        <h1 className="text-center text-2xl font-bold">My Account</h1>
-        <div className="mx-auto my-7 block w-full rounded-md bg-primary-dark p-10 text-lg dark:text-text-light">
-          <h4 className="mb-3 flex justify-center font-semibold underline">
-            Personal Particulars
-          </h4>
-          <div className="mx-auto flex justify-center">
-            <Form {...accountSettingsForm}>
-              <form
-                onSubmit={accountSettingsForm.handleSubmit(handleSave)}
-                className="mt-8 w-[26.5rem] space-y-4"
-              >
-                {error && <p className="text-red-500">{error}</p>}
-                {successMessage && (
-                  <p className="text-green-500">{successMessage}</p>
+      <h1 className="mb-10 text-center text-5xl font-bold">My Account</h1>
+      <div className="mx-auto my-7 block w-full rounded-md bg-primary-dark p-10 text-lg dark:text-text-light">
+        <h4 className="mb-3 flex justify-center font-semibold underline">
+          Personal Particulars
+        </h4>
+        <div className="mx-auto flex justify-center">
+          <Form {...accountSettingsForm}>
+            <form
+              onSubmit={accountSettingsForm.handleSubmit(handleSave)}
+              className="mt-8 w-[26.5rem] space-y-4"
+            >
+              {error && <p className="text-red-500">{error}</p>}
+              {successMessage && (
+                <p className="text-green-500">{successMessage}</p>
+              )}
+              <FormField
+                control={accountSettingsForm.control}
+                name="username"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Username"
+                        className={fieldState.error ? 'border-red-700' : ''}
+                        {...field}
+                      />
+                    </FormControl>
+                    {fieldState.error ? (
+                      <FormMessage>{fieldState.error.message}</FormMessage>
+                    ) : (
+                      <FormDescription>Your account username.</FormDescription>
+                    )}
+                  </FormItem>
                 )}
-                <FormField
-                  control={accountSettingsForm.control}
-                  name="username"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Username"
-                          className={fieldState.error ? 'border-red-700' : ''}
-                          {...field}
-                        />
-                      </FormControl>
-                      {fieldState.error ? (
-                        <FormMessage>{fieldState.error.message}</FormMessage>
-                      ) : (
-                        <FormDescription>
-                          Your account username.
-                        </FormDescription>
-                      )}
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={accountSettingsForm.control}
-                  name="email"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="johndoe@example.com"
-                          className={fieldState.error ? 'border-red-700' : ''}
-                          {...field}
-                        />
-                      </FormControl>
-                      {fieldState.error ? (
-                        <FormMessage>{fieldState.error.message}</FormMessage>
-                      ) : (
-                        <FormDescription>Your email address.</FormDescription>
-                      )}
-                    </FormItem>
-                  )}
-                />
-                <div className="flex justify-center space-x-2 md:justify-end">
-                  <Button
-                    type="reset"
-                    variant="ghost"
-                    disabled={
-                      isSubmitting || !accountSettingsForm.formState.isDirty
-                    }
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="secondary"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Saving...' : 'Save'}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </div>
+              />
+              <FormField
+                control={accountSettingsForm.control}
+                name="email"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="johndoe@example.com"
+                        className={fieldState.error ? 'border-red-700' : ''}
+                        {...field}
+                      />
+                    </FormControl>
+                    {fieldState.error ? (
+                      <FormMessage>{fieldState.error.message}</FormMessage>
+                    ) : (
+                      <FormDescription>Your email address.</FormDescription>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-center space-x-2 md:justify-end">
+                <Button
+                  type="reset"
+                  variant="ghost"
+                  disabled={
+                    isSubmitting || !accountSettingsForm.formState.isDirty
+                  }
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Saving...' : 'Save'}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
-        <div className="my-7 flex w-full justify-center rounded-md bg-primary-dark p-4">
-          <Button
-            type="button"
-            variant="destructive"
-            size="default"
-            onClick={() => deleteUser()}
-          >
-            Delete My Account
-          </Button>
-        </div>
+      </div>
+      <div className="my-7 flex w-full justify-center rounded-md bg-primary-dark p-4">
+        <Button
+          type="button"
+          variant="destructive"
+          size="default"
+          onClick={() => deleteUser()}
+        >
+          Delete My Account
+        </Button>
       </div>
     </div>
   );
