@@ -4,19 +4,25 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import * as z from 'zod';
-
-import { notification } from './schemas';
 import type { SuccessResponse, ErrorResponse } from './index';
 
 /**
- * Successful response for /v1/feedback endpoint
+ * Successful response for /v1/notification endpoint
  */
+type Notification = {
+  id: number;
+  notificationMessage: string;
+  notificationType: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 export interface GetNotificationSuccAPI
-  extends SuccessResponse<z.infer<typeof notification.notificationSchema>> {}
+  extends SuccessResponse<Notification[]> {}
+export type GetNotificationFailAPI = ErrorResponse<'Invalid ID!'>;
 
 /**
- * Failure response for feedback-related endpoints
+ * Successful response for /v1/notification/archive
  */
-export type GetNotificationFailAPI =
-  ErrorResponse<'An unexpected error occurred. Please try again later!'>;
+export interface NotificationArchiveSuccessAPI
+  extends SuccessResponse<{ deleted: true }> {}
+export type NotificationArchiveFailAPI = ErrorResponse<'Invalid key!'>;
