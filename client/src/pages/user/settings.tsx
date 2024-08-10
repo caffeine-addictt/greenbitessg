@@ -96,6 +96,36 @@ export const AccountPasskeys = () => {
     queryClient,
   );
 
+  // Delete passkey
+  const { mutate: deletePasskey, isPending: isDeleting } = useMutation(
+    {
+      mutationKey: ['delete-passkey'],
+      mutationFn: (id: number) =>
+        httpClient.delete<DeletePasskeySuccAPI>({
+          uri: `/user/passkey/${id}`,
+          withCredentials: 'access',
+        }),
+      onSuccess: () => {
+        toast({
+          title: 'Passkey deleted',
+          description: 'Passkey deleted successfully',
+        });
+        refetch();
+      },
+      onError: (err) => {
+        console.log(err);
+        toast({
+          title: 'Something went wrong',
+          description: isAxiosError(err)
+            ? err.response?.data.errors[0].message
+            : 'Please try again later',
+          variant: 'destructive',
+        });
+      },
+    },
+    queryClient,
+  );
+
   return (
     <div className="my-7 flex w-full flex-col justify-center gap-2 rounded-md border-2 border-secondary-light bg-primary-dark p-4">
       <h2 className="mb-5 text-3xl font-bold text-text-dark dark:text-text-light">
@@ -124,6 +154,16 @@ export const AccountPasskeys = () => {
               <p>Created: {new Date(p.created_at).toLocaleDateString()}</p>
               <p>Updated: {new Date(p.updated_at).toLocaleDateString()}</p>
             </div>
+
+            <Button
+              size="icon"
+              variant="ghost"
+              className="ml-auto"
+              disabled={isDeleting}
+              onClick={() => deletePasskey(p.id)}
+            >
+              <TrashIcon className="size-6 text-red-600" />
+            </Button>
           </div>
         ))}
     </div>
