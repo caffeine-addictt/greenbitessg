@@ -8,10 +8,32 @@ import * as z from 'zod';
 
 import { dashboard } from './schemas';
 import type { SuccessResponse, ErrorResponse } from './index';
+import { dashboardUpdateSchema } from './schemas/dashboard';
 
 /**
  * Successful response for /v1/user endpoint
  */
+// Define types for sales data and sustainability data
+interface SalesData {
+  date: string;
+  amount: number;
+}
+
+interface SustainabilityData {
+  label: string; // Ensure the 'label' property is included
+  value: number;
+}
+
+// Define the Dashboard type using z.infer and dashboardUpdateSchema
+export type Dashboard = z.infer<typeof dashboardUpdateSchema>;
+
+export interface DashboardResponse {
+  data: DashboardResponse | PromiseLike<DashboardResponse>;
+  dashboard: Dashboard[];
+  salesData: SalesData[];
+  sustainabilityData: SustainabilityData[];
+}
+
 export interface GetDashboardSuccAPI
   extends SuccessResponse<{
     dashboard: Array<z.infer<typeof dashboard.dashboardSchema>>;
@@ -22,7 +44,7 @@ export interface GetDashboardSuccAPI
     sustainabilityData: {
       label: string;
       value: number;
-    }[]; // Add this array for sustainability data
+    }[];
   }> {}
 
 /**

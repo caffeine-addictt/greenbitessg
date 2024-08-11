@@ -12,7 +12,7 @@ import EventList from './event-list';
 import AccountSettings from './settings';
 import Home from './homepage';
 import FeedbackForm from './feedback';
-import Dashboard from './dashboard';
+import DashboardPage from './dashboard';
 
 const userRouteMap: RouteMap = {
   '/settings': {
@@ -48,7 +48,7 @@ const userRouteMap: RouteMap = {
   '/dashboard': {
     title: 'Dashboard',
     description: 'Check all the relevant details here',
-    component: Dashboard,
+    component: DashboardPage,
     accessLevel: 'authenticated',
   },
 } as const;

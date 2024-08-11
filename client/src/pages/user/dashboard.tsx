@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import httpClient from '@utils/http';
 import { PageComponent } from '@pages/route-map';
 import { dashboardUpdateSchema } from '@lib/api-types/schemas/dashboard';
-import { z } from 'zod';
 import Graph from '@components/ui/graph';
 import SustainabilityPieChart from '@components/ui/pieChart';
 import { Input } from '@components/ui/input';
@@ -17,59 +16,29 @@ import {
 } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { cn } from '@utils/tailwind';
+import { DashboardResponse, Dashboard } from '@lib/api-types/dashboard';
 
-// Define types for sales data and sustainability data
-interface SalesData {
-  date: string;
-  amount: number;
-}
-
-interface SustainabilityData {
-  label: string; // Ensure the 'label' property is included
-  value: number;
-}
-
-// Define the Dashboard type using z.infer and dashboardUpdateSchema
-type Dashboard = z.infer<typeof dashboardUpdateSchema>;
-
-interface DashboardResponse {
-  data: DashboardResponse | PromiseLike<DashboardResponse>;
-  dashboard: Dashboard[];
-  salesData: SalesData[];
-  sustainabilityData: SustainabilityData[];
-}
-
-const Dashboard: PageComponent = ({ className, ...props }) => {
+const DashboardPage: PageComponent = ({ className, ...props }) => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const queryClient = useQueryClient();
 
   // Fetch dashboard data from the server
-  const { data, isError, isLoading }: UseQueryResult<DashboardResponse> =
+  const { data, isError, isLoading }: UseQueryResult<DashboardResponse, Error> =
     useQuery<DashboardResponse>({
       queryKey: ['dashboard'],
-      queryFn: async (): Promise<DashboardResponse> => {
-        try {
-          const response = await httpClient.get<DashboardResponse>({
-            uri: '/dashboard',
-            withCredentials: 'access', // Pass withCredentials as 'access'
-          });
-          return response.data; // Ensure you're returning the data property
-        } catch (err) {
-          console.error('Fetch error:', err);
-          throw err;
-        }
+      queryFn: async () => {
+        const response = await httpClient.get<DashboardResponse>({
+          uri: '/dashboard',
+          withCredentials: 'access',
+        });
+        return response.data;
       },
       onError: (err: unknown) => {
-        if (isAxiosError(err) && err.response) {
-          setError('Error fetching dashboard data! Please try again later.');
-        } else {
-          setError('An unexpected error occurred. Please try again later.');
-        }
-        console.error('Query error:', err);
+        console.log(err); // Simplified error logging
       },
-    } as UseQueryOptions<DashboardResponse, Error>); // Ensure the options type matches
+    } as UseQueryOptions<DashboardResponse, Error>);
 
   // Initialize form with empty values
   const DashboardForm = useForm<Dashboard>({
@@ -223,4 +192,4 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

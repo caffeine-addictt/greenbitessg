@@ -13,79 +13,57 @@ import { Http4XX } from '../lib/api-types/http-codes';
 import { ZodIssue } from 'zod';
 
 export const getDashboard: IAuthedRouteHandler = async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({
-      status: 401,
-      errors: [{ message: 'User is not logged in' }],
+  // Fetch dashboard data from the database
+  const dashboard = await db
+    .select()
+    .from(dashboardTable)
+    .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
+
+  if (dashboard.length === 0) {
+    return res.status(404).json({
+      status: 404,
+      errors: [{ message: 'No dashboard found for this user' }],
     } satisfies GetDashboardFailAPI);
   }
 
-  try {
-    // Fetch dashboard data from the database
-    const dashboard = await db
-      .select()
-      .from(dashboardTable)
-      .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
+  const formattedDashboard = dashboard.map((dashboard) => ({
+    id: dashboard.id,
+    title: dashboard.title,
+    description: dashboard.description || undefined,
+    createdAt: dashboard.createdAt,
+    updatedAt: dashboard.updatedAt,
+  }));
 
-    if (dashboard.length === 0) {
-      return res.status(404).json({
-        status: 404,
-        errors: [{ message: 'No dashboard found for this user' }],
-      } satisfies GetDashboardFailAPI);
-    }
+  // Calculate sales data (dummy data for illustration)
+  const salesData = [
+    { date: '2023-01-01', amount: 100 },
+    { date: '2023-02-01', amount: 200 },
+    { date: '2023-03-01', amount: 150 },
+    { date: '2023-04-01', amount: 350 },
+    { date: '2023-05-01', amount: 250 },
+    { date: '2023-06-01', amount: 400 },
+  ];
 
-    const formattedDashboard = dashboard.map((dashboard) => ({
-      id: dashboard.id,
-      title: dashboard.title,
-      description: dashboard.description || undefined,
-      createdAt: dashboard.createdAt,
-      updatedAt: dashboard.updatedAt,
-    }));
+  // Food sustainability data for the pie chart (dummy data)
+  const sustainabilityData = [
+    { label: 'Local Sourcing', value: 30 },
+    { label: 'Organic Produce', value: 25 },
+    { label: 'Waste Reduction', value: 20 },
+    { label: 'Energy Efficiency', value: 15 },
+    { label: 'Water Conservation', value: 10 },
+  ];
 
-    // Calculate sales data (dummy data for illustration)
-    const salesData = [
-      { date: '2023-01-01', amount: 100 },
-      { date: '2023-02-01', amount: 200 },
-      { date: '2023-03-01', amount: 150 },
-      { date: '2023-04-01', amount: 350 },
-      { date: '2023-05-01', amount: 250 },
-      { date: '2023-06-01', amount: 400 },
-    ];
-
-    // Food sustainability data for the pie chart (dummy data)
-    const sustainabilityData = [
-      { label: 'Local Sourcing', value: 30 },
-      { label: 'Organic Produce', value: 25 },
-      { label: 'Waste Reduction', value: 20 },
-      { label: 'Energy Efficiency', value: 15 },
-      { label: 'Water Conservation', value: 10 },
-    ];
-
-    return res.status(200).json({
-      status: 200,
-      data: {
-        dashboard: formattedDashboard,
-        salesData: salesData,
-        sustainabilityData: sustainabilityData, // Include sustainability data here
-      },
-    } satisfies GetDashboardSuccAPI);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      status: 500,
-      errors: [{ message: 'Internal server error!' }],
-    } satisfies GetDashboardFailAPI);
-  }
+  return res.status(200).json({
+    status: 200,
+    data: {
+      dashboard: formattedDashboard,
+      salesData: salesData,
+      sustainabilityData: sustainabilityData, // Include sustainability data here
+    },
+  } satisfies GetDashboardSuccAPI);
 };
 
 export const updateDashboard: IAuthedRouteHandler = async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({
-      status: 401,
-      errors: [{ message: 'User is not logged in' }],
-    } satisfies UpdateDashboardFailAPI);
-  }
-
   const validated = schemas.dashboard.dashboardUpdateSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
@@ -112,21 +90,13 @@ export const updateDashboard: IAuthedRouteHandler = async (req, res) => {
     } satisfies UpdateDashboardFailAPI);
   }
 
-  try {
-    await db
-      .update(dashboardTable)
-      .set(validated.data)
-      .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
+  await db
+    .update(dashboardTable)
+    .set(validated.data)
+    .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
 
-    return res.status(200).json({
-      status: 200,
-      data: { updated: true },
-    } satisfies UpdateDashboardSuccAPI);
-  } catch (error) {
-    console.error('Database update error:', error);
-    return res.status(500).json({
-      status: 500,
-      errors: [{ message: 'Internal server error!' }],
-    } satisfies UpdateDashboardFailAPI);
-  }
+  return res.status(200).json({
+    status: 200,
+    data: { updated: true },
+  } satisfies UpdateDashboardSuccAPI);
 };
