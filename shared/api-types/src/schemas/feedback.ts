@@ -28,3 +28,20 @@ export const feedbackSchema = z.object({
     })
     .min(1, { message: 'Feedback message is required' }),
 });
+
+// Define Zod schema for feedback request
+export const feedbackRequestObject = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  suggestion: z.string().optional(),
+  feedbackMessage: z.string().min(1),
+});
+
+// Define Zod schema for feedback response
+export const feedbackResponseObject = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  suggestion: z.string().optional(),
+  feedbackMessage: z.string(),
+});

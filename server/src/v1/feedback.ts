@@ -10,24 +10,10 @@ import {
   DeleteFeedbackSuccAPI,
   DeleteFeedbackFailAPI,
 } from '@src/lib/api-types/feedback';
-import { z } from 'zod';
-
-// Define Zod schema for feedback request
-const feedbackRequestObject = z.object({
-  name: z.string().nonempty(),
-  email: z.string().email(),
-  suggestion: z.string().optional(),
-  feedbackMessage: z.string().nonempty(),
-});
-
-// Define Zod schema for feedback response
-const feedbackResponseObject = z.object({
-  id: z.number(),
-  name: z.string(),
-  email: z.string(),
-  suggestion: z.string().optional(),
-  feedbackMessage: z.string(),
-});
+import {
+  feedbackRequestObject,
+  feedbackResponseObject,
+} from '../lib/api-types/schemas/feedback';
 
 export const createFeedback: IAuthedRouteHandler = async (req, res) => {
   console.log('Fetching events for:', req.user.id); // Assuming `req.user` exists
@@ -91,8 +77,21 @@ export const createFeedback: IAuthedRouteHandler = async (req, res) => {
 
 export const getFeedback: IAuthedRouteHandler = async (_, res) => {
   // Fetch all feedback
-  const feedbacks = await db.select().from(feedbackTable);
+  const feedbacks = await db
+    .select({
+      id: feedbackTable.id,
+      name: feedbackTable.name,
+      email: feedbackTable.email,
+      suggestion: feedbackTable.suggestion, // Use `null` directly as some SQL clients expect it
+      feedbackMessage: feedbackTable.feedbackMessage,
+    })
+    .from(feedbackTable);
 
+  // Convert `null` to `undefined` in the application logic
+  const formattedFeedbacks = feedbacks.map((feedback) => ({
+    ...feedback,
+    suggestion: feedback.suggestion ?? undefined, // Convert `null` to `undefined`
+  }));
   // Check if feedbacks were found
   if (feedbacks.length === 0) {
     return res.status(404).json({
@@ -100,14 +99,6 @@ export const getFeedback: IAuthedRouteHandler = async (_, res) => {
       errors: [{ message: 'No feedbacks found!' }],
     } satisfies GetFeedbackFailAPI);
   }
-
-  const formattedFeedbacks = feedbacks.map((feedback) => ({
-    id: feedback.id,
-    name: feedback.name,
-    email: feedback.email,
-    suggestion: feedback.suggestion || undefined,
-    feedbackMessage: feedback.feedbackMessage,
-  }));
 
   // Send the response
   return res.status(200).json({
@@ -118,7 +109,7 @@ export const getFeedback: IAuthedRouteHandler = async (_, res) => {
 
 // Handle /v1/event/:id DELETE
 export const deleteFeedback: IAuthedRouteHandler = async (req, res) => {
-  const feedbackId = parseInt(req.params.id, 10);
+  const feedbackId = parseInt(req.params.id);
 
   if (isNaN(feedbackId) || feedbackId < 0) {
     return res.status(400).json({

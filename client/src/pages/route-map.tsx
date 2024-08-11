@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import authrouteMap from '@pages/auth/route-map';
-import userrouteMap from '@pages/user/route-map';
+import authRouteMap from '@pages/auth/route-map';
+import userRouteMap from '@pages/user/route-map';
 import foodRouteMap from './food/route-map';
 
 // Page imports
@@ -41,8 +41,8 @@ const routes: RootRouteMap = {
     accessLevel: 'admin',
     title: 'Admin',
   },
-  ...authrouteMap,
-  ...userrouteMap,
+  ...authRouteMap,
+  ...userRouteMap,
   ...foodRouteMap,
 } as const;
 export default routes;
