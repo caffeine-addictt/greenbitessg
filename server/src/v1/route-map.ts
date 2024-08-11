@@ -9,8 +9,14 @@ import type { RoutingMap } from '../route-map';
 // Import endpoints
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
-import { createFeedback, deleteFeedback, getFeedback  } from './feedback';
-import { getUser, updateUser, deleteUser, getUserPasskeys, deleteUserPasskeys } from './user';
+import { createFeedback, deleteFeedback, getFeedback } from './feedback';
+import {
+  getUser,
+  updateUser,
+  deleteUser,
+  getUserPasskeys,
+  deleteUserPasskey,
+} from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
