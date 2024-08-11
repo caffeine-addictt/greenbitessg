@@ -9,13 +9,14 @@ import type { RoutingMap } from '../route-map';
 // Import endpoints
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
-import { createFeedback, deleteFeedback, getFeedback } from './feedback';
-import { getUser, updateUser, deleteUser } from './user';
+import { createFeedback, deleteFeedback, getFeedback  } from './feedback';
+import { getUser, updateUser, deleteUser, getUserPasskeys, deleteUserPasskeys } from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
   ...foodRoutes,
+  ...notificationRoutes,
   '/v1/user': {
     GET: {
       handler: getUser,
@@ -32,6 +33,14 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       handler: updateUser,
       accessLevel: 'authenticated',
     },
+  },
+  '/v1/user/passkey': {
+    GET: { handler: getUserPasskeys },
+    accessLevel: 'authenticated',
+  },
+  '/v1/user/passkey/:id': {
+    DELETE: { handler: deleteUserPasskey },
+    accessLevel: 'authenticated',
   },
   '/v1/event': {
     GET: {
