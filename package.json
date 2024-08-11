@@ -43,14 +43,5 @@
     "client",
     "server",
     "shared/*"
-  ],
-  "dependencies": {
-    "@floating-ui/react-dom": "^2.1.1",
-    "@heroicons/react": "^2.1.5",
-    "chart.js": "^4.4.3",
-    "react-chartjs-2": "^5.2.0",
-    "react-style-singleton": "^2.2.1",
-    "recharts": "^2.12.7",
-    "tailwindcss": "^3.4.7"
-  }
+  ]
 }

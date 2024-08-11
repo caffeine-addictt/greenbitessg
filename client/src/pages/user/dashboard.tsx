@@ -25,7 +25,7 @@ interface SalesData {
 }
 
 interface SustainabilityData {
-  name: string;
+  label: string; // Ensure the 'label' property is included
   value: number;
 }
 
@@ -33,6 +33,7 @@ interface SustainabilityData {
 type Dashboard = z.infer<typeof dashboardUpdateSchema>;
 
 interface DashboardResponse {
+  data: DashboardResponse | PromiseLike<DashboardResponse>;
   dashboard: Dashboard[];
   salesData: SalesData[];
   sustainabilityData: SustainabilityData[];
@@ -50,12 +51,11 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
       queryKey: ['dashboard'],
       queryFn: async (): Promise<DashboardResponse> => {
         try {
-          // Directly return data as DashboardResponse
           const response = await httpClient.get<DashboardResponse>({
             uri: '/dashboard',
             withCredentials: 'access', // Pass withCredentials as 'access'
           });
-          return response; // Directly return response
+          return response.data; // Ensure you're returning the data property
         } catch (err) {
           console.error('Fetch error:', err);
           throw err;
@@ -110,7 +110,9 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        setError(`Error: ${error.response.data.message}`);
+        setError(
+          `Error: ${error.response.data.errors[0]?.message || 'An error occurred'}`,
+        );
       } else {
         setError('An unexpected error occurred. Please try again later.');
       }
@@ -134,12 +136,13 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
       {...props}
     >
       <div className="w-full max-w-6xl space-y-8">
+        <h1 className="text-center text-4xl font-bold">Dashboard</h1>
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Form Container */}
           <div className="flex-1 rounded-lg bg-white p-8 shadow-lg lg:w-2/5">
             <form onSubmit={handleSubmit(handleSave)} className="space-y-6">
               <div>
-                <label className="text-xl">Title</label>
+                <label className="text-xl font-bold">Title</label>
                 <Controller
                   name="title"
                   control={control}
@@ -158,7 +161,7 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
               </div>
 
               <div>
-                <label className="text-xl">Description</label>
+                <label className="text-xl font-bold">Description</label>
                 <Controller
                   name="description"
                   control={control}
@@ -210,8 +213,10 @@ const Dashboard: PageComponent = ({ className, ...props }) => {
         </div>
 
         {/* Pie Chart Container */}
-        <div className="flex justify-center rounded-lg bg-gray-100 p-12 shadow-lg">
-          <SustainabilityPieChart data={data?.sustainabilityData || []} />
+        <div className="flex justify-center">
+          <div className="flex h-96 w-full max-w-4xl items-center justify-center rounded-lg bg-gray-100 p-6 shadow-lg">
+            <SustainabilityPieChart data={data?.sustainabilityData || []} />
+          </div>
         </div>
       </div>
     </div>
