@@ -9,6 +9,7 @@ import type { RoutingMap } from '../route-map';
 // Import endpoints
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
+import notificationRoutes from './notification/route-map';
 import { createFeedback, deleteFeedback, getFeedback } from './feedback';
 import {
   getUser,
