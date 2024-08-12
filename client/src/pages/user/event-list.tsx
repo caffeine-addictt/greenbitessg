@@ -10,13 +10,16 @@ import { useEffect, useState } from 'react';
 import httpClient from '@utils/http';
 import { PageComponent } from '@pages/route-map';
 import { eventSchema } from '@lib/api-types/schemas/event';
+import { Button } from '@components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 // Define the Event type using z.infer and eventSchema
 type Event = z.infer<typeof eventSchema>;
 
-const EventList: PageComponent = () => {
+const EventManage: PageComponent = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Fetch events from the server
   useEffect(() => {
@@ -36,50 +39,40 @@ const EventList: PageComponent = () => {
     fetchEvents();
   }, []);
 
-  const deleteEvent = async (id: number) => {
-    try {
-      await httpClient.delete<{ id: number }>({
-        uri: `/event/${id}`,
-        withCredentials: 'access',
-      });
-
-      // Remove the deleted event from the list
-      setEvents(events.filter((event) => event.id !== id));
-    } catch (err) {
-      setError('Error deleting event! Please try again later.');
-      console.error('Delete error:', err);
-    }
+  const redirectToEvent = (id: number) => {
+    navigate(`/events/${id}`);
   };
 
   return (
     <div className="container mx-auto mt-16">
-      <h1 className="text-center text-2xl font-bold">Event List</h1>
+      <h1 className="text-center text-2xl font-bold mb-4">Upcoming Events</h1>
       {error && <p className="text-red-500">{error}</p>}
       {events.length > 0 ? (
-        <ul>
+        <ul className='grid'>
           {events.map((event) => (
             <li
               key={event.id}
-              className="mb-4 rounded border border-gray-300 p-4"
+              className="grid grid-cols-1 md:grid-cols-2 bg-primary-dark mb-6 rounded-md border text-text-light border-gray-300"
             >
-              <h2 className="text-xl font-semibold">{event.title}</h2>
-              <p>{`${event.date} ${event.time}`}</p>
-              <p>{event.location}</p>
-              <p>{event.description || 'No description available'}</p>
-              <button
-                className="mt-2 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-                onClick={() => deleteEvent(event.id)}
-              >
-                Delete
-              </button>
+              <div className='p-10'>
+                <h2 className="text-xl font-semibold">{event.title}</h2>
+                <p>{`${event.id}`}</p>
+                <p>Date: {`${event.date}`}</p>
+                <p>Location: {event.location}</p>
+              </div>
+              <div className='relative mb-2 mr-2'>
+                <Button className='p-4 !bg-primary-light !text-text-dark text-base font-semibold md:absolute md:bottom-0 md:right-0' onClick={() => redirectToEvent(event.id)}>
+                  Learn More
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No events found.</p>
+        <p>No upcoming events at the moment.</p>
       )}
     </div>
   );
 };
 
-export default EventList;
+export default EventManage;
