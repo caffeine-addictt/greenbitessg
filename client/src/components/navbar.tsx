@@ -35,7 +35,6 @@ const Navbar: PageComponent = (): React.JSX.Element => {
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
           <InternalLink
             href="/events"
-            variant={'link'}
             className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm !text-text-light !no-underline md:inline-flex"
           >
             Events
@@ -68,7 +67,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                   href="/"
                   aria-current="page"
                   className="m-0 p-0 !text-text-light !no-underline"
-                  variant={'link'}
+                  variant="link"
                 >
                   Home
                 </InternalLink>
@@ -77,7 +76,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                 <InternalLink
                   href="/about"
                   className="m-0 p-0 !text-text-light !no-underline"
-                  variant={'link'}
+                  variant="link"
                 >
                   About
                 </InternalLink>
@@ -86,7 +85,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                 <InternalLink
                   href="/home"
                   className="m-0 p-0 !text-text-light !no-underline"
-                  variant={'link'}
+                  variant="link"
                 >
                   My Account
                 </InternalLink>
@@ -95,7 +94,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                 <InternalLink
                   href="/food-tips"
                   className="m-0 p-0 !text-text-light !no-underline"
-                  variant={'link'}
+                  variant="link"
                 >
                   Today's Sustainable Food Tips
                 </InternalLink>
@@ -104,7 +103,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                 <InternalLink
                   href="/events"
                   className="m-0 p-0 !text-text-light !no-underline md:hidden"
-                  variant={'link'}
+                  variant="link"
                 >
                   Events
                 </InternalLink>
@@ -117,7 +116,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                     <InternalLink
                       href="/dashboard"
                       className="m-0 p-0 !text-text-light !no-underline"
-                      variant={'link'}
+                      variant="link"
                     >
                       Dashboard
                     </InternalLink>
@@ -126,7 +125,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                     <InternalLink
                       href="/events"
                       className="m-0 p-0 !text-text-light !no-underline"
-                      variant={'link'}
+                      variant="link"
                     >
                       Event Management
                     </InternalLink>
