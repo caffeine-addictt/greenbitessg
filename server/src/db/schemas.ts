@@ -152,7 +152,7 @@ export const usersToEvent = pgTable(
     return {
       pk: primaryKey({ columns: [usersToEvent.userId, usersToEvent.eventId] }),
       pkWithCustomName: primaryKey({
-        name: 'custom_name',
+        name: 'users_to_events_pk',
         columns: [usersToEvent.userId, usersToEvent.eventId],
       }),
     };
