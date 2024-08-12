@@ -23,15 +23,12 @@ type EmailWithSenderLike = `${string} <${EmailLike}>`;
 interface IEmailOptions {
   type: string;
 }
-export type EmailOptions = IEmailOptions &
-  (ActivationEmailProps | VerificationEmailProps);
-
-interface IEmailDetails {
+interface IEmailDetails<T extends IEmailOptions = IEmailOptions> {
   from: EmailWithSenderLike;
   to: string;
   subject?: string;
   text?: string;
-  options: EmailOptions;
+  options: T;
 }
 
 // Functions
@@ -42,11 +39,15 @@ export const sendEmail = (
 
   switch (details.options.type) {
     case 'activation':
-      generated = generateActivationEmail(details.options);
+      generated = generateActivationEmail(
+        details.options as ActivationEmailProps,
+      );
       break;
 
     case 'verification':
-      generated = generateVerificationEmail(details.options);
+      generated = generateVerificationEmail(
+        details.options as VerificationEmailProps,
+      );
       break;
 
     default:
@@ -64,7 +65,10 @@ export const sendEmail = (
 
 export const sendActivationEmail = (
   details: NestedOmit<
-    Omit<IEmailDetails, 'from' | 'subject' | 'text'> & {
+    Omit<
+      IEmailDetails<IEmailOptions & ActivationEmailProps>,
+      'from' | 'subject' | 'text'
+    > & {
       options: ActivationEmailProps;
     },
     'options.type'
@@ -82,7 +86,10 @@ export const sendActivationEmail = (
   });
 
 export const sendVerificationEmail = (
-  details: Omit<IEmailDetails, 'from' | 'subject' | 'text'> & {
+  details: Omit<
+    IEmailDetails<IEmailOptions & VerificationEmailProps>,
+    'from' | 'subject' | 'text'
+  > & {
     options: VerificationEmailProps;
   },
 ): ReturnType<typeof sendEmail> =>
