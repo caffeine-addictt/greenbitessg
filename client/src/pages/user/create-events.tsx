@@ -213,23 +213,23 @@ const EventCreationPage: PageComponent = () => {
               )}
             />
 
-          <div className="flex justify-end space-x-2">
-            <Button
-              type="reset"
-              variant="ghost"
-              disabled={isSubmitting || !eventForm.formState.isDirty}
-              onClick={() => eventForm.reset()}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" variant="secondary" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create Event'}
-            </Button>
-          </div>
-        </form>
-      </Form>
+            <div className="flex justify-end space-x-2">
+              <Button
+                type="reset"
+                variant="ghost"
+                disabled={isSubmitting || !eventForm.formState.isDirty}
+                onClick={() => eventForm.reset()}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" variant="secondary" disabled={isSubmitting}>
+                {isSubmitting ? 'Creating...' : 'Create Event'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
-    </div >
   );
 };
 
