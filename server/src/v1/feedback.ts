@@ -9,7 +9,7 @@ import {
   CreateFeedbackSuccAPI,
   DeleteFeedbackSuccAPI,
   DeleteFeedbackFailAPI,
-} from '@src/lib/api-types/feedback';
+} from '../lib/api-types/feedback';
 import {
   feedbackRequestObject,
   feedbackResponseObject,
