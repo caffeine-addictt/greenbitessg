@@ -41,7 +41,6 @@ export const getUser: IAuthedRouteHandler = async (req, res) => {
 };
 
 export const updateUser: IAuthedRouteHandler = async (req, res) => {
-  // Validate request body
   const validated = schemas.user.userUpdateSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
@@ -86,12 +85,12 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
       to: validated.data.email,
       options: {
         type: 'verification',
-        name: validated.data.username || '', // Comma added here
+        name: validated.data.username || '',
         verificationLink: getFullPath(`/verify/${createdToken[0].token}`),
       },
     }).catch((err) =>
       console.error(
-        `ERR Failed to send verification email for user [${req.user.id}]: ${err}`, // Adjusted to use req.user.id instead of createdUser[0].id
+        `ERR Failed to send verification email for user [${req.user.id}]: ${err}`,
       ),
     );
 
