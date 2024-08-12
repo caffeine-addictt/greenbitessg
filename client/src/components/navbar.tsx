@@ -33,6 +33,18 @@ import {
 } from '@radix-ui/react-icons';
 import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
+// Components
+export const NavbarLink = ({
+  href,
+  children,
+}: DropdownMenuProps & { href: `/${string}` }) => (
+  <DropdownMenuItem asChild>
+    <InternalLink href={href} className="justify-start" variant="link">
+      {children}
+    </InternalLink>
+  </DropdownMenuItem>
+);
+
 const Navbar: PageComponent = (): React.JSX.Element => {
   const { isAdmin } = React.useContext(AuthContext)!;
   return (
@@ -73,74 +85,17 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               <HamburgerMenuIcon className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="*:focus:bg-current/90 block w-80 rounded border-none md:w-60 md:p-1 md:text-sm">
-              <DropdownMenuItem>
-                <InternalLink
-                  href="/"
-                  aria-current="page"
-                  className="m-0 p-0 "
-                  variant="link"
-                >
-                  Home
-                </InternalLink>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <InternalLink
-                  href="/about"
-                  className="m-0 p-0 "
-                  variant="link"
-                >
-                  About
-                </InternalLink>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <InternalLink
-                  href="/home"
-                  className="m-0 p-0 "
-                  variant="link"
-                >
-                  My Account
-                </InternalLink>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <InternalLink
-                  href="/food-tips"
-                  className="m-0 p-0 "
-                  variant="link"
-                >
-                  Today's Sustainable Food Tips
-                </InternalLink>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <InternalLink
-                  href="/events"
-                  className="m-0 p-0  md:hidden"
-                  variant="link"
-                >
-                  Events
-                </InternalLink>
-              </DropdownMenuItem>
+              {/* Global links */}
+              <NavbarLink href="/">Home</NavbarLink>
+              <NavbarLink href="/home">My Account</NavbarLink>
+              <NavbarLink href="/events">Events</NavbarLink>
+
+              {/* Admin only links */}
               {isAdmin && (
                 <>
                   <DropdownMenuLabel>Admin</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <InternalLink
-                      href="/dashboard"
-                      className="m-0 p-0 "
-                      variant="link"
-                    >
-                      Dashboard
-                    </InternalLink>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <InternalLink
-                      href="/events"
-                      className="m-0 p-0 "
-                      variant="link"
-                    >
-                      Event Management
-                    </InternalLink>
-                  </DropdownMenuItem>
+                  <NavbarLink href="/dashboard">Dashboard</NavbarLink>
                 </>
               )}
             </DropdownMenuContent>
