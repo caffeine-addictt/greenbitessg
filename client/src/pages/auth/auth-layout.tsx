@@ -102,7 +102,7 @@ export const AuthLayout = ({
               {/* Logo */}
               <div className="flex flex-row items-center gap-4">
                 <img
-                  src=""
+                  src="/logo_279x279.webp"
                   alt=""
                   width={32}
                   height={32}
