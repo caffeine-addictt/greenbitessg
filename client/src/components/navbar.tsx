@@ -89,6 +89,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               <NavbarLink href="/">Home</NavbarLink>
               <NavbarLink href="/home">My Account</NavbarLink>
               <NavbarLink href="/events">Events</NavbarLink>
+              <NavbarLink href="/food">My Eaten Foods</NavbarLink>
 
               {/* Admin only links */}
               {isAdmin && (
