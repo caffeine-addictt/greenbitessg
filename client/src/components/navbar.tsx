@@ -97,7 +97,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
     <nav className="bg-accent-dark">
       <div className="mx-auto flex h-16 max-w-screen-xl flex-wrap items-center justify-between p-4">
         {/* Logo */}
-        <InternalLink href="/" variant='link'>
+        <InternalLink href="/" variant="link">
           <img src="/logo_279x279.webp" className="mr-2 size-8" alt="Logo" />
           <span className="self-center whitespace-nowrap text-2xl font-semibold">
             Green Bites SG
@@ -106,10 +106,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
 
         {/* Right */}
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
-          <InternalLink
-            href="/events"
-            className="hidden md:inline-flex"
-          >
+          <InternalLink href="/events" className="hidden md:inline-flex">
             Events
           </InternalLink>
 
