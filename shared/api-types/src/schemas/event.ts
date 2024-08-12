@@ -16,3 +16,8 @@ export const eventRequestObject = z.object({
   location: z.string(),
   description: z.string().optional(),
 });
+
+export const joinEvent = z.object({
+  userId: z.number().int(),
+  eventId: z.number().int(),
+});
