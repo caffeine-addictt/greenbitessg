@@ -94,36 +94,36 @@ export const Layout = (): JSX.Element => {
 
   return (
     <div className="flex min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
-      <QueryClientProvider client={new QueryClient()}>
-        <main className="flex min-h-screen flex-col">
-          <Navbar />
+      <main className="flex min-h-screen flex-col">
+        <Navbar />
 
-          <Routes location={location}>
-            {Object.entries(routes).map(([path, details], i) => (
-              <Route
-                key={i}
-                path={path}
-                element={
-                  <WrappedComponent {...details} path={location.pathname} />
-                }
-              />
-            ))}
-          </Routes>
-        </main>
+        <Routes location={location}>
+          {Object.entries(routes).map(([path, details], i) => (
+            <Route
+              key={i}
+              path={path}
+              element={
+                <WrappedComponent {...details} path={location.pathname} />
+              }
+            />
+          ))}
+        </Routes>
+      </main>
 
-        <Footer />
-      </QueryClientProvider>
+      <Footer />
     </div>
   );
 };
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <Layout />
-      </AuthProvider>
-    </BrowserRouter>
-    <Toaster />
+    <QueryClientProvider client={new QueryClient()}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Layout />
+        </AuthProvider>
+      </BrowserRouter>
+      <Toaster />
+    </QueryClientProvider>
   </React.StrictMode>,
 );
