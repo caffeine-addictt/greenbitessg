@@ -94,10 +94,10 @@ export const Layout = (): JSX.Element => {
 
   return (
     <div className="flex min-w-full max-w-full flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
-      <main className="flex min-h-screen flex-col">
-        <Navbar />
+      <QueryClientProvider client={new QueryClient()}>
+        <main className="flex min-h-screen flex-col">
+          <Navbar />
 
-        <QueryClientProvider client={new QueryClient()}>
           <Routes location={location}>
             {Object.entries(routes).map(([path, details], i) => (
               <Route
@@ -109,10 +109,10 @@ export const Layout = (): JSX.Element => {
               />
             ))}
           </Routes>
-        </QueryClientProvider>
-      </main>
+        </main>
 
-      <Footer />
+        <Footer />
+      </QueryClientProvider>
     </div>
   );
 };

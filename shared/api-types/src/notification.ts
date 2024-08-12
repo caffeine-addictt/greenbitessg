@@ -23,6 +23,6 @@ export type GetNotificationFailAPI = ErrorResponse<'Invalid ID!'>;
 /**
  * Successful response for /v1/notification/archive
  */
-export interface NotificationArchiveSuccessAPI
+export interface NotificationArchiveSuccAPI
   extends SuccessResponse<{ deleted: true }> {}
 export type NotificationArchiveFailAPI = ErrorResponse<'Invalid key!'>;
