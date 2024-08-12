@@ -43,12 +43,12 @@ const Navbar: PageComponent = (): React.JSX.Element => {
           {/* Notification */}
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button className="size-10 items-center !bg-primary-dark p-2 text-center">
+              <Button className="size-10 items-center p-2 text-center">
                 <BellIcon />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="h-52 w-60 !min-w-full border-none !bg-primary-dark text-base md:p-2 md:text-sm">
-              <DropdownMenuItem className="!text-text-light focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+            <DropdownMenuContent className="h-52 w-60 border-none text-base md:p-2 md:text-sm">
+              <DropdownMenuItem>
                 Notification Item
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -57,52 +57,52 @@ const Navbar: PageComponent = (): React.JSX.Element => {
           {/* Hamburger */}
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button className="size-10 items-center !bg-primary-dark p-2 text-center">
+              <Button className="size-10 items-center p-2 text-center">
                 <HamburgerMenuIcon />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="block w-80 rounded border-none !bg-primary-dark !text-text-light !no-underline md:w-60 md:p-1 md:text-sm">
-              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+            <DropdownMenuContent className="*:focus:bg-current/90 block w-80 rounded border-none md:w-60 md:p-1 md:text-sm">
+              <DropdownMenuItem>
                 <InternalLink
                   href="/"
                   aria-current="page"
-                  className="m-0 p-0 !text-text-light !no-underline"
+                  className="m-0 p-0 "
                   variant="link"
                 >
                   Home
                 </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+              <DropdownMenuItem>
                 <InternalLink
                   href="/about"
-                  className="m-0 p-0 !text-text-light !no-underline"
+                  className="m-0 p-0 "
                   variant="link"
                 >
                   About
                 </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+              <DropdownMenuItem>
                 <InternalLink
                   href="/home"
-                  className="m-0 p-0 !text-text-light !no-underline"
+                  className="m-0 p-0 "
                   variant="link"
                 >
                   My Account
                 </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+              <DropdownMenuItem>
                 <InternalLink
                   href="/food-tips"
-                  className="m-0 p-0 !text-text-light !no-underline"
+                  className="m-0 p-0 "
                   variant="link"
                 >
                   Today's Sustainable Food Tips
                 </InternalLink>
               </DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-primary-dark-200 md:hidden dark:focus:bg-primary-dark-200">
+              <DropdownMenuItem>
                 <InternalLink
                   href="/events"
-                  className="m-0 p-0 !text-text-light !no-underline md:hidden"
+                  className="m-0 p-0  md:hidden"
                   variant="link"
                 >
                   Events
@@ -112,19 +112,19 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                 <>
                   <DropdownMenuLabel>Admin</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                  <DropdownMenuItem>
                     <InternalLink
                       href="/dashboard"
-                      className="m-0 p-0 !text-text-light !no-underline"
+                      className="m-0 p-0 "
                       variant="link"
                     >
                       Dashboard
                     </InternalLink>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                  <DropdownMenuItem>
                     <InternalLink
                       href="/events"
-                      className="m-0 p-0 !text-text-light !no-underline"
+                      className="m-0 p-0 "
                       variant="link"
                     >
                       Event Management
