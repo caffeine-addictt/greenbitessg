@@ -119,9 +119,8 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               <BellIcon className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="h-52 w-60 border-none text-base md:p-2 md:text-sm">
-              <DropdownMenuItem>
-                Notification Item
-              </DropdownMenuItem>
+              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+
               {/* Load notifications */}
               {notifications?.length &&
                 notifications.map((notification, i) => (
