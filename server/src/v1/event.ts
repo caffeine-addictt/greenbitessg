@@ -49,6 +49,38 @@ export const getEvent: IAuthedRouteHandler = async (_, res) => {
   } satisfies GetEventSuccAPI);
 };
 
+export const getAnEvent: IAuthedRouteHandler = async (req, res) => {
+  // get ID from query parameter
+  const id = parseInt(req.params.id, 10);
+
+  // Fetch a specific event by ID
+  const events = await db.select().from(eventTable).where(eq(eventTable.id, id));
+
+  // Check if events were found
+  if (events.length === 0) {
+    return res.status(404).json({
+      status: 404,
+      errors: [{ message: 'No events found!' }],
+    } satisfies GetEventFailAPI);
+  }
+
+  // Ensure that the date is a Date object
+  const formattedEvents = events.map((event) => ({
+    id: event.id,
+    title: event.title,
+    date: new Date(event.date),
+    time: event.time,
+    location: event.location,
+    description: event.description || undefined,
+  }));
+
+  // Send the response
+  return res.status(200).json({
+    status: 200,
+    data: formattedEvents,
+  } satisfies GetEventSuccAPI);
+};
+
 // Handle /v1/event POST
 export const createEvent: IAuthedRouteHandler = async (req, res) => {
   const validated = eventRequestObject.safeParse(req.body);
