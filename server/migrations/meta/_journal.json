@@ -176,6 +176,13 @@
       "when": 1723455293125,
       "tag": "0024_military_master_chief",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1723463931761,
+      "tag": "0025_bright_stark_industries",
+      "breakpoints": true
     }
   ]
 }

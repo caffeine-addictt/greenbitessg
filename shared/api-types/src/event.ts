@@ -17,6 +17,16 @@ export interface GetEventSuccAPI
 export interface CreateEventSuccAPI
   extends SuccessResponse<z.infer<typeof event.eventSchema>> {}
 
+// Success response for JoinEvent API
+export interface JoinEventSuccAPI
+  extends SuccessResponse<z.infer<typeof event.joinEvent>> {}
+
+/**
+ * Failure response for event-related endpoints
+ */
+export type JoinEventFailAPI =
+  ErrorResponse<'An error occured joining event. Please try again later.'>;
+
 /**
  * Failure response for event-related endpoints
  */
