@@ -94,7 +94,6 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       accessLevel: 'authenticated',
     },
   },
-
 } as const;
 
 export default routeMap;
