@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { AuthContext } from '@service/auth';
-import { Button, InternalLink } from '@components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@components/ui/dropdown-menu';
+import { Button, InternalLink, buttonVariants } from '@components/ui/button';
 import { BellIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { PageComponent } from '@pages/route-map';
 
@@ -42,10 +42,8 @@ const Navbar: PageComponent = (): React.JSX.Element => {
 
           {/* Notification */}
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button className="size-10 items-center p-2 text-center">
-                <BellIcon />
-              </Button>
+            <DropdownMenuTrigger className={buttonVariants({ size: 'icon' })}>
+              <BellIcon className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="h-52 w-60 border-none text-base md:p-2 md:text-sm">
               <DropdownMenuItem>
@@ -56,10 +54,8 @@ const Navbar: PageComponent = (): React.JSX.Element => {
 
           {/* Hamburger */}
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button className="size-10 items-center p-2 text-center">
-                <HamburgerMenuIcon />
-              </Button>
+            <DropdownMenuTrigger className={buttonVariants({ size: 'icon' })}>
+              <HamburgerMenuIcon className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="*:focus:bg-current/90 block w-80 rounded border-none md:w-60 md:p-1 md:text-sm">
               <DropdownMenuItem>
