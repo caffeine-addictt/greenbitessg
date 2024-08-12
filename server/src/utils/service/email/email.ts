@@ -9,6 +9,9 @@ import { Resend } from 'resend';
 import generateActivationEmail, {
   ActivationEmailProps,
 } from './templates/account-activation';
+import generateVerificationEmail, {
+  VerificationEmailProps,
+} from './templates/verification-code';
 import { NestedOmit } from '@src/utils/types';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -20,7 +23,8 @@ type EmailWithSenderLike = `${string} <${EmailLike}>`;
 interface IEmailOptions {
   type: string;
 }
-export type EmailOptions = IEmailOptions & ActivationEmailProps;
+export type EmailOptions = IEmailOptions &
+  (ActivationEmailProps | VerificationEmailProps);
 
 interface IEmailDetails {
   from: EmailWithSenderLike;
@@ -41,6 +45,10 @@ export const sendEmail = (
       generated = generateActivationEmail(details.options);
       break;
 
+    case 'verification':
+      generated = generateVerificationEmail(details.options);
+      break;
+
     default:
       throw new Error('Invalid email type');
   }
@@ -56,7 +64,9 @@ export const sendEmail = (
 
 export const sendActivationEmail = (
   details: NestedOmit<
-    Omit<IEmailDetails, 'from' | 'subject' | 'text'>,
+    Omit<IEmailDetails, 'from' | 'subject' | 'text'> & {
+      options: ActivationEmailProps;
+    },
     'options.type'
   >,
 ): ReturnType<typeof sendEmail> =>
@@ -68,5 +78,21 @@ export const sendActivationEmail = (
     options: {
       ...details.options,
       type: 'activation',
+    },
+  });
+
+export const sendVerificationEmail = (
+  details: Omit<IEmailDetails, 'from' | 'subject' | 'text'> & {
+    options: VerificationEmailProps;
+  },
+): ReturnType<typeof sendEmail> =>
+  sendEmail({
+    from: 'GreenBites SG <noreply@greenbitessg.ngjx.org>',
+    to: details.to,
+    subject: 'Your Verification Code',
+    text: `Your verification code is: ${details.options.verificationLink}`,
+    options: {
+      ...details.options,
+      type: 'verification',
     },
   });

@@ -21,7 +21,9 @@ import type {
 
 import { db } from '../db';
 import { eq, and } from 'drizzle-orm';
-import { usersTable, passkeysTable } from '../db/schemas';
+import { usersTable, passkeysTable, tokens } from '../db/schemas';
+import { sendVerificationEmail } from '../utils/service/email/email';
+import { getFullPath } from '../utils/app';
 
 export const getUser: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json({
@@ -73,7 +75,33 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
     newUserData.activated = false;
 
     // TODO: Create verification token (follow auth register)
+    const createdToken = await db
+      .insert(tokens)
+      .values({
+        userId: req.user.id,
+        tokenType: 'verification',
+      })
+      .returning({ token: tokens.token });
     // TODO: Send verification email
+    const sendEmail = await sendVerificationEmail({
+      to: validated.data.email,
+      options: {
+        type: 'verification',
+        name: validated.data.username || '', // Comma added here
+        verificationLink: getFullPath(`/verify/${createdToken[0].token}`),
+      },
+    }).catch((err) =>
+      console.error(
+        `ERR Failed to send verification email for user [${req.user.id}]: ${err}`, // Adjusted to use req.user.id instead of createdUser[0].id
+      ),
+    );
+
+    if (!sendEmail) {
+      return res.status(Http4XX.UNPROCESSABLE_ENTITY).json({
+        status: Http4XX.UNPROCESSABLE_ENTITY,
+        errors: [{ message: 'Email could not be reached' }],
+      } satisfies UpdateUserFailAPI);
+    }
   }
 
   await db
