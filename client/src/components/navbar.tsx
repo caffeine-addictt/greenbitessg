@@ -23,13 +23,39 @@ const Navbar: PageComponent = (): React.JSX.Element => {
   return (
     <nav className="bg-accent-dark">
       <div className="mx-auto flex h-16 max-w-screen-xl flex-wrap items-center justify-between p-4">
+        {/* Logo */}
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/logo_279x279.webp" className="h-8" alt="Logo" />
           <span className="self-center whitespace-nowrap text-2xl font-semibold">
             Green Bites SG
           </span>
         </a>
+
+        {/* Right */}
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
+          <InternalLink
+            href="/my-events"
+            variant={'link'}
+            className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm !text-text-light !no-underline md:inline-flex"
+          >
+            My Events
+          </InternalLink>
+
+          {/* Notification */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button className="size-10 items-center !bg-primary-dark p-2 text-center">
+                <BellIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="h-52 w-60 !min-w-full border-none !bg-primary-dark text-base md:p-2 md:text-sm">
+              <DropdownMenuItem className="!text-text-light focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
+                Notification Item
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Hamburger */}
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Button className="size-10 items-center !bg-primary-dark p-2 text-center">
@@ -109,25 +135,6 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button className="size-10 items-center !bg-primary-dark p-2 text-center">
-                <BellIcon />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="h-52 w-60 !min-w-full border-none !bg-primary-dark text-base md:p-2 md:text-sm">
-              <DropdownMenuItem className="!text-text-light focus:bg-primary-dark-200 dark:focus:bg-primary-dark-200">
-                Notification Item
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <InternalLink
-            href="/my-events"
-            variant={'link'}
-            className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm !text-text-light !no-underline md:inline-flex"
-          >
-            My Events
-          </InternalLink>
         </div>
       </div>
     </nav>
