@@ -5,14 +5,14 @@
  */
 
 import * as z from 'zod';
-import { AxiosError, isAxiosError } from 'axios';
 import { createContext, useCallback, useState, useEffect } from 'react';
 
 import httpClient from '@utils/http';
+import { type AxiosError, isAxiosError } from 'axios';
 import { auth } from '@lib/api-types';
 import { userType } from '@lib/api-types/schemas/user';
-import { GetUserSuccAPI } from '@lib/api-types/user';
-import { RefreshFailAPI, RefreshSuccAPI } from '@lib/api-types/auth';
+import type { GetUserSuccAPI } from '@lib/api-types/user';
+import type { RefreshFailAPI, RefreshSuccAPI } from '@lib/api-types/auth';
 import { getAuthCookie, setAuthCookie, unsetAuthCookie } from '@utils/jwt';
 import { refreshTokenSchema } from '@lib/api-types/schemas/auth';
 
