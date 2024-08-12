@@ -5,7 +5,18 @@
  */
 
 import * as React from 'react';
+import { useToast } from '@components/ui/use-toast';
 import { AuthContext } from '@service/auth';
+import type { PageComponent } from '@pages/route-map';
+
+import httpClient from '@utils/http';
+import { isAxiosError } from 'axios';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import type {
+  GetNotificationSuccAPI,
+  NotificationArchiveSuccAPI,
+} from '@lib/api-types/notification';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +26,12 @@ import {
   DropdownMenuLabel,
 } from '@components/ui/dropdown-menu';
 import { Button, InternalLink, buttonVariants } from '@components/ui/button';
-import { BellIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { PageComponent } from '@pages/route-map';
+import {
+  ArchiveIcon,
+  BellIcon,
+  HamburgerMenuIcon,
+} from '@radix-ui/react-icons';
+import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
 const Navbar: PageComponent = (): React.JSX.Element => {
   const { isAdmin } = React.useContext(AuthContext)!;
