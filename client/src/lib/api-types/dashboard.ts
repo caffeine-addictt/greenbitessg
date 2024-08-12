@@ -46,9 +46,6 @@ export interface GetDashboardSuccAPI
 export type GetDashboardFailAPI = ErrorResponse<
   | 'An unexpected error occurred. Please try again later'
   | 'There was a problem accessing the database. Please try again later'
-  | 'Too many requests. Please try again later'
-  | 'Unable to connect to the server. Please check your network connection'
-  | 'Data inconsistency detected. Please refresh the page and try again'
 >;
 
 /**

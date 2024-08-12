@@ -9,8 +9,8 @@ import type { RoutingMap } from '../route-map';
 // Import endpoints
 import authRoutes from './auth/route-map';
 import foodRoutes from './food/route-map';
-import { createFeedback } from './feedback';
 import notificationRoutes from './notification/route-map';
+import { createFeedback, deleteFeedback, getFeedback } from './feedback';
 import {
   getUser,
   updateUser,
@@ -67,8 +67,18 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     },
   },
   '/v1/feedback': {
+    GET: {
+      handler: getFeedback,
+      accessLevel: 'authenticated',
+    },
     POST: {
       handler: createFeedback,
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/feedback/:id': {
+    DELETE: {
+      handler: deleteFeedback,
       accessLevel: 'authenticated',
     },
   },
