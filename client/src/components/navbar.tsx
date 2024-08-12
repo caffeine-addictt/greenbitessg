@@ -34,11 +34,11 @@ const Navbar: PageComponent = (): React.JSX.Element => {
         {/* Right */}
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
           <InternalLink
-            href="/my-events"
+            href="/events"
             variant={'link'}
             className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm !text-text-light !no-underline md:inline-flex"
           >
-            My Events
+            Events
           </InternalLink>
 
           {/* Notification */}
@@ -102,11 +102,11 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               </DropdownMenuItem>
               <DropdownMenuItem className="focus:bg-primary-dark-200 md:hidden dark:focus:bg-primary-dark-200">
                 <InternalLink
-                  href="/my-events"
+                  href="/events"
                   className="m-0 p-0 !text-text-light !no-underline md:hidden"
                   variant={'link'}
                 >
-                  My Events
+                  Events
                 </InternalLink>
               </DropdownMenuItem>
               {isAdmin && (
