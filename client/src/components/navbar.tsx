@@ -167,6 +167,13 @@ const Navbar: PageComponent = (): React.JSX.Element => {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* Login */}
+          {!isLoggedIn && (
+            <InternalLink href="/login" className="hidden md:inline-flex">
+              Login/Register
+            </InternalLink>
+          )}
+
           {/* Hamburger */}
           <DropdownMenu>
             <DropdownMenuTrigger className={buttonVariants({ size: 'icon' })}>
