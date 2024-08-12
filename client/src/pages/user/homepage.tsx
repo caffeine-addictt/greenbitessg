@@ -26,15 +26,15 @@ const Home: PageComponent = (props) => {
             </a>
           </div>
           <div className="p-6">
-            <a href="/" className="block bg-primary-dark">
+            <a href="/feedback" className="block bg-primary-dark">
               <img src=""></img>
               <p className="p-6 font-semibold">
-                Read today's Sustainable Food Tips
+                Provide Your Feedback
               </p>
             </a>
           </div>
           <div className="p-6">
-            <a href="/" className="block bg-primary-dark">
+            <a href="/my-events" className="block bg-primary-dark">
               <img src=""></img>
               <p className="p-6 font-semibold">My Events</p>
             </a>
