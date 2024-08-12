@@ -35,7 +35,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
         <div className="flex space-x-3 md:order-2 md:space-x-1 rtl:space-x-reverse">
           <InternalLink
             href="/events"
-            className="hidden items-center justify-center rounded-md bg-primary-dark p-2 text-center text-sm !text-text-light !no-underline md:inline-flex"
+            className="hidden md:inline-flex"
           >
             Events
           </InternalLink>
