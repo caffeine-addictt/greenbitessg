@@ -21,7 +21,9 @@ import type {
 
 import { db } from '../db';
 import { eq, and } from 'drizzle-orm';
-import { usersTable, passkeysTable } from '../db/schemas';
+import { usersTable, passkeysTable, tokens } from '../db/schemas';
+import { sendVerificationEmail } from '../utils/service/email/email';
+import { getFullPath } from '../utils/app';
 
 export const getUser: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json({
@@ -39,7 +41,6 @@ export const getUser: IAuthedRouteHandler = async (req, res) => {
 };
 
 export const updateUser: IAuthedRouteHandler = async (req, res) => {
-  // Validate request body
   const validated = schemas.user.userUpdateSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
@@ -58,7 +59,7 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
       errors: errorStack,
     } satisfies UpdateUserFailAPI);
   }
-
+  // Sending verification email
   if (!validated.data.email && !validated.data.username) {
     return res.status(Http4XX.BAD_REQUEST).json({
       status: Http4XX.BAD_REQUEST,
@@ -72,8 +73,33 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
   if (validated.data.email) {
     newUserData.activated = false;
 
-    // TODO: Create verification token (follow auth register)
-    // TODO: Send verification email
+    const createdToken = await db
+      .insert(tokens)
+      .values({
+        userId: req.user.id,
+        tokenType: 'verification',
+      })
+      .returning({ token: tokens.token });
+
+    const sendEmail = await sendVerificationEmail({
+      to: validated.data.email,
+      options: {
+        type: 'verification',
+        name: validated.data.username || '',
+        verificationLink: getFullPath(`/verify/${createdToken[0].token}`),
+      },
+    }).catch((err) =>
+      console.error(
+        `ERR Failed to send verification email for user [${req.user.id}]: ${err}`,
+      ),
+    );
+
+    if (!sendEmail) {
+      return res.status(Http4XX.UNPROCESSABLE_ENTITY).json({
+        status: Http4XX.UNPROCESSABLE_ENTITY,
+        errors: [{ message: 'Email could not be reached' }],
+      } satisfies UpdateUserFailAPI);
+    }
   }
 
   await db

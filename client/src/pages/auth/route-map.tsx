@@ -17,6 +17,7 @@ import RegisterPage from './legacy-register';
 import ActivatePage from './activate';
 import { PasskeyLoginPage } from './passkey';
 import RedirectToAuth from './auth-redirect';
+import VerifyPage from './verification';
 
 const authRouteMap: RouteMap = {
   '/register': {
@@ -84,6 +85,18 @@ const authRouteMap: RouteMap = {
     title: 'Activate Account',
     description: 'Activate your account',
     component: ActivatePage,
+    accessLevel: 'authenticated',
+  },
+  '/verify': {
+    title: 'Verify Account',
+    description: 'Verify your Account',
+    component: VerifyPage,
+    accessLevel: 'authenticated',
+  },
+  '/verify/:token': {
+    title: 'Verify Account',
+    description: 'Verify your Account',
+    component: VerifyPage,
     accessLevel: 'authenticated',
   },
 } as const;
