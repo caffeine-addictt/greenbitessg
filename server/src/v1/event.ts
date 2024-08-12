@@ -5,8 +5,8 @@
  */
 
 import { db } from '../db';
-import { eq } from 'drizzle-orm';
-import { eventTable } from '../db/schemas';
+import { and, eq, inArray } from 'drizzle-orm';
+import { eventTable, usersToEvent } from '../db/schemas';
 
 import {
   GetEventSuccAPI,
@@ -15,6 +15,9 @@ import {
   CreateEventFailAPI,
   DeleteEventSuccAPI,
   DeleteEventFailAPI,
+  JoinEventSuccAPI,
+  JoinEventFailAPI,
+  LeaveEventSuccAPI,
 } from '../lib/api-types/event';
 import { eventRequestObject } from '../lib/api-types/schemas/event';
 import { IAuthedRouteHandler } from '../route-map';
@@ -79,6 +82,124 @@ export const getAnEvent: IAuthedRouteHandler = async (req, res) => {
     status: 200,
     data: formattedEvents,
   } satisfies GetEventSuccAPI);
+};
+
+// Handle /v1/event/:id POST
+export const joinEvent: IAuthedRouteHandler = async (req, res) => {
+  // get event ID from query parameter
+  const eventId = parseInt(req.params.id, 10);
+  // get user ID
+  const userId = req.user.id
+
+  // Fetch a specific event by ID
+  const event = await db.select().from(eventTable).where(eq(eventTable.id, eventId));
+
+  // Check if events were found
+  if (event.length === 0) {
+    return res.status(404).json({
+      status: 404,
+      errors: [{ message: 'No events found!' }],
+    } satisfies JoinEventFailAPI);
+  }
+
+  // Check if the user is already joined to the event
+  const existingJoin = await db.select().from(usersToEvent)
+      .where(and(eq(usersToEvent.eventId, eventId), eq(usersToEvent.userId, userId)))
+
+  if (existingJoin.length > 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'User is already joined to this event.' }],
+    } satisfies JoinEventFailAPI);
+  }
+
+  // Insert the user-event association into the userEventTable
+  await db.insert(usersToEvent).values({
+    userId,
+    eventId,
+  });
+
+  // Send the success response
+  return res.status(200).json({
+    status: 200,
+    data: {
+      userId,
+      eventId,
+    },
+  } satisfies JoinEventSuccAPI);
+};
+
+// Handle /v1/user/event GET
+export const getUserJoinedEvent: IAuthedRouteHandler = async (req, res) => {
+  const userId = req.user.id
+  // Fetch event ID that match with current user ID
+  const eventID = await db
+  .select({ eventId: usersToEvent.eventId })
+  .from(usersToEvent)
+  .where(eq(usersToEvent.userId, userId));
+
+  // check if ID is empty
+  if (eventID.length === 0) {
+    return res.status(404).json({
+      status: 404,
+      errors: [{ message: 'You did not signed up for any events yet!' }],
+    } satisfies GetEventFailAPI);
+  }
+
+  const eventIDArray: number[] = eventID.map(result => result.eventId).filter((id): id is number => id !== null);
+
+  // Fetch all events where it matches eventID
+  const events = await db
+  .select()
+  .from(eventTable)
+  .where(inArray(eventTable.id, eventIDArray));
+
+  // Check if events were found
+  if (events.length === 0) {
+    return res.status(404).json({
+      status: 404,
+      errors: [{ message: 'Events do not exist' }],
+    } satisfies GetEventFailAPI);
+  }
+
+  // Format events
+  const formattedEvents = events.map((event) => ({
+    id: event.id,
+    title: event.title,
+    date: new Date(event.date),
+    time: event.time,
+    location: event.location,
+    description: event.description || undefined,
+  }));
+
+  // Send the response
+  return res.status(200).json({
+    status: 200,
+    data: formattedEvents,
+  } satisfies GetEventSuccAPI);
+};
+
+// Handle /v1/user/event/:id DELETE
+export const leaveEvent: IAuthedRouteHandler = async (req, res) => {
+  const eventId = parseInt(req.params.id, 10);
+  const userId = req.user.id
+
+  if (isNaN(eventId) || eventId < 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Invalid event ID' }],
+    } satisfies DeleteEventFailAPI);
+  }
+
+  await db.delete(usersToEvent).where(and(eq(usersToEvent.eventId, eventId), eq(usersToEvent.userId, userId)));
+
+  return res.status(200).json({
+    status: 200,
+    data: {
+      userId,
+      eventId,
+    },
+  } satisfies LeaveEventSuccAPI);
 };
 
 // Handle /v1/event POST
