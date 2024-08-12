@@ -16,6 +16,7 @@ import {
   customType,
   boolean,
   jsonb,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import type {
@@ -137,6 +138,26 @@ export const eventRelations = relations(eventTable, ({ one }) => ({
 }));
 export type InsertEvent = typeof eventTable.$inferInsert;
 export type SelectEvent = typeof eventTable.$inferSelect;
+
+/**
+ * Table for associating users to events they have joiend
+ */
+export const usersToEvent = pgTable(
+  'users_to_events',
+  {
+    userId: integer('user_id'),
+    eventId: integer('event_id'),
+  },
+  (usersToEvent) => {
+    return {
+      pk: primaryKey({ columns: [usersToEvent.userId, usersToEvent.eventId] }),
+      pkWithCustomName: primaryKey({
+        name: 'custom_name',
+        columns: [usersToEvent.userId, usersToEvent.eventId],
+      }),
+    };
+  },
+);
 
 /**
  * Content
