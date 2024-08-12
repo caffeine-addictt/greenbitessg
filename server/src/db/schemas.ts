@@ -64,7 +64,6 @@ export type SelectUser = typeof usersTable.$inferSelect;
 /**
  * Feedback
  */
-
 export const feedbackTable = pgTable('feedback_table', {
   id: serial('id').primaryKey(),
   userId: integer('user_id')
@@ -79,14 +78,12 @@ export const feedbackTable = pgTable('feedback_table', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
-
 export const feedbackRelations = relations(feedbackTable, ({ one }) => ({
   user: one(usersTable, {
     fields: [feedbackTable.userId],
     references: [usersTable.id],
   }),
 }));
-
 export type InsertFeedback = typeof feedbackTable.$inferInsert;
 export type SelectFeedback = typeof feedbackTable.$inferSelect;
 
