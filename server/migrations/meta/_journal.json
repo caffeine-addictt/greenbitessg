@@ -169,6 +169,13 @@
       "when": 1723296380347,
       "tag": "0023_solid_jean_grey",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1723455293125,
+      "tag": "0024_military_master_chief",
+      "breakpoints": true
     }
   ]
 }
