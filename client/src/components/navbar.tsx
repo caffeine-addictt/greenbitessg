@@ -105,7 +105,7 @@ const Navbar: PageComponent = (): React.JSX.Element => {
         {/* Logo */}
         <InternalLink href="/" variant="link">
           <img src="/logo_279x279.webp" className="mr-2 size-8" alt="Logo" />
-          <span className="self-center whitespace-nowrap text-2xl font-semibold">
+          <span className="self-center whitespace-nowrap text-2xl font-semibold max-sm:hidden">
             Green Bites SG
           </span>
         </InternalLink>
