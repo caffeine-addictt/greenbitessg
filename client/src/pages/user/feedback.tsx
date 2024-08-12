@@ -73,6 +73,7 @@ const FeedbackForm: PageComponent = () => {
             <FormField
               control={feedbackForm.control}
               name="name"
+              rules={{ required: 'Name is required' }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -95,6 +96,13 @@ const FeedbackForm: PageComponent = () => {
             <FormField
               control={feedbackForm.control}
               name="email"
+              rules={{
+                required: 'Email is required',
+                pattern: {
+                  value: /^[^@\s]+@[^@\s]+\.[^@\s]+$/,
+                  message: 'Invalid email address',
+                },
+              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
@@ -118,15 +126,11 @@ const FeedbackForm: PageComponent = () => {
             <FormField
               control={feedbackForm.control}
               name="suggestion"
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Suggestion (optional)</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Your Suggestion"
-                      className={fieldState.error ? 'border-red-700' : ''}
-                      {...field}
-                    />
+                    <Input placeholder="Your Suggestion" {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -135,6 +139,7 @@ const FeedbackForm: PageComponent = () => {
             <FormField
               control={feedbackForm.control}
               name="feedbackMessage"
+              rules={{ required: 'Feedback message is required' }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Feedback Message</FormLabel>
