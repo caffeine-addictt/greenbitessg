@@ -12,6 +12,7 @@ import RootPage from '@pages/root';
 import authRouteMap from '@pages/auth/route-map';
 import userRouteMap from './user/route-map';
 import foodRouteMap from './food/route-map';
+import legalRouteMap from './legal/route-map';
 
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
@@ -44,5 +45,6 @@ const routes: RootRouteMap = {
   ...authRouteMap,
   ...userRouteMap,
   ...foodRouteMap,
+  ...legalRouteMap,
 } as const;
 export default routes;
