@@ -158,14 +158,12 @@ export const usersToEvent = pgTable(
     };
   },
 );
-export const joinUsersRelations = relations(usersToEvent, ({ one }) => ({
+export const UsersToEventRelations = relations(usersToEvent, ({ one }) => ({
   user: one(usersTable, {
     fields: [usersToEvent.userId],
     references: [usersTable.id],
   }),
-}));
-export const joinEventsRelations = relations(usersToEvent, ({ one }) => ({
-  user: one(eventTable, {
+  event: one(eventTable, {
     fields: [usersToEvent.eventId],
     references: [eventTable.id],
   }),
