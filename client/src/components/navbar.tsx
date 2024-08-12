@@ -117,55 +117,59 @@ const Navbar: PageComponent = (): React.JSX.Element => {
           </InternalLink>
 
           {/* Notification */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className={buttonVariants({ size: 'icon' })}>
-              <BellIcon className="size-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="h-52 w-60 border-none text-base md:p-2 md:text-sm">
-              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+          {isLoggedIn && (
+            <DropdownMenu>
+              <DropdownMenuTrigger className={buttonVariants({ size: 'icon' })}>
+                <BellIcon className="size-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="h-52 w-60 border-none text-base md:p-2 md:text-sm">
+                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuSeparator />
 
-              {/* Load notifications */}
-              {notifications?.length &&
-                notifications.map((notification, i) => (
-                  <DropdownMenuItem
-                    className="flex-row items-start"
-                    key={`notification-${i}`}
-                  >
-                    {/* left */}
-                    <div className="flex w-fit flex-col gap-2">
-                      <p>{notification.notificationMessage}</p>
-                      <p className="text-sm">
-                        {notification.createdAt.toLocaleDateString()}
-                      </p>
-                    </div>
-
-                    {/* Right */}
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => archive(notification.id)}
+                {/* Load notifications */}
+                {notifications &&
+                  notifications.length > 0 &&
+                  notifications.map((notification, i) => (
+                    <DropdownMenuItem
+                      className="flex-row items-start"
+                      key={`notification-${i}`}
                     >
-                      <ArchiveIcon className="size-4" />
-                    </Button>
+                      {/* left */}
+                      <div className="flex w-fit flex-col gap-2">
+                        <p>{notification.notificationMessage}</p>
+                        <p className="text-sm">
+                          {notification.createdAt.toLocaleDateString()}
+                        </p>
+                      </div>
+
+                      {/* Right */}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => archive(notification.id)}
+                      >
+                        <ArchiveIcon className="size-4" />
+                      </Button>
+                    </DropdownMenuItem>
+                  ))}
+
+                {/* if no notifications */}
+                {notifications && !notifications.length && (
+                  <DropdownMenuItem className="flex-row items-start">
+                    <p className="text-sm">No notifications</p>
                   </DropdownMenuItem>
-                ))}
+                )}
 
-              {/* if no notifications */}
-              {notifications && !notifications.length && (
-                <DropdownMenuItem className="flex-row items-start">
-                  <p className="text-sm">No notifications</p>
-                </DropdownMenuItem>
-              )}
-
-              {/* if error */}
-              {isError && (
-                <DropdownMenuItem className="flex-row items-start">
-                  <p className="text-sm">Something went wrong</p>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {/* if error */}
+                {isError && (
+                  <DropdownMenuItem className="flex-row items-start">
+                    <p className="text-sm">Something went wrong</p>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           {/* Login */}
           {!isLoggedIn && (
