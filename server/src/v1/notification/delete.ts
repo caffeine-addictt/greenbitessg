@@ -9,7 +9,7 @@ import { db } from '../../db';
 import { notificationTable } from '../../db/schemas';
 import type { IAuthedRouteHandler } from '../../route-map';
 import type {
-  NotificationArchiveSuccessAPI,
+  NotificationArchiveSuccAPI,
   NotificationArchiveFailAPI,
 } from '../../lib/api-types/notification';
 
@@ -46,6 +46,6 @@ const archiveNotification: IAuthedRouteHandler = async (req, res) => {
     data: {
       deleted: true,
     },
-  } satisfies NotificationArchiveSuccessAPI);
+  } satisfies NotificationArchiveSuccAPI);
 };
 export default archiveNotification;
