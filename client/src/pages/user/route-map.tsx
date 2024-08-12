@@ -8,7 +8,9 @@ import type { RouteMap } from '@pages/route-map';
 
 // Import pages
 import EventCreationPage from './create-events';
-import EventList from './event-list';
+import EventManage from './event-manage';
+import EventList from './event-list' ;
+import getEvent from './join-events';
 import AccountSettings from './settings';
 import Home from './homepage';
 import FeedbackForm from './feedback';
@@ -32,11 +34,23 @@ const userRouteMap: RouteMap = {
     description: 'Create Your Events Here',
     component: EventCreationPage,
   },
-  '/events': {
-    title: 'List Events',
+  '/events/manage': {
+    title: 'Event Management',
     accessLevel: 'authenticated',
-    description: 'List Events Here',
+    description: 'Event Management',
+    component: EventManage,
+  },
+  '/events': {
+    title: 'Events',
+    accessLevel: 'public',
+    description: 'Event List',
     component: EventList,
+  },
+  '/events/:id': {
+    title: 'join event',
+    accessLevel: 'public',
+    description: 'View individual event',
+    component: getEvent,
   },
   '/feedback': {
     title: 'Feedback Form',

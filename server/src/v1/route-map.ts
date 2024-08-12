@@ -12,7 +12,7 @@ import foodRoutes from './food/route-map';
 import { createFeedback } from './feedback';
 import notificationRoutes from './notification/route-map';
 import { getUser, updateUser, deleteUser } from './user';
-import { createEvent, deleteEvent, getEvent } from './event';
+import { createEvent, deleteEvent, getEvent, getAnEvent } from './event';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -39,6 +39,7 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     GET: {
       handler: getEvent,
       accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
     },
     POST: {
       handler: createEvent,
@@ -49,6 +50,11 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     DELETE: {
       handler: deleteEvent,
       accessLevel: 'authenticated',
+    },
+    GET: {
+      handler: getAnEvent,
+      accessLevel: 'authenticated',
+      authOptions: { allowNonActivated: true },
     },
   },
   '/v1/feedback': {
