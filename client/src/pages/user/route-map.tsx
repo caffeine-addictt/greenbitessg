@@ -12,6 +12,7 @@ import EventList from './event-list';
 import AccountSettings from './settings';
 import Home from './homepage';
 import FeedbackForm from './feedback';
+import DashboardPage from './dashboard';
 
 const userRouteMap: RouteMap = {
   '/settings': {
@@ -43,6 +44,12 @@ const userRouteMap: RouteMap = {
     description: 'State feedback here',
     accessLevel: 'authenticated',
     component: FeedbackForm,
+  },
+  '/dashboard': {
+    title: 'Dashboard',
+    description: 'Check all the relevant details here',
+    component: DashboardPage,
+    accessLevel: 'authenticated',
   },
 } as const;
 export default userRouteMap;
