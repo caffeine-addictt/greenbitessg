@@ -65,7 +65,7 @@ const EventList: PageComponent = () => {
               <h2 className="text-xl font-semibold">{event.title}</h2>
               <p>{`${event.date} ${event.time}`}</p>
               <p>{event.location}</p>
-              <p>{event.description || 'No description available'}</p>
+              <p>{event.description}</p>
               <button
                 className="mt-2 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
                 onClick={() => deleteEvent(event.id)}

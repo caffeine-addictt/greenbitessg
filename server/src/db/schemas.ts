@@ -123,7 +123,7 @@ export const eventTable = pgTable('events', {
   date: timestamp('date').notNull(),
   time: text('time').notNull(),
   location: text('location').notNull(),
-  description: text('description'),
+  description: text('description').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
