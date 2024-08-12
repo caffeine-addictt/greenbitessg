@@ -135,7 +135,7 @@ export const register: IBareRouteHandler = async (req, res) => {
   const createdUser = await db
     .insert(usersTable)
     .values({
-      permission: 0,
+      permission: 1,
       username: validated.data.username,
       email: validated.data.email,
       password: await hashPassword(validated.data.password),
