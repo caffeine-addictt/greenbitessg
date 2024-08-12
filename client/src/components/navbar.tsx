@@ -66,6 +66,33 @@ const Navbar: PageComponent = (): React.JSX.Element => {
     enabled: isLoggedIn,
   });
 
+  // Archive user notifications
+  const { mutate: archive } = useMutation({
+    mutationKey: ['notifications-archive'],
+    mutationFn: (id: number) =>
+      httpClient.post<NotificationArchiveSuccAPI, { ignore: string }>({
+        uri: `/notification/archive/${id}`,
+        withCredentials: 'access',
+      }),
+    onSuccess: () => {
+      toast({
+        title: 'Notification archived',
+        description: 'Your notification has been archived.',
+      });
+      refetch();
+    },
+    onError: (err) => {
+      console.log(err);
+      toast({
+        title: 'Something went wrong',
+        description: isAxiosError(err)
+          ? err.response?.data.errors[0].message
+          : 'Please try again later',
+        variant: 'destructive',
+      });
+    },
+  });
+
   return (
     <nav className="bg-accent-dark">
       <div className="mx-auto flex h-16 max-w-screen-xl flex-wrap items-center justify-between p-4">
@@ -109,6 +136,17 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                         {notification.createdAt.toLocaleDateString()}
                       </p>
                     </div>
+
+                    {/* Right */}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => archive(notification.id)}
+                    >
+                      <ArchiveIcon className="size-4" />
+                    </Button>
+                  </DropdownMenuItem>
                 ))}
 
               {/* if no notifications */}
