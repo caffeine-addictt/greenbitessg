@@ -31,15 +31,21 @@ import {
   BellIcon,
   HamburgerMenuIcon,
 } from '@radix-ui/react-icons';
+import { cn } from '@utils/tailwind';
 import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
 // Components
 export const NavbarLink = ({
   href,
   children,
-}: DropdownMenuProps & { href: `/${string}` }) => (
+  className = '',
+}: DropdownMenuProps & { className?: string; href: `/${string}` }) => (
   <DropdownMenuItem asChild>
-    <InternalLink href={href} className="justify-start" variant="link">
+    <InternalLink
+      href={href}
+      className={cn('justify-start', className)}
+      variant="link"
+    >
       {children}
     </InternalLink>
   </DropdownMenuItem>
