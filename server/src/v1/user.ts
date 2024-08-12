@@ -59,7 +59,7 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
       errors: errorStack,
     } satisfies UpdateUserFailAPI);
   }
-// Sending verification email
+  // Sending verification email
   if (!validated.data.email && !validated.data.username) {
     return res.status(Http4XX.BAD_REQUEST).json({
       status: Http4XX.BAD_REQUEST,
