@@ -36,43 +36,33 @@ export const createFeedback: IAuthedRouteHandler = async (req, res) => {
     } satisfies CreateFeedbackFailAPI);
   }
 
-  try {
-    const { name, email, suggestion, feedbackMessage } = validationResult.data;
+  const { name, email, suggestion, feedbackMessage } = validationResult.data;
 
-    // Create a new feedback entry
-    const [newFeedback] = await db
-      .insert(feedbackTable)
-      .values({
-        userId: req.user.id,
-        name,
-        email,
-        suggestion: suggestion ?? '', // Default to empty string if undefined
-        feedbackMessage,
-      })
-      .returning();
+  // Create a new feedback entry
+  const [newFeedback] = await db
+    .insert(feedbackTable)
+    .values({
+      userId: req.user.id,
+      name,
+      email,
+      suggestion: suggestion ?? '', // Default to empty string if undefined
+      feedbackMessage,
+    })
+    .returning();
 
-    // Format the response data using feedbackResponseObject
-    const responseData = feedbackResponseObject.parse({
-      id: newFeedback.id,
-      name: newFeedback.name,
-      email: newFeedback.email,
-      suggestion: newFeedback.suggestion || '', // Default to empty string if undefined
-      feedbackMessage: newFeedback.feedbackMessage,
-    });
+  // Format the response data using feedbackResponseObject
+  const responseData = feedbackResponseObject.parse({
+    id: newFeedback.id,
+    name: newFeedback.name,
+    email: newFeedback.email,
+    suggestion: newFeedback.suggestion || '', // Default to empty string if undefined
+    feedbackMessage: newFeedback.feedbackMessage,
+  });
 
-    return res.status(200).json({
-      status: 200,
-      data: responseData,
-    } satisfies CreateFeedbackSuccAPI);
-  } catch (error) {
-    console.error('Server error:', error); // Log unexpected errors
-    return res.status(500).json({
-      status: 500,
-      errors: [
-        { message: 'An unexpected error occurred. Please try again later.' },
-      ],
-    });
-  }
+  return res.status(200).json({
+    status: 200,
+    data: responseData,
+  } satisfies CreateFeedbackSuccAPI);
 };
 
 export const getFeedback: IAuthedRouteHandler = async (_, res) => {
@@ -92,6 +82,7 @@ export const getFeedback: IAuthedRouteHandler = async (_, res) => {
     ...feedback,
     suggestion: feedback.suggestion ?? undefined, // Convert `null` to `undefined`
   }));
+
   // Check if feedbacks were found
   if (feedbacks.length === 0) {
     return res.status(404).json({

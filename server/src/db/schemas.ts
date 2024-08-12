@@ -61,6 +61,10 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
+/**
+ * Feedback
+ */
+
 export const feedbackTable = pgTable('feedback_table', {
   id: serial('id').primaryKey(),
   userId: integer('user_id')

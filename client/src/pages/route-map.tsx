@@ -5,13 +5,13 @@
  */
 
 import * as React from 'react';
-import authRouteMap from '@pages/auth/route-map';
-import userRouteMap from '@pages/user/route-map';
-import foodRouteMap from './food/route-map';
 
 // Page imports
 import NotFound from '@pages/404';
 import RootPage from '@pages/root';
+import authRouteMap from '@pages/auth/route-map';
+import userRouteMap from './user/route-map';
+import foodRouteMap from './food/route-map';
 
 export type PathStr = `/${string}`;
 export type RootPathStr = '*' | '/' | PathStr;
