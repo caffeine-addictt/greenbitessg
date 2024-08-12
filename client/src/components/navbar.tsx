@@ -187,6 +187,18 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                   <NavbarLink href="/dashboard">Dashboard</NavbarLink>
                 </>
               )}
+
+              <DropdownMenuSeparator />
+
+              {/* login */}
+              {!isLoggedIn && (
+                <NavbarLink href="/login" className="hidden max-md:inline-flex">
+                  Login/Register
+                </NavbarLink>
+              )}
+
+              {/* logout */}
+              {isLoggedIn && <NavbarLink href="/logout">Logout</NavbarLink>}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
