@@ -5,8 +5,6 @@
  */
 
 import * as z from 'zod';
-
-import { dashboard } from './schemas';
 import type { SuccessResponse, ErrorResponse } from './index';
 import { dashboardUpdateSchema } from './schemas/dashboard';
 
@@ -34,17 +32,12 @@ export interface DashboardResponse {
   sustainabilityData: SustainabilityData[];
 }
 
+// Successful response for /v1/dashboard endpoint
 export interface GetDashboardSuccAPI
   extends SuccessResponse<{
-    dashboard: Array<z.infer<typeof dashboard.dashboardSchema>>;
-    salesData: {
-      date: string;
-      amount: number;
-    }[];
-    sustainabilityData: {
-      label: string;
-      value: number;
-    }[];
+    dashboard: Dashboard[];
+    salesData: SalesData[];
+    sustainabilityData: SustainabilityData[];
   }> {}
 
 /**

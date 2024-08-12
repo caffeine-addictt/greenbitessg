@@ -1,10 +1,10 @@
-import { IAuthedRouteHandler } from '@src/route-map';
+import { IAuthedRouteHandler } from '../route-map';
 import {
   GetDashboardSuccAPI,
   GetDashboardFailAPI,
   UpdateDashboardSuccAPI,
   UpdateDashboardFailAPI,
-} from '@src/lib/api-types/dashboard';
+} from '../lib/api-types/dashboard';
 import { db } from '../db';
 import { dashboardTable } from '../db/schemas';
 import { eq } from 'drizzle-orm';
