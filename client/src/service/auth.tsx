@@ -35,10 +35,6 @@ const getUserInfo = () =>
 export type AuthProviderState = 'pending' | 'done';
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<AuthProviderState>('pending');
-  const [user, setUser] = useState<AuthContextType['user']>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isActivated, setIsActivated] = useState<boolean>(false);
 
   const validateUser = () =>
     getUserInfo()
@@ -131,31 +127,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       children={children}
       value={{
         state: state,
-        user: user,
-        isLoggedIn: isLoggedIn,
-        isAdmin: isAdmin,
-        isActivated: isActivated,
-        refetch: fetchUser,
-        logout: async () => {
-          // Invalidate tokens HTTP
-          return await httpClient
-            .post({
-              uri: '/auth/invalidate-tokens',
-              withCredentials: 'refresh',
-              payload: { access_token: getAuthCookie('access')! },
-            })
-            .catch((res) =>
-              console.log('Failed to invalidate tokens:', res.message),
-            )
-            .finally(() => {
-              unsetAuthCookie('access');
-              unsetAuthCookie('refresh');
-            });
-        },
-        login: (tokens: auth.LoginSuccAPI['data']) => {
-          setAuthCookie(tokens.access_token, 'access');
-          setAuthCookie(tokens.refresh_token, 'refresh');
-        },
+        user: user || null,
+        isLoggedIn: !!user,
+        isAdmin: user?.permission === 0 || false,
+        isActivated: user?.activated || false,
+        refetch: () => fetchUser(),
+        logout: logout,
+        login: login,
       }}
     />
   );
