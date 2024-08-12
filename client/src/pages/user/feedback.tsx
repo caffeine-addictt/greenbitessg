@@ -13,11 +13,12 @@ import {
   FormMessage,
 } from '@components/ui/form';
 import { z } from 'zod';
-import { feedbackSchema } from '@lib/api-types/schemas/feedback'; // Adjust the import path as needed
+import { feedbackRequestObject } from '@lib/api-types/schemas/feedback'; // Adjust the import path as needed
 import { PageComponent } from '@pages/route-map';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-// Define the Feedback type using z.infer and feedbackSchema
-type Feedback = z.infer<typeof feedbackSchema>;
+// Define the Feedback type using z.infer and feedbackRequestObject
+type Feedback = z.infer<typeof feedbackRequestObject>;
 
 const FeedbackForm: PageComponent = () => {
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +26,7 @@ const FeedbackForm: PageComponent = () => {
 
   const feedbackForm = useForm<Feedback>({
     mode: 'onBlur',
+    resolver: zodResolver(feedbackRequestObject),
     defaultValues: {
       name: '',
       email: '',
@@ -118,15 +120,11 @@ const FeedbackForm: PageComponent = () => {
             <FormField
               control={feedbackForm.control}
               name="suggestion"
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Suggestion (optional)</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Your Suggestion"
-                      className={fieldState.error ? 'border-red-700' : ''}
-                      {...field}
-                    />
+                    <Input placeholder="Your Suggestion" {...field} />
                   </FormControl>
                 </FormItem>
               )}
