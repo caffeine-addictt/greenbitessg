@@ -168,8 +168,8 @@ export const UsersToEventRelations = relations(usersToEvent, ({ one }) => ({
     references: [eventTable.id],
   }),
 }));
-export type InsertUserToEvent = typeof contentTable.$inferInsert;
-export type SelectUserToEvent = typeof contentTable.$inferSelect;
+export type InsertUserToEvent = typeof usersToEvent.$inferInsert;
+export type SelectUserToEvent = typeof usersToEvent.$inferSelect;
 
 /**
  * Content
