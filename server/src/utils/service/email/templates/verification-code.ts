@@ -7,7 +7,7 @@
 export interface VerificationEmailProps {
   type: 'verification';
   name: string;
-  verificationLink: string; // Change from verificationCode to verificationLink
+  verificationLink: string;
 }
 
 const generateVerificationEmail = ({

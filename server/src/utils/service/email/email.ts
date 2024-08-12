@@ -89,7 +89,7 @@ export const sendVerificationEmail = (
   sendEmail({
     from: 'GreenBites SG <noreply@greenbitessg.ngjx.org>',
     to: details.to,
-    subject: 'Your Verification Code',
+    subject: 'Verify Your Account',
     text: `Your verification code is: ${details.options.verificationLink}`,
     options: {
       ...details.options,

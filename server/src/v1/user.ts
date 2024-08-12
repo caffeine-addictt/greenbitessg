@@ -74,7 +74,6 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
   if (validated.data.email) {
     newUserData.activated = false;
 
-    // TODO: Create verification token (follow auth register)
     const createdToken = await db
       .insert(tokens)
       .values({
@@ -82,7 +81,7 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
         tokenType: 'verification',
       })
       .returning({ token: tokens.token });
-    // TODO: Send verification email
+
     const sendEmail = await sendVerificationEmail({
       to: validated.data.email,
       options: {
