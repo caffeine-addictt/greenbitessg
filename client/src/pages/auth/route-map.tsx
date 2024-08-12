@@ -15,8 +15,9 @@ import LoginPage from './legacy-login';
 import RegisterPage from './legacy-register';
 
 import ActivatePage from './activate';
-import { PasskeyLoginPage, PasskeyRegisterPage } from './passkey';
+import { PasskeyLoginPage } from './passkey';
 import RedirectToAuth from './auth-redirect';
+import VerifyPage from './verification';
 
 const authRouteMap: RouteMap = {
   '/register': {
@@ -64,12 +65,6 @@ const authRouteMap: RouteMap = {
     component: PasskeyLoginPage,
     accessLevel: 'public-only',
   },
-  '/auth0/register': {
-    title: 'Passkey',
-    description: 'Passkey',
-    component: PasskeyRegisterPage,
-    accessLevel: 'authenticated',
-  },
   '/auth0': {
     title: 'Login',
     description: 'Login to your account with email and password',
@@ -90,6 +85,18 @@ const authRouteMap: RouteMap = {
     title: 'Activate Account',
     description: 'Activate your account',
     component: ActivatePage,
+    accessLevel: 'authenticated',
+  },
+  '/verify': {
+    title: 'Verify Account',
+    description: 'Verify your Account',
+    component: VerifyPage,
+    accessLevel: 'authenticated',
+  },
+  '/verify/:token': {
+    title: 'Verify Account',
+    description: 'Verify your Account',
+    component: VerifyPage,
     accessLevel: 'authenticated',
   },
 } as const;

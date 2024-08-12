@@ -7,3 +7,8 @@ export const dashboardSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
 });
+
+export const dashboardUpdateSchema = z.object({
+  title: z.string().min(1, 'Title is required').optional(),
+  description: z.string().optional().optional(),
+});

@@ -10,6 +10,14 @@ import {
 } from '@simplewebauthn/server';
 import * as z from 'zod';
 
+export type PasskeyData = {
+  id: number;
+  counter: number;
+  device_type: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
 export const activateFormSchema = z.object({
   token: z
     .string({

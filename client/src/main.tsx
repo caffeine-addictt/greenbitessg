@@ -97,19 +97,17 @@ export const Layout = (): JSX.Element => {
       <main className="flex min-h-screen flex-col">
         <Navbar />
 
-        <QueryClientProvider client={new QueryClient()}>
-          <Routes location={location}>
-            {Object.entries(routes).map(([path, details], i) => (
-              <Route
-                key={i}
-                path={path}
-                element={
-                  <WrappedComponent {...details} path={location.pathname} />
-                }
-              />
-            ))}
-          </Routes>
-        </QueryClientProvider>
+        <Routes location={location}>
+          {Object.entries(routes).map(([path, details], i) => (
+            <Route
+              key={i}
+              path={path}
+              element={
+                <WrappedComponent {...details} path={location.pathname} />
+              }
+            />
+          ))}
+        </Routes>
       </main>
 
       <Footer />
@@ -119,11 +117,13 @@ export const Layout = (): JSX.Element => {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <Layout />
-      </AuthProvider>
-    </BrowserRouter>
-    <Toaster />
+    <QueryClientProvider client={new QueryClient()}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Layout />
+        </AuthProvider>
+      </BrowserRouter>
+      <Toaster />
+    </QueryClientProvider>
   </React.StrictMode>,
 );

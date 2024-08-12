@@ -4,21 +4,26 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-import { IAuthedRouteHandler } from '../route-map';
+import type { IAuthedRouteHandler } from '../route-map';
 
-import { type ZodIssue } from 'zod';
+import type { ZodIssue } from 'zod';
 import { Http4XX } from '../lib/api-types/http-codes';
 import { type errors, schemas } from '../lib/api-types';
-import {
+import type {
   GetUserSuccAPI,
   UpdateUserSuccAPI,
   UpdateUserFailAPI,
-  DeleteUserSuccessAPI,
+  DeleteUserSuccAPI,
+  GetPasskeySuccAPI,
+  DeletePasskeySuccAPI,
+  DeletePasskeyFailAPI,
 } from '../lib/api-types/user';
 
 import { db } from '../db';
-import { usersTable } from '../db/schemas';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
+import { usersTable, passkeysTable, tokens } from '../db/schemas';
+import { sendVerificationEmail } from '../utils/service/email/email';
+import { getFullPath } from '../utils/app';
 
 export const getUser: IAuthedRouteHandler = async (req, res) => {
   return res.status(200).json({
@@ -36,7 +41,6 @@ export const getUser: IAuthedRouteHandler = async (req, res) => {
 };
 
 export const updateUser: IAuthedRouteHandler = async (req, res) => {
-  // Validate request body
   const validated = schemas.user.userUpdateSchema.safeParse(req.body);
   if (!validated.success) {
     const errorStack: errors.CustomErrorContext[] = [];
@@ -55,7 +59,7 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
       errors: errorStack,
     } satisfies UpdateUserFailAPI);
   }
-
+  // Sending verification email
   if (!validated.data.email && !validated.data.username) {
     return res.status(Http4XX.BAD_REQUEST).json({
       status: Http4XX.BAD_REQUEST,
@@ -69,8 +73,33 @@ export const updateUser: IAuthedRouteHandler = async (req, res) => {
   if (validated.data.email) {
     newUserData.activated = false;
 
-    // TODO: Create verification token (follow auth register)
-    // TODO: Send verification email
+    const createdToken = await db
+      .insert(tokens)
+      .values({
+        userId: req.user.id,
+        tokenType: 'verification',
+      })
+      .returning({ token: tokens.token });
+
+    const sendEmail = await sendVerificationEmail({
+      to: validated.data.email,
+      options: {
+        type: 'verification',
+        name: validated.data.username || '',
+        verificationLink: getFullPath(`/verify/${createdToken[0].token}`),
+      },
+    }).catch((err) =>
+      console.error(
+        `ERR Failed to send verification email for user [${req.user.id}]: ${err}`,
+      ),
+    );
+
+    if (!sendEmail) {
+      return res.status(Http4XX.UNPROCESSABLE_ENTITY).json({
+        status: Http4XX.UNPROCESSABLE_ENTITY,
+        errors: [{ message: 'Email could not be reached' }],
+      } satisfies UpdateUserFailAPI);
+    }
   }
 
   await db
@@ -90,6 +119,59 @@ export const deleteUser: IAuthedRouteHandler = async (req, res) => {
 
   return res.status(200).json({
     status: 200,
-    data: null,
-  } satisfies DeleteUserSuccessAPI);
+    data: { deleted: true },
+  } satisfies DeleteUserSuccAPI);
+};
+
+// Get user passkeys
+export const getUserPasskeys: IAuthedRouteHandler = async (req, res) => {
+  const passkeys: GetPasskeySuccAPI['data'] = await db
+    .select({
+      id: passkeysTable.id,
+      counter: passkeysTable.counter,
+      device_type: passkeysTable.deviceType,
+      created_at: passkeysTable.createdAt,
+      updated_at: passkeysTable.updatedAt,
+    })
+    .from(passkeysTable)
+    .where(eq(passkeysTable.userId, req.user.id));
+
+  return res.status(200).json({
+    status: 200,
+    data: passkeys,
+  } satisfies GetPasskeySuccAPI);
+};
+
+// Delete user passket
+export const deleteUserPasskey: IAuthedRouteHandler = async (req, res) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id) || id < 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Passkey not found!' }],
+    } satisfies DeletePasskeyFailAPI);
+  }
+
+  const found = await db
+    .select({})
+    .from(passkeysTable)
+    .where(and(eq(passkeysTable.userId, req.user.id), eq(passkeysTable.id, id)))
+    .limit(1);
+  if (found.length === 0) {
+    return res.status(400).json({
+      status: 400,
+      errors: [{ message: 'Passkey not found!' }],
+    } satisfies DeletePasskeyFailAPI);
+  }
+
+  await db
+    .delete(passkeysTable)
+    .where(
+      and(eq(passkeysTable.userId, req.user.id), eq(passkeysTable.id, id)),
+    );
+
+  return res.status(200).json({
+    status: 200,
+    data: { deleted: true },
+  } satisfies DeletePasskeySuccAPI);
 };

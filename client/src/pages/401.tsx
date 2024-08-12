@@ -6,10 +6,21 @@
 
 import type { PageComponent } from '@pages/route-map';
 
-const Unauthorized: PageComponent = (props) => {
+import { cn } from '@utils/tailwind';
+import { InternalLink } from '@components/ui/button';
+
+const Unauthorized: PageComponent = ({ className, ...props }) => {
   return (
-    <div {...props}>
-      <h1>Unauthorized</h1>
+    <div
+      {...props}
+      className={cn(className, 'flex-col gap-2 items-center justify-center')}
+    >
+      <h1 className="text-4xl font-bold">Unauthorized</h1>
+      <p className="text-2xl">You are not authorized to access this page.</p>
+
+      <InternalLink href="/" className="mt-20">
+        Return Home
+      </InternalLink>
     </div>
   );
 };

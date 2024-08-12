@@ -59,7 +59,7 @@ export const loginPasskeyStart: IBareRouteHandler = async (req, res) => {
     .select({
       userId: usersTable.id,
       passkey: {
-        id: passkeysTable.id,
+        id: passkeysTable.credentialId,
         transports: passkeysTable.transports,
       },
     })
@@ -143,7 +143,7 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
   const passkeys = await db
     .select()
     .from(passkeysTable)
-    .where(eq(passkeysTable.id, castedBody.signed.id))
+    .where(eq(passkeysTable.credentialId, castedBody.signed.id))
     .limit(1);
   if (!passkeys.length) {
     return res.status(Http4XX.FORBIDDEN).json({
@@ -163,7 +163,7 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
       expectedRPID: RP_ID,
       requireUserVerification: false,
       authenticator: {
-        credentialID: passkeys[0].id,
+        credentialID: passkeys[0].credentialId,
         credentialPublicKey: base64ToBytes(passkeys[0].publicKey),
         counter: passkeys[0].counter,
         transports: passkeys[0].transports,
@@ -213,7 +213,10 @@ export const loginPasskeyFinish: IBareRouteHandler = async (req, res) => {
 export const registerPasskeyStart: IAuthedRouteHandler = async (req, res) => {
   // Get existing passkeys
   const passkeys = await db
-    .select({ id: passkeysTable.id, transports: passkeysTable.transports })
+    .select({
+      id: passkeysTable.credentialId,
+      transports: passkeysTable.transports,
+    })
     .from(passkeysTable)
     .where(eq(passkeysTable.userId, req.user.id));
   const opts = await generateRegistrationOptions({
@@ -322,23 +325,16 @@ export const registerPasskeyFinish: IAuthedRouteHandler = async (req, res) => {
     );
 
   // Register passkey
-  const saved = await db
-    .insert(passkeysTable)
-    .values({
-      counter: 0,
-      userId: req.user.id,
-      id: verification.registrationInfo.credentialID,
-      webAuthnUserId: currentChallenges[0].challengeUserId,
-      backedUp: verification.registrationInfo.credentialBackedUp,
-      publicKey: bytesToBase64(
-        verification.registrationInfo.credentialPublicKey,
-      ),
-      deviceType: verification.registrationInfo.credentialDeviceType,
-      transports: castedBody.signed.response.transports ?? [],
-    })
-    .returning();
-  console.log('Saved', saved);
-  console.log('Body:', castedBody.signed);
+  await db.insert(passkeysTable).values({
+    counter: 0,
+    userId: req.user.id,
+    credentialId: verification.registrationInfo.credentialID,
+    webAuthnUserId: currentChallenges[0].challengeUserId,
+    backedUp: verification.registrationInfo.credentialBackedUp,
+    publicKey: bytesToBase64(verification.registrationInfo.credentialPublicKey),
+    deviceType: verification.registrationInfo.credentialDeviceType,
+    transports: castedBody.signed.response.transports ?? [],
+  });
 
   return res.status(201).json({
     status: 201,

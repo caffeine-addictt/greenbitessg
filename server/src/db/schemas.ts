@@ -16,6 +16,7 @@ import {
   customType,
   boolean,
   jsonb,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import type {
@@ -123,7 +124,7 @@ export const eventTable = pgTable('events', {
   date: timestamp('date').notNull(),
   time: text('time').notNull(),
   location: text('location').notNull(),
-  description: text('description'),
+  description: text('description').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
@@ -137,6 +138,38 @@ export const eventRelations = relations(eventTable, ({ one }) => ({
 }));
 export type InsertEvent = typeof eventTable.$inferInsert;
 export type SelectEvent = typeof eventTable.$inferSelect;
+
+/**
+ * Table for associating users to events they have joiend
+ */
+export const usersToEvent = pgTable(
+  'users_to_events',
+  {
+    userId: integer('user_id'),
+    eventId: integer('event_id'),
+  },
+  (usersToEvent) => {
+    return {
+      pk: primaryKey({ columns: [usersToEvent.userId, usersToEvent.eventId] }),
+      pkWithCustomName: primaryKey({
+        name: 'users_to_events_pk',
+        columns: [usersToEvent.userId, usersToEvent.eventId],
+      }),
+    };
+  },
+);
+export const UsersToEventRelations = relations(usersToEvent, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [usersToEvent.userId],
+    references: [usersTable.id],
+  }),
+  event: one(eventTable, {
+    fields: [usersToEvent.eventId],
+    references: [eventTable.id],
+  }),
+}));
+export type InsertUserToEvent = typeof usersToEvent.$inferInsert;
+export type SelectUserToEvent = typeof usersToEvent.$inferSelect;
 
 /**
  * Content
@@ -240,8 +273,10 @@ export type SelectPasskeyChallenge = typeof passkeyChallengesTable.$inferSelect;
  * Passkeys
  */
 export const passkeysTable = pgTable('passkeys_table', {
+  id: serial('id').primaryKey(),
+
   /** Credential unique ID */
-  id: text('id').notNull().primaryKey(),
+  credentialId: text('credential_id').notNull(),
 
   /** Public key bytes */
   publicKey: text('public_key').notNull(),

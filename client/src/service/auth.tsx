@@ -5,14 +5,16 @@
  */
 
 import * as z from 'zod';
-import { AxiosError, isAxiosError } from 'axios';
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState } from 'react';
 
 import httpClient from '@utils/http';
+import { type AxiosError, isAxiosError } from 'axios';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { auth } from '@lib/api-types';
 import { userType } from '@lib/api-types/schemas/user';
-import { GetUserSuccAPI } from '@lib/api-types/user';
-import { RefreshFailAPI, RefreshSuccAPI } from '@lib/api-types/auth';
+import type { GetUserSuccAPI } from '@lib/api-types/user';
+import type { RefreshFailAPI, RefreshSuccAPI } from '@lib/api-types/auth';
 import { getAuthCookie, setAuthCookie, unsetAuthCookie } from '@utils/jwt';
 import { refreshTokenSchema } from '@lib/api-types/schemas/auth';
 
@@ -22,136 +24,136 @@ export type AuthContextType = {
   isLoggedIn: boolean;
   isAdmin: boolean;
   isActivated: boolean;
+  refetch: () => Promise<unknown>;
   login: (tokens: auth.LoginSuccAPI['data']) => void;
   logout: () => Promise<unknown>;
 };
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-/** Try to get user info */
-const getUserInfo = () =>
-  httpClient.get<GetUserSuccAPI>({ uri: '/user', withCredentials: 'access' });
-
 export type AuthProviderState = 'pending' | 'done';
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = useQueryClient();
   const [state, setState] = useState<AuthProviderState>('pending');
-  const [user, setUser] = useState<AuthContextType['user']>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isActivated, setIsActivated] = useState<boolean>(false);
+  const [user, setUser] = useState<z.infer<typeof userType> | null>(null);
 
-  const validateUser = () =>
-    getUserInfo()
-      .then((res) => {
-        console.log('Authenticated');
-        setUser(res.data);
-        setIsActivated(res.data.activated);
-        setIsLoggedIn(true);
-        setIsAdmin(res.data.permission === 1);
-        return null;
-      })
-      .catch((err: AxiosError) => {
-        console.log(
-          'An error occurred while trying to authenticate user:',
-          err.message,
-        );
-        return err;
-      });
+  // Login functionality
+  const login = (tokens: auth.LoginSuccAPI['data']) => {
+    setAuthCookie(tokens.access_token, 'access');
+    setAuthCookie(tokens.refresh_token, 'refresh');
+  };
 
-  const refreshToken = () =>
-    httpClient
-      .post<RefreshSuccAPI, z.infer<typeof refreshTokenSchema>>({
-        uri: '/auth/refresh',
-        withCredentials: 'refresh',
-        payload: { access_token: getAuthCookie('access')! },
-      })
-      .then((res) => res.data)
-      .catch((err: AxiosError<RefreshFailAPI> | Error) => {
+  // Logout functionality
+  const { mutateAsync: logout } = useMutation(
+    {
+      mutationKey: ['user-logout'],
+      mutationFn: () =>
+        httpClient.post({
+          uri: '/auth/invalidate-tokens',
+          withCredentials: 'refresh',
+          payload: { access_token: getAuthCookie('access')! },
+        }),
+      onError: (err) => console.log('Failed to logout:', err.message),
+      onSettled: () => {
+        // Invalidate queries
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        queryClient.invalidateQueries({ queryKey: ['user-logout'] });
+        queryClient.invalidateQueries({ queryKey: ['user-refresh'] });
+
+        // Unset token
+        unsetAuthCookie('access');
+        unsetAuthCookie('refresh');
+
+        // Update state
+        setUser(null);
+      },
+    },
+    queryClient,
+  );
+
+  // Refreshing user token
+  const { mutate: refreshToken } = useMutation(
+    {
+      mutationKey: ['user-refresh'],
+      mutationFn: () =>
+        httpClient
+          .post<RefreshSuccAPI, z.infer<typeof refreshTokenSchema>>({
+            uri: '/auth/refresh',
+            withCredentials: 'refresh',
+            payload: { access_token: getAuthCookie('access')! },
+          })
+          .then((res) => res.data),
+      onSuccess: (data) => {
+        login(data);
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        return fetchUser();
+      },
+      onError: (err: AxiosError<RefreshFailAPI> | Error) => {
+        setState('done');
         if (!isAxiosError(err)) {
           console.log('Failed to refresh token:', err.message);
           return;
         }
-        return err;
-      });
+        console.log(
+          'Failed to refresh token:',
+          err.response?.data.errors[0].message,
+        );
+      },
+    },
+    queryClient,
+  );
 
-  useEffect(() => {
-    (async () => {
-      const validate = await validateUser();
+  // Fetching user
+  const { refetch: fetchUser } = useQuery(
+    {
+      queryKey: ['user'],
+      queryFn: () =>
+        httpClient
+          .get<GetUserSuccAPI>({ uri: '/user', withCredentials: 'access' })
+          .then((res) => res.data)
+          .then((data) => {
+            console.log('Authenticated');
+            setUser(data);
+            setState('done');
+            return data;
+          })
+          .catch((err: AxiosError) => {
+            console.log(
+              'An error occurred while trying to authenticate user:',
+              err.message,
+            );
 
-      // Handle validated
-      if (!validate) {
-        setState('done');
-        return;
-      }
+            // See if fail reason is expired access token
+            const castedErr = err.response?.data as RefreshFailAPI | undefined;
+            if (
+              !castedErr ||
+              (castedErr.errors[0].message !== 'Token is expired!' &&
+                castedErr.errors[0].message !== 'Invalid token!')
+            ) {
+              setState('done');
+              throw err;
+            }
 
-      // See if fail reason is expired access token
-      const castedErr = validate.response?.data as RefreshFailAPI | undefined;
-      if (!castedErr || castedErr.errors[0].message !== 'Token is expired!') {
-        setState('done');
-        return;
-      }
-
-      // Handle refreshing token
-      const refreshTokenResp = await refreshToken();
-
-      // Non-axios error
-      if (!refreshTokenResp) {
-        setState('done');
-        return;
-      }
-
-      // Handle axios error
-      if (isAxiosError(refreshTokenResp)) {
-        console.log('Failed to refresh token:', refreshTokenResp.message);
-        setState('done');
-        return;
-      }
-
-      // Handle success refresh
-      const validateAfterRefresh = await validateUser();
-
-      // Handle non-axios error or validated
-      if (!validateAfterRefresh) {
-        setState('done');
-        return;
-      }
-
-      console.log(
-        'Failed to authenticate user after refreshing token:',
-        validateAfterRefresh.message,
-      );
-      setState('done');
-    })();
-  }, []);
+            // Try to refresh token
+            queryClient.invalidateQueries({ queryKey: ['user-refresh'] });
+            refreshToken();
+            throw err;
+          }),
+    },
+    queryClient,
+  );
 
   return (
     <AuthContext.Provider
       children={children}
       value={{
         state: state,
-        user: user,
-        isLoggedIn: isLoggedIn,
-        isAdmin: isAdmin,
-        isActivated: isActivated,
-        logout: async () => {
-          // Invalidate tokens HTTP
-          return await httpClient
-            .post({
-              uri: '/auth/invalidate-tokens',
-              withCredentials: 'refresh',
-              payload: { access_token: getAuthCookie('access')! },
-            })
-            .catch((res) =>
-              console.log('Failed to invalidate tokens:', res.message),
-            )
-            .finally(() => {
-              unsetAuthCookie('access');
-              unsetAuthCookie('refresh');
-            });
-        },
-        login: (tokens: auth.LoginSuccAPI['data']) => {
-          setAuthCookie(tokens.access_token, 'access');
-          setAuthCookie(tokens.refresh_token, 'refresh');
-        },
+        user: user || null,
+        isLoggedIn: !!user,
+        isAdmin: user?.permission === 0 || false,
+        isActivated: user?.activated || false,
+        refetch: () => fetchUser(),
+        logout: logout,
+        login: login,
       }}
     />
   );

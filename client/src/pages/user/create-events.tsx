@@ -1,9 +1,3 @@
-/**
- * SPDX-FileCopyrightText: 2024 Ng Jun Xiang <contact@ngjx.org>
- *
- * SPDX-License-Identifier: GPL-3.0-only
- */
-
 import { useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 
@@ -23,7 +17,7 @@ import { z } from 'zod';
 import httpClient from '@utils/http';
 import { eventSchema } from '@lib/api-types/schemas/event';
 import { PageComponent } from '@pages/route-map';
-// Define the Event type using z.infer and eventSchema
+
 type Event = z.infer<typeof eventSchema>;
 
 const EventCreationPage: PageComponent = () => {
@@ -46,7 +40,6 @@ const EventCreationPage: PageComponent = () => {
 
   const handleSave = async (data: Event) => {
     try {
-      // Prepare the payload with Date object
       const payload = {
         ...data,
         date: new Date(
@@ -88,6 +81,9 @@ const EventCreationPage: PageComponent = () => {
             <FormField
               control={eventForm.control}
               name="title"
+              rules={{
+                required: 'Title is required',
+              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Title</FormLabel>
@@ -110,6 +106,9 @@ const EventCreationPage: PageComponent = () => {
             <FormField
               control={eventForm.control}
               name="date"
+              rules={{
+                required: 'Date is required',
+              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Date</FormLabel>
@@ -138,6 +137,9 @@ const EventCreationPage: PageComponent = () => {
             <FormField
               control={eventForm.control}
               name="time"
+              rules={{
+                required: 'Time is required',
+              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Time</FormLabel>
@@ -162,6 +164,9 @@ const EventCreationPage: PageComponent = () => {
             <FormField
               control={eventForm.control}
               name="location"
+              rules={{
+                required: 'Location is required',
+              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Location</FormLabel>
@@ -184,6 +189,9 @@ const EventCreationPage: PageComponent = () => {
             <FormField
               control={eventForm.control}
               name="description"
+              rules={{
+                required: 'Description is required',
+              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>

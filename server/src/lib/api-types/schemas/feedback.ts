@@ -28,3 +28,35 @@ export const feedbackSchema = z.object({
     })
     .min(1, { message: 'Feedback message is required' }),
 });
+
+// Define Zod schema for feedback request with custom error messages
+export const feedbackRequestObject = z.object({
+  name: z
+    .string({
+      required_error: 'Name is required',
+    })
+    .min(1, { message: 'Name is required' }),
+
+  email: z
+    .string({
+      required_error: 'Email is required',
+    })
+    .email('Invalid email address'),
+
+  suggestion: z.string().optional(),
+
+  feedbackMessage: z
+    .string({
+      required_error: 'Feedback message is required',
+    })
+    .min(1, { message: 'Feedback message is required' }),
+});
+
+// Define Zod schema for feedback response
+export const feedbackResponseObject = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  suggestion: z.string().optional(),
+  feedbackMessage: z.string(),
+});
