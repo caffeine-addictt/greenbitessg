@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(res.data);
         setIsActivated(res.data.activated);
         setIsLoggedIn(true);
-        setIsAdmin(res.data.permission === 1);
+        setIsAdmin(res.data.permission === 0);
         return null;
       })
       .catch((err: AxiosError) => {
