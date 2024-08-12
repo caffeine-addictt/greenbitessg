@@ -240,8 +240,10 @@ export type SelectPasskeyChallenge = typeof passkeyChallengesTable.$inferSelect;
  * Passkeys
  */
 export const passkeysTable = pgTable('passkeys_table', {
+  id: serial('id').primaryKey(),
+
   /** Credential unique ID */
-  id: text('id').notNull().primaryKey(),
+  credentialId: text('credential_id').notNull(),
 
   /** Public key bytes */
   publicKey: text('public_key').notNull(),
