@@ -158,6 +158,20 @@ export const usersToEvent = pgTable(
     };
   },
 );
+export const joinUsersRelations = relations(usersToEvent, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [usersToEvent.userId],
+    references: [usersTable.id],
+  }),
+}));
+export const joinEventsRelations = relations(usersToEvent, ({ one }) => ({
+  user: one(eventTable, {
+    fields: [usersToEvent.eventId],
+    references: [eventTable.id],
+  }),
+}));
+export type InsertUserToEvent = typeof contentTable.$inferInsert;
+export type SelectUserToEvent = typeof contentTable.$inferSelect;
 
 /**
  * Content
