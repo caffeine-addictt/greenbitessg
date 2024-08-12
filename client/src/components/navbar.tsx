@@ -46,7 +46,26 @@ export const NavbarLink = ({
 );
 
 const Navbar: PageComponent = (): React.JSX.Element => {
-  const { isAdmin } = React.useContext(AuthContext)!;
+  const { toast } = useToast();
+  const { isAdmin, isLoggedIn } = React.useContext(AuthContext)!;
+
+  // Fetch user notifications
+  const {
+    data: notifications,
+    refetch,
+    isError,
+  } = useQuery({
+    queryKey: ['notifications-get'],
+    queryFn: () =>
+      httpClient
+        .get<GetNotificationSuccAPI>({
+          uri: '/notification',
+          withCredentials: 'access',
+        })
+        .then((res) => res.data),
+    enabled: isLoggedIn,
+  });
+
   return (
     <nav className="bg-accent-dark">
       <div className="mx-auto flex h-16 max-w-screen-xl flex-wrap items-center justify-between p-4">
@@ -76,6 +95,35 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               <DropdownMenuItem>
                 Notification Item
               </DropdownMenuItem>
+              {/* Load notifications */}
+              {notifications?.length &&
+                notifications.map((notification, i) => (
+                  <DropdownMenuItem
+                    className="flex-row items-start"
+                    key={`notification-${i}`}
+                  >
+                    {/* left */}
+                    <div className="flex w-fit flex-col gap-2">
+                      <p>{notification.notificationMessage}</p>
+                      <p className="text-sm">
+                        {notification.createdAt.toLocaleDateString()}
+                      </p>
+                    </div>
+                ))}
+
+              {/* if no notifications */}
+              {notifications && !notifications.length && (
+                <DropdownMenuItem className="flex-row items-start">
+                  <p className="text-sm">No notifications</p>
+                </DropdownMenuItem>
+              )}
+
+              {/* if error */}
+              {isError && (
+                <DropdownMenuItem className="flex-row items-start">
+                  <p className="text-sm">Something went wrong</p>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
 
