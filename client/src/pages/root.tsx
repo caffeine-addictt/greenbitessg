@@ -10,8 +10,14 @@ import { Button } from '@components/ui/button';
 const RootPage: PageComponent = (props) => {
   return (
     <div {...props} className="flex-col items-center">
-      <div className="container">
-        <div className=""></div>
+      <div className="relative text-text-light">
+        <img src='../public/lcp-screen.png' className='min-w-full h-auto object-fill' loading='eager'></img>
+        <div className="absolute bottom-3 left-5 md:bottom-1/3 lg:bottom-1/2 md:left-10 mb-4">
+          <h1 className='text-sm md:text-2xl lg:text-4xl font-bold mb-4'>Driving sustainable food possibilties</h1>
+          <Button variant="secondary" size="default"  className='w-1/2 md:w-full md:w-auto'>
+            Start Now
+          </Button>
+        </div>
       </div>
 
       <div className="container mx-auto mt-16 flex-col">
