@@ -19,6 +19,7 @@ import {
   deleteUserPasskey,
 } from './user';
 import { createEvent, deleteEvent, getEvent } from './event';
+import { updateDashboard, getDashboard } from './dashboard';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
   ...authRoutes,
@@ -81,6 +82,19 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
       accessLevel: 'authenticated',
     },
   },
+  '/v1/dashboard/update': {
+    POST: {
+      handler: updateDashboard,
+      accessLevel: 'authenticated',
+    },
+  },
+  '/v1/dashboard': {
+    GET: {
+      handler: getDashboard,
+      accessLevel: 'authenticated',
+    },
+  },
+
 } as const;
 
 export default routeMap;
