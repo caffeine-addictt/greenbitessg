@@ -13,8 +13,9 @@ const RootPage: PageComponent = (props) => {
       <div className="relative text-text-light">
         <img
           src="/lcp-screen-1366x600.webp"
-          className="h-auto min-w-full object-fill"
+          className="h-full min-w-full object-fill"
           loading="eager"
+          height="600"
         ></img>
         <div className="absolute bottom-6 left-1 mb-4 md:bottom-1/3 md:left-10 lg:bottom-1/2">
           <h1 className="mb-4 text-base font-bold md:text-2xl lg:text-4xl">
@@ -37,8 +38,9 @@ const RootPage: PageComponent = (props) => {
         <div className="mt-8 flex flex-col items-center gap-10 md:flex-row">
           <img
             src="/sustainability-image2-1445x813.webp"
-            className="w-full md:h-auto md:w-1/2"
+            className="h-full w-full md:w-1/2"
             loading="lazy"
+            height="813"
           ></img>
           <div className="mt-4 w-full md:ml-0 md:mt-0 md:w-1/2 ">
             <h3 className="text-center text-2xl"> What is GreenBitesSG?</h3>
@@ -53,8 +55,9 @@ const RootPage: PageComponent = (props) => {
         <div className="mt-8 flex flex-col items-center gap-10 md:flex-row-reverse">
           <img
             src="/sustainability-image3-1600x900.webp"
-            className="w-full md:w-1/2"
+            className="h-full w-full md:w-1/2"
             loading="lazy"
+            height="900"
           ></img>
           <div className="mt-4 w-full md:ml-0 md:mt-0 md:w-1/2">
             <h3 className="text-center text-2xl">
@@ -74,15 +77,17 @@ const RootPage: PageComponent = (props) => {
         <div className="mb-3 flex flex-col items-center justify-center space-y-4 md:flex-row md:gap-32">
           <img
             src="/SFA-logo-200x93.webp"
-            className="mb-10 md:m-0"
+            className="h-full mb-10 md:m-0"
             alt=""
             loading="lazy"
+            height="93"
           ></img>
           <img
             src="/NEA-logo-400x181.webp"
-            className="mt-10 w-60 md:m-0"
+            className="h-full mt-10 w-60 md:m-0"
             alt=""
             loading="lazy"
+            height="181"
           ></img>
         </div>
       </div>
@@ -92,9 +97,10 @@ const RootPage: PageComponent = (props) => {
         <div className="mt-8 flex flex-col items-center gap-10 md:flex-row">
           <img
             src="/sustainability-1000x562.webp"
-            className="w-full md:w-1/2"
+            className="h-full w-full md:w-1/2"
             alt=""
             loading="lazy"
+            height="562"
           ></img>
           <div className="mt-4 w-full md:ml-0 md:mt-0 md:w-1/2">
             <p className="mb-4">
