@@ -16,8 +16,8 @@ import Home from './homepage';
 import FeedbackForm from './feedback';
 import DashboardPage from './dashboard';
 import FeedbackList from './feedback-list';
-import MyEvents from './my-events-list';
-import EventView from './my-events';
+import MyEvents from './events-me-list';
+import EventView from './events-me';
 
 const userRouteMap: RouteMap = {
   '/settings': {
@@ -56,13 +56,13 @@ const userRouteMap: RouteMap = {
     description: 'View individual event',
     component: getEvent,
   },
-  '/my-events': {
+  '/events/me': {
     title: 'view my event',
     accessLevel: 'authenticated',
     description: 'View events that have been signed up',
     component: MyEvents,
   },
-  '/my-events/:id': {
+  '/events/me/:id': {
     title: 'view event',
     accessLevel: 'authenticated',
     description: 'View individual events that have been signed up',
