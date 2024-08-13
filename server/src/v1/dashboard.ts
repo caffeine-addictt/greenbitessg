@@ -13,11 +13,22 @@ import { Http4XX } from '../lib/api-types/http-codes';
 import { ZodIssue } from 'zod';
 
 export const getDashboard: IAuthedRouteHandler = async (req, res) => {
-  // Fetch dashboard data from the database
-  const dashboard = await db
+  let dashboard = await db
     .select()
     .from(dashboardTable)
-    .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
+    .where(eq(dashboardTable.userId, req.user.id));
+
+  if (dashboard.length === 0) {
+    const testData = {
+      userId: req.user.id,
+      title: 'Test Dashboard',
+      description: 'This is a test description',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    dashboard = await db.insert(dashboardTable).values(testData).returning();
+  }
 
   if (dashboard.length === 0) {
     return res.status(404).json({
@@ -34,7 +45,6 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
     updatedAt: dashboard.updatedAt,
   }));
 
-  // Calculate sales data (dummy data for illustration)
   const salesData = [
     { date: '2023-01-01', amount: 100 },
     { date: '2023-02-01', amount: 200 },
@@ -44,7 +54,6 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
     { date: '2023-06-01', amount: 400 },
   ];
 
-  // Food sustainability data for the pie chart (dummy data)
   const sustainabilityData = [
     { label: 'Local Sourcing', value: 30 },
     { label: 'Organic Produce', value: 25 },
@@ -58,7 +67,7 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
     data: {
       dashboard: formattedDashboard,
       salesData: salesData,
-      sustainabilityData: sustainabilityData, // Include sustainability data here
+      sustainabilityData: sustainabilityData,
     },
   } satisfies GetDashboardSuccAPI);
 };
