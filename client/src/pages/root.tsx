@@ -5,7 +5,7 @@
  */
 
 import type { PageComponent } from '@pages/route-map';
-import { Button, InternalLink } from '@components/ui/button';
+import { InternalLink } from '@components/ui/button';
 
 const RootPage: PageComponent = (props) => {
   return (
@@ -22,13 +22,13 @@ const RootPage: PageComponent = (props) => {
             Driving sustainable food possibilties
           </h1>
           <InternalLink
-              href="/register"
-              variant="secondary"
-              size="default"
-              className="!bg-primary-light"
-            >
-              Start Now
-            </InternalLink>
+            href="/register"
+            variant="secondary"
+            size="default"
+            className="!bg-primary-light"
+          >
+            Start Now
+          </InternalLink>
         </div>
       </div>
 
@@ -37,7 +37,7 @@ const RootPage: PageComponent = (props) => {
         <div className="mt-8 flex flex-col items-center gap-10 md:flex-row">
           <img
             src="/sustainability-image2-1445x813.webp"
-            className="h-full w-full md:w-1/2"
+            className="size-full md:w-1/2"
             loading="lazy"
             height="813"
           ></img>
@@ -54,7 +54,7 @@ const RootPage: PageComponent = (props) => {
         <div className="mt-8 flex flex-col items-center gap-10 md:flex-row-reverse">
           <img
             src="/sustainability-image3-1600x900.webp"
-            className="h-full w-full md:w-1/2"
+            className="size-full md:w-1/2"
             loading="lazy"
             height="900"
           ></img>
@@ -76,14 +76,14 @@ const RootPage: PageComponent = (props) => {
         <div className="mb-3 flex flex-col items-center justify-center space-y-4 md:flex-row md:gap-32">
           <img
             src="/SFA-logo-200x93.webp"
-            className="h-full mb-10 md:m-0"
+            className="mb-10 h-full md:m-0"
             alt=""
             loading="lazy"
             height="93"
           ></img>
           <img
             src="/NEA-logo-400x181.webp"
-            className="h-full mt-10 w-60 md:m-0"
+            className="mt-10 h-full w-60 md:m-0"
             alt=""
             loading="lazy"
             height="181"
@@ -96,7 +96,7 @@ const RootPage: PageComponent = (props) => {
         <div className="mt-8 flex flex-col items-center gap-10 md:flex-row">
           <img
             src="/sustainability-1000x562.webp"
-            className="h-full w-full md:w-1/2"
+            className="size-full md:w-1/2"
             alt=""
             loading="lazy"
             height="562"
