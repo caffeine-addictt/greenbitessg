@@ -28,7 +28,7 @@ const RootPage: PageComponent = (props) => {
             href="/register"
             variant="secondary"
             size="default"
-            className="!bg-primary-light"
+            className="mt-5 w-fit !bg-primary-light"
           >
             Start Now
           </InternalLink>
