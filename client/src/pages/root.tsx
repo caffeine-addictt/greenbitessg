@@ -5,7 +5,7 @@
  */
 
 import type { PageComponent } from '@pages/route-map';
-import { Button } from '@components/ui/button';
+import { Button, InternalLink } from '@components/ui/button';
 
 const RootPage: PageComponent = (props) => {
   return (
@@ -21,15 +21,14 @@ const RootPage: PageComponent = (props) => {
           <h1 className="mb-4 text-base font-bold md:text-2xl lg:text-4xl">
             Driving sustainable food possibilties
           </h1>
-          <a href="/register" className="flex justify-normal">
-            <Button
+          <InternalLink
+              href="/register"
               variant="secondary"
               size="default"
-              className="w-20 !bg-primary-light md:w-auto"
+              className="!bg-primary-light"
             >
               Start Now
-            </Button>
-          </a>
+            </InternalLink>
         </div>
       </div>
 
@@ -107,15 +106,14 @@ const RootPage: PageComponent = (props) => {
               So what are you waiting for? Food wastage won't wait for you so
               join us and the community in combatting food wastage!
             </p>
-            <a href="/register" className="flex justify-center">
-              <Button
-                variant="secondary"
-                size="default"
-                className="!bg-primary-light"
-              >
-                Start Now
-              </Button>
-            </a>
+            <InternalLink
+              href="/register"
+              variant="secondary"
+              size="default"
+              className="!bg-primary-light"
+            >
+              Start Now
+            </InternalLink>
           </div>
         </div>
       </div>
