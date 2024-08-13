@@ -27,8 +27,7 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
       updatedAt: new Date(),
     };
 
-    // Insert test data and return it immediately
-    dashboard = await db.insert(dashboardTable).values(testData).returning(); // Return the newly inserted data
+    dashboard = await db.insert(dashboardTable).values(testData).returning();
   }
 
   if (dashboard.length === 0) {
@@ -46,7 +45,6 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
     updatedAt: dashboard.updatedAt,
   }));
 
-  // Calculate sales data (dummy data for illustration)
   const salesData = [
     { date: '2023-01-01', amount: 100 },
     { date: '2023-02-01', amount: 200 },
@@ -56,7 +54,6 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
     { date: '2023-06-01', amount: 400 },
   ];
 
-  // Food sustainability data for the pie chart (dummy data)
   const sustainabilityData = [
     { label: 'Local Sourcing', value: 30 },
     { label: 'Organic Produce', value: 25 },
@@ -70,7 +67,7 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
     data: {
       dashboard: formattedDashboard,
       salesData: salesData,
-      sustainabilityData: sustainabilityData, // Include sustainability data here
+      sustainabilityData: sustainabilityData,
     },
   } satisfies GetDashboardSuccAPI);
 };
