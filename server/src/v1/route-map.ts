@@ -69,7 +69,6 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/event': {
     GET: {
       handler: getEvent,
-      accessLevel: 'authenticated',
       authOptions: { allowNonActivated: true },
     },
     POST: {
@@ -84,7 +83,6 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     },
     GET: {
       handler: getAnEvent,
-      accessLevel: 'authenticated',
       authOptions: { allowNonActivated: true },
     },
     POST: {

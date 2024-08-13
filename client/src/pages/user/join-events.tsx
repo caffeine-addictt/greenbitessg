@@ -37,7 +37,6 @@ const EventJoin: PageComponent = () => {
       try {
         const response = await httpClient.get<{ data: Event[] }>({
           uri: `/event/${id}`,
-          withCredentials: 'access',
         });
 
         // retrieve events

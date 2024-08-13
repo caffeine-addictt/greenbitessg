@@ -27,7 +27,6 @@ const EventList: PageComponent = () => {
       try {
         const response = await httpClient.get<{ data: Event[] }>({
           uri: `/event`,
-          withCredentials: 'access',
         });
         setEvents(response.data);
       } catch (err) {
