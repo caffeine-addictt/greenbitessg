@@ -14,7 +14,7 @@ import { PageComponent } from '@pages/route-map';
 import httpClient from '@utils/http';
 import { eventSchema, joinEvent } from '@lib/api-types/schemas/event';
 import { LeaveEventSuccAPI } from '@lib/api-types/event';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@components/ui/button';
 import { AuthContext } from '@service/auth';
 
@@ -31,6 +31,7 @@ const EventView: PageComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = React.useContext(AuthContext)!;
   const [showModal, setShowModal] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUsersEvent = async (id: number) => {
@@ -60,7 +61,7 @@ const EventView: PageComponent = () => {
       });
 
       setShowModal(false);
-      window.location.href = '/my-events';
+      navigate('/events/me');
     } catch (err) {
       setError('Error leaving event! Please try again later.');
       console.log(error);
