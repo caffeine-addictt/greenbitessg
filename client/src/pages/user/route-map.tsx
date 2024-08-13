@@ -8,7 +8,6 @@ import type { RouteMap } from '@pages/route-map';
 
 // Import pages
 import EventCreationPage from './create-events';
-import EventManage from './event-manage';
 import EventList from './event-list';
 import getEvent from './join-events';
 import AccountSettings from './settings';
