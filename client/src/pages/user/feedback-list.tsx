@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { z } from 'zod';
 
 import httpClient from '@utils/http';
 import { PageComponent } from '@pages/route-map';
 import { feedbackSchema } from '@lib/api-types/schemas/feedback';
+import { AuthContext } from '@service/auth';
 
 // Define the Feedback type using z.infer and feedbackSchema
 type Feedback = z.infer<typeof feedbackSchema>;
@@ -11,6 +12,7 @@ type Feedback = z.infer<typeof feedbackSchema>;
 const FeedbackList: PageComponent = () => {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { isAdmin } = useContext(AuthContext)!;
 
   // Fetch feedback from the server
   useEffect(() => {
@@ -63,12 +65,14 @@ const FeedbackList: PageComponent = () => {
               <p>Email: {feedback.email}</p>
               <p>Suggestion: {feedback.suggestion || 'N/A'}</p>
               <p>Message: {feedback.feedbackMessage}</p>
-              <button
-                onClick={() => deleteFeedback(feedback.id)}
-                className="mt-2 rounded bg-red-500 px-4 py-1 text-white"
-              >
-                Delete
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => deleteFeedback(feedback.id)}
+                  className="mt-2 rounded bg-red-500 px-4 py-1 text-white"
+                >
+                  Delete
+                </button>
+              )}
             </li>
           ))}
         </ul>

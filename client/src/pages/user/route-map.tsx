@@ -36,7 +36,7 @@ const userRouteMap: RouteMap = {
   },
   '/events': {
     title: 'List Events',
-    accessLevel: 'admin',
+    accessLevel: 'public',
     description: 'List Events Here',
     component: EventList,
   },
@@ -55,7 +55,7 @@ const userRouteMap: RouteMap = {
   '/feedback': {
     title: 'Feedback List',
     description: 'List feedback',
-    accessLevel: 'admin',
+    accessLevel: 'public',
     component: FeedbackList,
   },
 } as const;
