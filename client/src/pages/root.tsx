@@ -21,6 +21,9 @@ const RootPage: PageComponent = (props) => {
           <h1 className="text-2xl font-bold md:text-4xl lg:text-6xl">
             GreenBites <span className="text-green-700">SG</span>
           </h1>
+          <h3 className="sm:mb-5 lg:mb-10 lg:text-4xl">
+            Driving sustainable food possibilties
+          </h3>
           <InternalLink
             href="/register"
             variant="secondary"
