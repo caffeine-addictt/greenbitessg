@@ -83,14 +83,14 @@ const EventList: PageComponent = () => {
                 >
                   Learn More
                 </Button>
-              {isAdmin && (
-                <button
-                  className="mt-2 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-                  onClick={() => deleteEvent(event.id)}
-                >
-                  Delete
-                </button>
-              )}
+                {isAdmin && (
+                  <button
+                    className="mt-2 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                    onClick={() => deleteEvent(event.id)}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </li>
           ))}
