@@ -44,8 +44,7 @@ const EventView: PageComponent = () => {
         setEvents(response.data);
       } catch (err) {
         setError('Error retrieveing event! Please try again later.');
-        console.error('Fetching error:', err);
-        console.log(error);
+        console.log(err);
       }
     };
 
@@ -63,8 +62,8 @@ const EventView: PageComponent = () => {
       setShowModal(false);
       window.location.href = '/my-events';
     } catch (err) {
-      setError('Error deleting event! Please try again later.');
-      console.error('Delete error:', err);
+      setError('Error leaving event! Please try again later.');
+      console.log(error);
     }
   };
 
@@ -98,34 +97,43 @@ const EventView: PageComponent = () => {
                           Leave
                         </Button>
                         <div
-                        className={cn(
-                          'left-1/2 -translate-x-1/2 top-1/2 transition-all flex -translate-y-1/2 flex-col items-center justify-center rounded-md bg-accent-dark drop-shadow w-4/5',
-                          {
-                            absolute: showModal,
-                            hidden: !showModal,
-                            'opatity-0': !showModal,
-                            'opacity-100': showModal,
-                          },
-                        )}
-                      >
-                        <div className="relative flex flex-col size-fit items-center justify-center rounded-lg p-10">
-                          <h2 className='text-lg font-semibold mb-4 underline'>Leaving Event</h2>
-                          <p className='text-center mb-6'>Are you sure you want to leave the event: {event.title}?</p>
-                          <Button variant="destructive" className='font-semibold' onClick={ () => leaveEvent(event.id, user.id)}>
-                            Confirm
-                          </Button>
-                          {/* Close button */}
-                          <Button
-                            onClick={() => setShowModal(false)}
-                            className="absolute right-1 top-1"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <X className="size-6 text-red-500 drop-shadow" />
-                          </Button>
+                          className={cn(
+                            'left-1/2 -translate-x-1/2 top-1/2 transition-all flex -translate-y-1/2 flex-col items-center justify-center rounded-md bg-accent-dark drop-shadow w-4/5',
+                            {
+                              absolute: showModal,
+                              hidden: !showModal,
+                              'opatity-0': !showModal,
+                              'opacity-100': showModal,
+                            },
+                          )}
+                        >
+                          <div className="relative flex size-fit flex-col items-center justify-center rounded-lg p-10">
+                            <h2 className="mb-4 text-lg font-semibold underline">
+                              Leaving Event
+                            </h2>
+                            <p className="mb-6 text-center">
+                              Are you sure you want to leave the event:{' '}
+                              {event.title}?
+                            </p>
+                            <Button
+                              variant="destructive"
+                              className="font-semibold"
+                              onClick={() => leaveEvent(event.id, user.id)}
+                            >
+                              Confirm
+                            </Button>
+                            {/* Close button */}
+                            <Button
+                              onClick={() => setShowModal(false)}
+                              className="absolute right-1 top-1"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <X className="size-6 text-red-500 drop-shadow" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </>
+                      </>
                     ) : (
                       <p>Cannot leave when u are not logged in</p>
                     )}
@@ -136,7 +144,7 @@ const EventView: PageComponent = () => {
           ))}
         </div>
       ) : (
-        <p className='mx-auto'>You have not joined any events yet!</p>
+        <p className="mx-auto">You have not joined any events yet!</p>
       )}
     </div>
   );

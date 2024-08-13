@@ -57,7 +57,10 @@ export const getAnEvent: IAuthedRouteHandler = async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   // Fetch a specific event by ID
-  const events = await db.select().from(eventTable).where(eq(eventTable.id, id));
+  const events = await db
+    .select()
+    .from(eventTable)
+    .where(eq(eventTable.id, id));
 
   // Check if events were found
   if (events.length === 0) {
@@ -89,10 +92,13 @@ export const joinEvent: IAuthedRouteHandler = async (req, res) => {
   // get event ID from query parameter
   const eventId = parseInt(req.params.id, 10);
   // get user ID
-  const userId = req.user.id
+  const userId = req.user.id;
 
   // Fetch a specific event by ID
-  const event = await db.select().from(eventTable).where(eq(eventTable.id, eventId));
+  const event = await db
+    .select()
+    .from(eventTable)
+    .where(eq(eventTable.id, eventId));
 
   // Check if events were found
   if (event.length === 0) {
@@ -103,8 +109,12 @@ export const joinEvent: IAuthedRouteHandler = async (req, res) => {
   }
 
   // Check if the user is already joined to the event
-  const existingJoin = await db.select().from(usersToEvent)
-      .where(and(eq(usersToEvent.eventId, eventId), eq(usersToEvent.userId, userId)))
+  const existingJoin = await db
+    .select()
+    .from(usersToEvent)
+    .where(
+      and(eq(usersToEvent.eventId, eventId), eq(usersToEvent.userId, userId)),
+    );
 
   if (existingJoin.length > 0) {
     return res.status(400).json({
@@ -131,12 +141,12 @@ export const joinEvent: IAuthedRouteHandler = async (req, res) => {
 
 // Handle /v1/user/event GET
 export const getUserJoinedEvent: IAuthedRouteHandler = async (req, res) => {
-  const userId = req.user.id
+  const userId = req.user.id;
   // Fetch event ID that match with current user ID
   const eventID = await db
-  .select({ eventId: usersToEvent.eventId })
-  .from(usersToEvent)
-  .where(eq(usersToEvent.userId, userId));
+    .select({ eventId: usersToEvent.eventId })
+    .from(usersToEvent)
+    .where(eq(usersToEvent.userId, userId));
 
   // check if ID is empty
   if (eventID.length === 0) {
@@ -146,13 +156,15 @@ export const getUserJoinedEvent: IAuthedRouteHandler = async (req, res) => {
     } satisfies GetEventFailAPI);
   }
 
-  const eventIDArray: number[] = eventID.map(result => result.eventId).filter((id): id is number => id !== null);
+  const eventIDArray: number[] = eventID
+    .map((result) => result.eventId)
+    .filter((id): id is number => id !== null);
 
   // Fetch all events where it matches eventID
   const events = await db
-  .select()
-  .from(eventTable)
-  .where(inArray(eventTable.id, eventIDArray));
+    .select()
+    .from(eventTable)
+    .where(inArray(eventTable.id, eventIDArray));
 
   // Check if events were found
   if (events.length === 0) {
@@ -182,7 +194,7 @@ export const getUserJoinedEvent: IAuthedRouteHandler = async (req, res) => {
 // Handle /v1/user/event/:id DELETE
 export const leaveEvent: IAuthedRouteHandler = async (req, res) => {
   const eventId = parseInt(req.params.id, 10);
-  const userId = req.user.id
+  const userId = req.user.id;
 
   if (isNaN(eventId) || eventId < 0) {
     return res.status(400).json({
@@ -191,7 +203,11 @@ export const leaveEvent: IAuthedRouteHandler = async (req, res) => {
     } satisfies DeleteEventFailAPI);
   }
 
-  await db.delete(usersToEvent).where(and(eq(usersToEvent.eventId, eventId), eq(usersToEvent.userId, userId)));
+  await db
+    .delete(usersToEvent)
+    .where(
+      and(eq(usersToEvent.eventId, eventId), eq(usersToEvent.userId, userId)),
+    );
 
   return res.status(200).json({
     status: 200,

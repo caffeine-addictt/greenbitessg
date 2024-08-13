@@ -28,9 +28,7 @@ const Home: PageComponent = (props) => {
           <div className="p-6">
             <a href="/feedback" className="block bg-primary-dark">
               <img src=""></img>
-              <p className="p-6 font-semibold">
-                Provide Your Feedback
-              </p>
+              <p className="p-6 font-semibold">Provide Your Feedback</p>
             </a>
           </div>
           <div className="p-6">

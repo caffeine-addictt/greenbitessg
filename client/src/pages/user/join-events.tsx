@@ -90,7 +90,10 @@ const EventJoin: PageComponent = () => {
                         <Button
                           variant="default"
                           className="mx-auto mt-5 !bg-primary-light px-6 py-5 text-base font-semibold !text-text-dark"
-                          onClick={() => {joinEvent(event.id, user.id); setShowModal(true)}}
+                          onClick={() => {
+                            joinEvent(event.id, user.id);
+                            setShowModal(true);
+                          }}
                         >
                           Join
                         </Button>
@@ -105,10 +108,18 @@ const EventJoin: PageComponent = () => {
                             },
                           )}
                         >
-                          <div className="relative flex flex-col size-fit items-center justify-center rounded-lg p-10">
-                            <h2 className='text-lg font-semibold mb-4 underline'>Registration For Event</h2>
-                            <p className='text-center mb-6'>You have successfully registered for: {event.title}</p>
-                            <InternalLink href='/events' className='font-semibold'>
+                          <div className="relative flex size-fit flex-col items-center justify-center rounded-lg p-10">
+                            <h2 className="mb-4 text-lg font-semibold underline">
+                              Registration For Event
+                            </h2>
+                            <p className="mb-6 text-center">
+                              You have successfully registered for:{' '}
+                              {event.title}
+                            </p>
+                            <InternalLink
+                              href="/events"
+                              className="font-semibold"
+                            >
                               Back To Events
                             </InternalLink>
                             {/* Close button */}
@@ -136,7 +147,7 @@ const EventJoin: PageComponent = () => {
               </div>
             </>
           ))}
-        </div >
+        </div>
       ) : (
         <p>Event Not found</p>
       )}
