@@ -200,9 +200,8 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               {/* Admin only links */}
               {isAdmin && (
                 <>
-                  <DropdownMenuLabel>Admin</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <NavbarLink href="/dashboard">Dashboard</NavbarLink>
+                  <NavbarLink href="/dashboard">Admin Dashboard</NavbarLink>
                 </>
               )}
 
