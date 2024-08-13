@@ -7,12 +7,14 @@
 import { z } from 'zod';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { cn } from '@utils/tailwind';
+import { X } from 'lucide-react';
 
 import { PageComponent } from '@pages/route-map';
 import httpClient from '@utils/http';
 import { eventSchema, joinEvent } from '@lib/api-types/schemas/event';
 import { useParams } from 'react-router-dom';
-import { Button } from '@components/ui/button';
+import { Button, InternalLink } from '@components/ui/button';
 import { AuthContext } from '@service/auth';
 import { JoinEventSuccAPI } from '@lib/api-types/event';
 
@@ -28,6 +30,7 @@ const EventJoin: PageComponent = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { user, isLoggedIn } = React.useContext(AuthContext)!;
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
     const getEvent = async (id: number) => {
@@ -83,13 +86,43 @@ const EventJoin: PageComponent = () => {
                     <p className="mb-4">Time: {`${event.time}`}</p>
                     <p className="mb-4">Location: {event.location}</p>
                     {isLoggedIn && user ? (
-                      <Button
-                        variant="default"
-                        className="mx-auto mt-5 !bg-primary-light px-6 py-5 text-base font-semibold !text-text-dark"
-                        onClick={() => joinEvent(event.id, user.id)}
-                      >
-                        Join
-                      </Button>
+                      <>
+                        <Button
+                          variant="default"
+                          className="mx-auto mt-5 !bg-primary-light px-6 py-5 text-base font-semibold !text-text-dark"
+                          onClick={() => {joinEvent(event.id, user.id); setShowModal(true)}}
+                        >
+                          Join
+                        </Button>
+                        <div
+                          className={cn(
+                            'left-1/2 -translate-x-1/2 top-1/2 transition-all flex -translate-y-1/2 flex-col items-center justify-center rounded-md bg-accent-dark drop-shadow w-4/5',
+                            {
+                              absolute: showModal,
+                              hidden: !showModal,
+                              'opatity-0': !showModal,
+                              'opacity-100': showModal,
+                            },
+                          )}
+                        >
+                          <div className="relative flex flex-col size-fit items-center justify-center rounded-lg p-10">
+                            <h2 className='text-lg font-semibold mb-4 underline'>Registration For Event</h2>
+                            <p className='text-center mb-6'>You have successfully registered for: {event.title}</p>
+                            <InternalLink href='/events' className='font-semibold'>
+                              Back To Events
+                            </InternalLink>
+                            {/* Close button */}
+                            <Button
+                              onClick={() => setShowModal(false)}
+                              className="absolute right-1 top-1"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <X className="size-6 text-red-500 drop-shadow" />
+                            </Button>
+                          </div>
+                        </div>
+                      </>
                     ) : (
                       <Button
                         variant="default"
@@ -103,7 +136,7 @@ const EventJoin: PageComponent = () => {
               </div>
             </>
           ))}
-        </div>
+        </div >
       ) : (
         <p>Event Not found</p>
       )}
