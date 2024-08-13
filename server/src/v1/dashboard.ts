@@ -1,4 +1,4 @@
-import { IAuthedRouteHandler } from '@src/route-map';
+import { IAuthedRouteHandler } from '../route-map';
 import {
   GetDashboardSuccAPI,
   GetDashboardFailAPI,
@@ -13,13 +13,11 @@ import { Http4XX } from '../lib/api-types/http-codes';
 import { ZodIssue } from 'zod';
 
 export const getDashboard: IAuthedRouteHandler = async (req, res) => {
-  // Fetch dashboard data from the database
   let dashboard = await db
     .select()
     .from(dashboardTable)
-    .where(eq(dashboardTable.userId, req.user.id)); // Filter by the user's ID
+    .where(eq(dashboardTable.userId, req.user.id));
 
-  // If the dashboard is empty, populate with test data
   if (dashboard.length === 0) {
     const testData = {
       userId: req.user.id,
@@ -29,13 +27,8 @@ export const getDashboard: IAuthedRouteHandler = async (req, res) => {
       updatedAt: new Date(),
     };
 
-    await db.insert(dashboardTable).values(testData);
-
-    // Fetch the newly inserted data
-    dashboard = await db
-      .select()
-      .from(dashboardTable)
-      .where(eq(dashboardTable.userId, req.user.id));
+    // Insert test data and return it immediately
+    dashboard = await db.insert(dashboardTable).values(testData).returning(); // Return the newly inserted data
   }
 
   if (dashboard.length === 0) {
