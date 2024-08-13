@@ -32,7 +32,7 @@ const Home: PageComponent = (props) => {
             </a>
           </div>
           <div className="p-6">
-            <a href="/my-events" className="block bg-primary-dark">
+            <a href="/events/me" className="block bg-primary-dark">
               <img src=""></img>
               <p className="p-6 font-semibold">My Events</p>
             </a>

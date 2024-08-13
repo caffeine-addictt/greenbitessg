@@ -40,7 +40,7 @@ const MyEvents: PageComponent = () => {
   }, []);
 
   const redirectToEvent = (id: number) => {
-    navigate(`/my-events/${id}`);
+    navigate(`/events/me/${id}`);
   };
 
   return (
