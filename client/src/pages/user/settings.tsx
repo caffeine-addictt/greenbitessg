@@ -110,6 +110,7 @@ export const AccountPasskeys = () => {
           title: 'Passkey deleted',
           description: 'Passkey deleted successfully',
         });
+        queryClient.invalidateQueries({ queryKey: ['fetch-passkeys'] });
         refetch();
       },
       onError: (err) => {
@@ -150,6 +151,7 @@ export const AccountPasskeys = () => {
             title: 'Passkey registered',
             description: 'Passkey registered successfully',
           });
+          queryClient.invalidateQueries({ queryKey: ['fetch-passkeys'] });
           refetch();
         },
         onError: (err) => {
