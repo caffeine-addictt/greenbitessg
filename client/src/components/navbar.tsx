@@ -145,7 +145,9 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                       <div className="flex w-fit flex-col gap-2">
                         <p>{notification.notificationMessage}</p>
                         <p className="text-sm">
-                          {notification.createdAt.toLocaleDateString()}
+                          {new Date(
+                            notification.createdAt,
+                          ).toLocaleDateString()}
                         </p>
                       </div>
 
