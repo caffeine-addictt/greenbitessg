@@ -17,7 +17,7 @@ const RootPage: PageComponent = (props) => {
           loading="eager"
           height="600"
         ></img>
-        <div className="absolute bottom-6 left-1 mb-4 md:bottom-1/3 md:left-10 lg:bottom-1/2">
+        <div className="absolute top-1/2 mb-4 ml-2 flex size-fit -translate-y-1/2 flex-col md:bottom-1/3 md:left-10 lg:bottom-1/2">
           <h1 className="text-2xl font-bold md:text-4xl lg:text-6xl">
             GreenBites <span className="text-green-700">SG</span>
           </h1>
