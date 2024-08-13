@@ -18,7 +18,15 @@ import {
   getUserPasskeys,
   deleteUserPasskey,
 } from './user';
-import { createEvent, deleteEvent, getEvent } from './event';
+import {
+  createEvent,
+  deleteEvent,
+  getEvent,
+  getAnEvent,
+  joinEvent,
+  getUserJoinedEvent,
+  leaveEvent,
+} from './event';
 import { updateDashboard, getDashboard } from './dashboard';
 
 const routeMap: RoutingMap<`/v1/${string}`> = {
@@ -50,10 +58,17 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
     DELETE: { handler: deleteUserPasskey },
     accessLevel: 'authenticated',
   },
+  '/v1/user/event': {
+    GET: { handler: getUserJoinedEvent },
+    accessLevel: 'authenticated',
+  },
+  '/v1/user/event/:id': {
+    POST: { handler: leaveEvent },
+    accessLevel: 'authenticated',
+  },
   '/v1/event': {
     GET: {
       handler: getEvent,
-      accessLevel: 'authenticated',
     },
     POST: {
       handler: createEvent,
@@ -63,6 +78,14 @@ const routeMap: RoutingMap<`/v1/${string}`> = {
   '/v1/event/:id': {
     DELETE: {
       handler: deleteEvent,
+      accessLevel: 'authenticated',
+    },
+    GET: {
+      handler: getAnEvent,
+      authOptions: { allowNonActivated: true },
+    },
+    POST: {
+      handler: joinEvent,
       accessLevel: 'authenticated',
     },
   },

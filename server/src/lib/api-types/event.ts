@@ -21,6 +21,10 @@ export interface CreateEventSuccAPI
 export interface JoinEventSuccAPI
   extends SuccessResponse<z.infer<typeof event.joinEvent>> {}
 
+// Success response for LeaveEvent API
+export interface LeaveEventSuccAPI
+  extends SuccessResponse<z.infer<typeof event.joinEvent>> {}
+
 /**
  * Failure response for event-related endpoints
  */
