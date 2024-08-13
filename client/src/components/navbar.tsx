@@ -116,6 +116,13 @@ const Navbar: PageComponent = (): React.JSX.Element => {
             Events
           </InternalLink>
 
+          {/* Settings */}
+          {isLoggedIn && (
+            <InternalLink href="/settings" className="hidden md:inline-flex">
+              Settings
+            </InternalLink>
+          )}
+
           {/* Notification */}
           {isLoggedIn && (
             <DropdownMenu>
@@ -203,13 +210,20 @@ const Navbar: PageComponent = (): React.JSX.Element => {
 
               {/* login */}
               {!isLoggedIn && (
-                <NavbarLink href="/login" className="hidden max-md:inline-flex">
+                <NavbarLink href="/login" className="hidden max-md:flex">
                   Login/Register
                 </NavbarLink>
               )}
 
               {/* logout */}
-              {isLoggedIn && <NavbarLink href="/logout">Logout</NavbarLink>}
+              {isLoggedIn && (
+                <>
+                  <NavbarLink href="/settings" className="hidden max-md:flex">
+                    Settings
+                  </NavbarLink>
+                  <NavbarLink href="/logout">Logout</NavbarLink>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
