@@ -38,16 +38,10 @@ const userRouteMap: RouteMap = {
     description: 'Create Your Events Here',
     component: EventCreationPage,
   },
-  '/events/manage': {
-    title: 'Event Management',
-    accessLevel: 'authenticated',
-    description: 'Event Management',
-    component: EventManage,
-  },
   '/events': {
-    title: 'Events',
+    title: 'List Events',
     accessLevel: 'public',
-    description: 'Event List',
+    description: 'List Events Here',
     component: EventList,
   },
   '/events/:id': {
@@ -72,7 +66,7 @@ const userRouteMap: RouteMap = {
     title: 'Dashboard',
     description: 'Check all the relevant details here',
     component: DashboardPage,
-    accessLevel: 'authenticated',
+    accessLevel: 'admin',
   },
   '/feedback/create': {
     title: 'Feedback Form',
@@ -83,7 +77,7 @@ const userRouteMap: RouteMap = {
   '/feedback': {
     title: 'Feedback List',
     description: 'List feedback',
-    accessLevel: 'authenticated',
+    accessLevel: 'public',
     component: FeedbackList,
   },
 } as const;

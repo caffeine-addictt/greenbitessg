@@ -116,6 +116,13 @@ const Navbar: PageComponent = (): React.JSX.Element => {
             Events
           </InternalLink>
 
+          {/* Settings */}
+          {isLoggedIn && (
+            <InternalLink href="/settings" className="hidden md:inline-flex">
+              Settings
+            </InternalLink>
+          )}
+
           {/* Notification */}
           {isLoggedIn && (
             <DropdownMenu>
@@ -138,7 +145,9 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                       <div className="flex w-fit flex-col gap-2">
                         <p>{notification.notificationMessage}</p>
                         <p className="text-sm">
-                          {notification.createdAt.toLocaleDateString()}
+                          {new Date(
+                            notification.createdAt,
+                          ).toLocaleDateString()}
                         </p>
                       </div>
 
@@ -193,9 +202,8 @@ const Navbar: PageComponent = (): React.JSX.Element => {
               {/* Admin only links */}
               {isAdmin && (
                 <>
-                  <DropdownMenuLabel>Admin</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <NavbarLink href="/dashboard">Dashboard</NavbarLink>
+                  <NavbarLink href="/dashboard">Admin Dashboard</NavbarLink>
                 </>
               )}
 
@@ -203,13 +211,20 @@ const Navbar: PageComponent = (): React.JSX.Element => {
 
               {/* login */}
               {!isLoggedIn && (
-                <NavbarLink href="/login" className="hidden max-md:inline-flex">
+                <NavbarLink href="/login" className="hidden max-md:flex">
                   Login/Register
                 </NavbarLink>
               )}
 
               {/* logout */}
-              {isLoggedIn && <NavbarLink href="/logout">Logout</NavbarLink>}
+              {isLoggedIn && (
+                <>
+                  <NavbarLink href="/settings" className="hidden max-md:flex">
+                    Settings
+                  </NavbarLink>
+                  <NavbarLink href="/logout">Logout</NavbarLink>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
