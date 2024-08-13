@@ -11,7 +11,7 @@ import { Http4XX } from '../../lib/api-types/http-codes';
 
 import { db } from '../../db';
 import { eq, or } from 'drizzle-orm';
-import { tokens, usersTable } from '../../db/schemas';
+import { tokens, usersTable, notificationTable } from '../../db/schemas';
 
 import { signJwt } from '../../utils/service/auth/jwt';
 import { hashPassword, matchPassword } from '../../utils/password';
@@ -170,6 +170,14 @@ export const register: IBareRouteHandler = async (req, res) => {
       errors: [{ message: 'Email could not be reached' }],
     } satisfies auth.RegisterFailAPI);
   }
+
+  // Create notification
+  await db.insert(notificationTable).values({
+    userId: createdUser[0].id,
+    notificationMessage:
+      'Welcome to Greenbitessg! Please check your email to activate your account.',
+    notificationType: 'info',
+  });
 
   return res.status(201).json({
     status: 201,
