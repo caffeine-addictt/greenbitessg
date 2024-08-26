@@ -231,9 +231,9 @@ export const AccountPasskeys = () => {
       )}
 
       {data &&
-        data.map((p, i) => (
+        data.map((p) => (
           <div
-            key={`passkey-${i}`}
+            key={`passkey-${p.id}`}
             className="flex w-full items-center justify-between rounded-md bg-secondary-light p-4 text-sm text-text-light dark:text-text-light"
           >
             <div className="flex w-1/3 flex-col">

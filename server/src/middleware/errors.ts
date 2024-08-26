@@ -71,7 +71,6 @@ export const errorHandler = (
     status: 500,
     errors: [{ message: 'Something went wrong!' }],
   } satisfies ErrorResponse);
-  return;
 };
 
 // Handle 404 Errors

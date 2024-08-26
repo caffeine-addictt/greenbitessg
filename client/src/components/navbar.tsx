@@ -136,10 +136,10 @@ const Navbar: PageComponent = (): React.JSX.Element => {
                 {/* Load notifications */}
                 {notifications &&
                   notifications.length > 0 &&
-                  notifications.map((notification, i) => (
+                  notifications.map((notification) => (
                     <DropdownMenuItem
                       className="flex-row items-start"
-                      key={`notification-${i}`}
+                      key={`notification-${notification.id}`}
                     >
                       {/* left */}
                       <div className="flex w-fit flex-col gap-2">

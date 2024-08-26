@@ -74,74 +74,72 @@ const EventView: PageComponent = () => {
       {events.length > 0 ? (
         <div className="mb-5 flex flex-col items-center">
           {events.map((event) => (
-            <>
-              <div key={event.id} className="relative mx-auto mt-10 flex">
-                <div
-                  key={event.id}
-                  className="mb-6 w-full max-w-4xl rounded-lg bg-surface-light/5 p-6"
-                >
-                  <div className="px-10 py-5 text-left">
-                    <h2 className="mb-4 text-center text-2xl font-semibold">
-                      Event Name: {event.title}
-                    </h2>
-                    <p className="mb-4">Description: {event.description}</p>
-                    <p className="mb-4">Date: {`${event.date}`}</p>
-                    <p className="mb-4">Time: {`${event.time}`}</p>
-                    <p className="mb-4">Location: {event.location}</p>
-                    {user ? (
-                      <>
-                        <Button
-                          variant="destructive"
-                          className="mx-auto mt-5 px-6 py-5 text-base font-semibold !text-text-dark"
-                          onClick={() => setShowModal(true)}
-                        >
-                          Leave
-                        </Button>
-                        <div
-                          className={cn(
-                            'left-1/2 -translate-x-1/2 top-1/2 transition-all flex -translate-y-1/2 flex-col items-center justify-center rounded-md bg-accent-dark drop-shadow w-4/5',
-                            {
-                              absolute: showModal,
-                              hidden: !showModal,
-                              'opatity-0': !showModal,
-                              'opacity-100': showModal,
-                            },
-                          )}
-                        >
-                          <div className="relative flex size-fit flex-col items-center justify-center rounded-lg p-10">
-                            <h2 className="mb-4 text-lg font-semibold underline">
-                              Leaving Event
-                            </h2>
-                            <p className="mb-6 text-center">
-                              Are you sure you want to leave the event:{' '}
-                              {event.title}?
-                            </p>
-                            <Button
-                              variant="destructive"
-                              className="font-semibold"
-                              onClick={() => leaveEvent(event.id, user.id)}
-                            >
-                              Confirm
-                            </Button>
-                            {/* Close button */}
-                            <Button
-                              onClick={() => setShowModal(false)}
-                              className="absolute right-1 top-1"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <X className="size-6 text-red-500 drop-shadow" />
-                            </Button>
-                          </div>
+            <div key={event.id} className="relative mx-auto mt-10 flex">
+              <div
+                key={event.id}
+                className="mb-6 w-full max-w-4xl rounded-lg bg-surface-light/5 p-6"
+              >
+                <div className="px-10 py-5 text-left">
+                  <h2 className="mb-4 text-center text-2xl font-semibold">
+                    Event Name: {event.title}
+                  </h2>
+                  <p className="mb-4">Description: {event.description}</p>
+                  <p className="mb-4">Date: {`${event.date}`}</p>
+                  <p className="mb-4">Time: {`${event.time}`}</p>
+                  <p className="mb-4">Location: {event.location}</p>
+                  {user ? (
+                    <>
+                      <Button
+                        variant="destructive"
+                        className="mx-auto mt-5 px-6 py-5 text-base font-semibold !text-text-dark"
+                        onClick={() => setShowModal(true)}
+                      >
+                        Leave
+                      </Button>
+                      <div
+                        className={cn(
+                          'left-1/2 -translate-x-1/2 top-1/2 transition-all flex -translate-y-1/2 flex-col items-center justify-center rounded-md bg-accent-dark drop-shadow w-4/5',
+                          {
+                            absolute: showModal,
+                            hidden: !showModal,
+                            'opatity-0': !showModal,
+                            'opacity-100': showModal,
+                          },
+                        )}
+                      >
+                        <div className="relative flex size-fit flex-col items-center justify-center rounded-lg p-10">
+                          <h2 className="mb-4 text-lg font-semibold underline">
+                            Leaving Event
+                          </h2>
+                          <p className="mb-6 text-center">
+                            Are you sure you want to leave the event:{' '}
+                            {event.title}?
+                          </p>
+                          <Button
+                            variant="destructive"
+                            className="font-semibold"
+                            onClick={() => leaveEvent(event.id, user.id)}
+                          >
+                            Confirm
+                          </Button>
+                          {/* Close button */}
+                          <Button
+                            onClick={() => setShowModal(false)}
+                            className="absolute right-1 top-1"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <X className="size-6 text-red-500 drop-shadow" />
+                          </Button>
                         </div>
-                      </>
-                    ) : (
-                      <p>Cannot leave when u are not logged in</p>
-                    )}
-                  </div>
+                      </div>
+                    </>
+                  ) : (
+                    <p>Cannot leave when u are not logged in</p>
+                  )}
                 </div>
               </div>
-            </>
+            </div>
           ))}
         </div>
       ) : (

@@ -40,7 +40,6 @@ export type FoodGenerateFailAPI = ErrorResponse<
   | 'Could not access image!'
   | 'Could not identify food from image!'
   | 'Could not get nutrition info!'
-  | 'Could not access image!'
 >;
 
 /**
