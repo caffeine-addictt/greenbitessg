@@ -47,7 +47,7 @@ const FoodPage: PageComponent = (props) => {
   const { toast } = useToast();
 
   const [query, setQuery] = useState<string>(
-    new URLSearchParams(window.location.search).get('query') || '',
+    new URLSearchParams(window.location.search).get('query') ?? '',
   );
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -59,10 +59,10 @@ const FoodPage: PageComponent = (props) => {
     const currParams = new URLSearchParams(window.location.search);
     params.q = query || currParams.get('query') || '';
 
-    params.page = parseInt(currParams.get('page') || '') ?? params.page;
+    params.page = parseInt(currParams.get('page') ?? '') ?? params.page;
     if (isNaN(params.page) || params.page < 1) params.page = 1;
 
-    params.limit = parseInt(currParams.get('limit') || '') ?? params.limit;
+    params.limit = parseInt(currParams.get('limit') ?? '') ?? params.limit;
     if (isNaN(params.limit) || params.limit < 1) params.limit = 20;
 
     const newParams = new URLSearchParams();
