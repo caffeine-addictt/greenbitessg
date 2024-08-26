@@ -98,9 +98,9 @@ export const Layout = (): JSX.Element => {
         <Navbar />
 
         <Routes location={location}>
-          {Object.entries(routes).map(([path, details], i) => (
+          {Object.entries(routes).map(([path, details]) => (
             <Route
-              key={i}
+              key={path}
               path={path}
               element={
                 <WrappedComponent {...details} path={location.pathname} />
