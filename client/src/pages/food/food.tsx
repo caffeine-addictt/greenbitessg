@@ -264,7 +264,7 @@ const FoodPage: PageComponent = (props) => {
                         className="flex h-fit w-full flex-col gap-2"
                         disabled={i === selectedIndex}
                         variant={i === selectedIndex ? 'outline' : 'default'}
-                        key={`food-item-${i}`}
+                        key={`food-item-${item.id}`}
                         onClick={() => setSelectedIndex(i)}
                       >
                         <h3 className="text-2xl font-bold capitalize">
