@@ -105,7 +105,7 @@ export const registerFormSchema = z.object({
     .min(1, { message: 'Please provide a username!' })
     .min(3, { message: 'Username needs to be at least 3 characters!' })
     .max(20, { message: 'Username cannot be longer than 20 characters!' })
-    .regex(/^[\w\d-_]+$/, {
+    .regex(/^[\w-_]+$/, {
       message: 'Username may only contain alphanumeric characters and (-_)',
     }),
   email: z
@@ -131,7 +131,7 @@ export const registerFormSchema = z.object({
       message:
         'Password needs to contain at least 1 upper case character! (A-Z)',
     })
-    .regex(/[\d]/, {
+    .regex(/[0-9]/, {
       message: 'Password needs to contain at least 1 digit! (0-9)',
     })
     .regex(/[!#$%&?'"]/, {
